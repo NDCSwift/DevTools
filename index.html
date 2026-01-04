@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Formatter & Validator | DevToolkit</title>
+    <meta name="description" content="Free JSON formatter, validator, and beautifier. Format, validate, and minify JSON instantly with syntax highlighting and error detection.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">DevToolkit</span>
+                <span class="logo-bracket">}</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link active">JSON</a>
+                <a href="regex.html" class="nav-link">RegEx</a>
+                <a href="base64.html" class="nav-link">Base64</a>
+                <a href="colors.html" class="nav-link">Colors</a>
+                <a href="#" class="nav-link coming-soon">More<span class="badge">Soon</span></a>
+                <a href="#" class="nav-link premium-badge">Premium</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                <span class="glitch" data-text="JSON">JSON</span>
+                <span class="hero-subtitle">Formatter & Validator</span>
+            </h1>
+            <p class="hero-description">Format, validate, and beautify JSON instantly. Zero fluff. Maximum speed.</p>
+        </div>
+    </section>
+
+    <!-- Main Tool Area -->
+    <main class="tool-container">
+        <div class="container">
+            <!-- Controls -->
+            <div class="controls">
+                <div class="control-group">
+                    <button id="formatBtn" class="btn btn-primary">
+                        <span class="btn-icon">✓</span>
+                        Format & Validate
+                    </button>
+                    <button id="minifyBtn" class="btn btn-secondary">
+                        <span class="btn-icon">⊟</span>
+                        Minify
+                    </button>
+                    <button id="clearBtn" class="btn btn-ghost">
+                        <span class="btn-icon">⌫</span>
+                        Clear
+                    </button>
+                </div>
+                
+                <div class="control-group">
+                    <label class="indent-control">
+                        <span class="label-text">Indent:</span>
+                        <select id="indentSize" class="select-input">
+                            <option value="2" selected>2 spaces</option>
+                            <option value="4">4 spaces</option>
+                            <option value="tab">Tab</option>
+                        </select>
+                    </label>
+                    <button id="copyBtn" class="btn btn-ghost">
+                        <span class="btn-icon">⎘</span>
+                        Copy
+                    </button>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div id="statusBar" class="status-bar">
+                <span class="status-indicator"></span>
+                <span id="statusText">Ready to format JSON</span>
+                <span id="charCount" class="char-count">0 characters</span>
+            </div>
+
+            <!-- Editor Area -->
+            <div class="editor-wrapper">
+                <div class="editor-panel">
+                    <div class="panel-header">
+                        <span class="panel-title">INPUT</span>
+                        <button id="loadSampleBtn" class="btn-link">Load Sample</button>
+                    </div>
+                    <textarea 
+                        id="inputJson" 
+                        class="json-editor" 
+                        placeholder='Paste your JSON here...
+Example:
+{
+  "name": "DevToolkit",
+  "version": "1.0.0",
+  "tools": ["JSON", "RegEx", "Cron"]
+}'
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+
+                <div class="editor-panel">
+                    <div class="panel-header">
+                        <span class="panel-title">OUTPUT</span>
+                        <span id="validBadge" class="valid-badge hidden">VALID ✓</span>
+                    </div>
+                    <div id="outputJson" class="json-output"></div>
+                </div>
+            </div>
+
+            <!-- History Section (Premium Feature Preview) -->
+            <div class="history-section">
+                <div class="history-header">
+                    <h3 class="history-title">
+                        <span class="history-icon">⟲</span>
+                        Recent Formats
+                        <span class="premium-tag">Premium Feature</span>
+                    </h3>
+                </div>
+                <div id="historyList" class="history-list">
+                    <div class="history-empty">
+                        <p>Format history saves your last 10 operations</p>
+                        <p class="history-empty-sub">Upgrade to Premium for unlimited history & sync across devices</p>
+                        <button class="btn btn-premium">Unlock Premium - $5/month</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>DevToolkit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="index.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="#">More Tools (Coming Soon)</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 DevToolkit. Built for developers, by developers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

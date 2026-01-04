@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegEx Tester & Debugger | DevToolkit</title>
+    <meta name="description" content="Free online regular expression tester with real-time matching, explanation, and pattern library. Test regex patterns instantly with syntax highlighting.">
+    <link rel="stylesheet" href="styles-regex.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">DevToolkit</span>
+                <span class="logo-bracket">}</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">JSON</a>
+                <a href="regex.html" class="nav-link active">RegEx</a>
+                <a href="base64.html" class="nav-link">Base64</a>
+                <a href="colors.html" class="nav-link">Colors</a>
+                <a href="#" class="nav-link coming-soon">More<span class="badge">Soon</span></a>
+                <a href="#" class="nav-link premium-badge">Premium</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                <span class="glitch" data-text="REGEX">REGEX</span>
+                <span class="hero-subtitle">Tester & Debugger</span>
+            </h1>
+            <p class="hero-description">Test regular expressions in real-time with match highlighting and explanations.</p>
+        </div>
+    </section>
+
+    <!-- Main Tool Area -->
+    <main class="tool-container">
+        <div class="container">
+            <!-- Pattern Input Section -->
+            <div class="pattern-section">
+                <div class="pattern-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Regular Expression Pattern
+                    </h3>
+                </div>
+                
+                <div class="pattern-input-wrapper">
+                    <span class="regex-delimiter">/</span>
+                    <input 
+                        type="text" 
+                        id="regexPattern" 
+                        class="regex-input" 
+                        placeholder="Enter your regex pattern here..."
+                        spellcheck="false"
+                    >
+                    <span class="regex-delimiter">/</span>
+                    <input 
+                        type="text" 
+                        id="regexFlags" 
+                        class="flags-input" 
+                        placeholder="gimsuvy"
+                        maxlength="7"
+                        spellcheck="false"
+                    >
+                </div>
+
+                <!-- Flags Checkboxes -->
+                <div class="flags-section">
+                    <label class="flag-checkbox">
+                        <input type="checkbox" id="flagG" value="g">
+                        <span class="flag-label"><strong>g</strong> - Global</span>
+                    </label>
+                    <label class="flag-checkbox">
+                        <input type="checkbox" id="flagI" value="i">
+                        <span class="flag-label"><strong>i</strong> - Case Insensitive</span>
+                    </label>
+                    <label class="flag-checkbox">
+                        <input type="checkbox" id="flagM" value="m">
+                        <span class="flag-label"><strong>m</strong> - Multiline</span>
+                    </label>
+                    <label class="flag-checkbox">
+                        <input type="checkbox" id="flagS" value="s">
+                        <span class="flag-label"><strong>s</strong> - Dotall</span>
+                    </label>
+                    <label class="flag-checkbox">
+                        <input type="checkbox" id="flagU" value="u">
+                        <span class="flag-label"><strong>u</strong> - Unicode</span>
+                    </label>
+                </div>
+
+                <!-- Pattern Library -->
+                <div class="pattern-library">
+                    <button class="btn-link" id="toggleLibrary">
+                        📚 Common Patterns Library
+                    </button>
+                    <div id="libraryContent" class="library-content hidden">
+                        <div class="library-grid">
+                            <button class="library-item" data-pattern="^[\w\.-]+@[\w\.-]+\.\w+$" data-flags="i">
+                                <strong>Email</strong>
+                                <code>^[\w\.-]+@[\w\.-]+\.\w+$</code>
+                            </button>
+                            <button class="library-item" data-pattern="^https?:\/\/.+" data-flags="">
+                                <strong>URL</strong>
+                                <code>^https?:\/\/.+</code>
+                            </button>
+                            <button class="library-item" data-pattern="^\d{3}-\d{3}-\d{4}$" data-flags="">
+                                <strong>Phone (US)</strong>
+                                <code>^\d{3}-\d{3}-\d{4}$</code>
+                            </button>
+                            <button class="library-item" data-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$" data-flags="">
+                                <strong>Strong Password</strong>
+                                <code>^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$</code>
+                            </button>
+                            <button class="library-item" data-pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$" data-flags="">
+                                <strong>Hex Color</strong>
+                                <code>^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$</code>
+                            </button>
+                            <button class="library-item" data-pattern="^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$" data-flags="">
+                                <strong>IPv4</strong>
+                                <code>^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$</code>
+                            </button>
+                            <button class="library-item" data-pattern="^\d{4}-\d{2}-\d{2}$" data-flags="">
+                                <strong>Date (YYYY-MM-DD)</strong>
+                                <code>^\d{4}-\d{2}-\d{2}$</code>
+                            </button>
+                            <button class="library-item" data-pattern="^[a-zA-Z0-9_-]{3,16}$" data-flags="">
+                                <strong>Username</strong>
+                                <code>^[a-zA-Z0-9_-]{3,16}$</code>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div id="statusBar" class="status-bar">
+                <span class="status-indicator"></span>
+                <span id="statusText">Enter a pattern and test string to begin</span>
+                <span id="matchCount" class="match-count">0 matches</span>
+            </div>
+
+            <!-- Test String Section -->
+            <div class="test-section">
+                <div class="test-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Test String
+                    </h3>
+                    <div class="test-controls">
+                        <button id="loadSampleBtn" class="btn-link">Load Sample</button>
+                        <button id="clearTestBtn" class="btn-link">Clear</button>
+                    </div>
+                </div>
+                
+                <textarea 
+                    id="testString" 
+                    class="test-input" 
+                    placeholder="Enter your test string here...
+
+Try pasting:
+- Email addresses
+- URLs
+- Phone numbers
+- Any text you want to match against"
+                    spellcheck="false"
+                ></textarea>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Results
+                    </h3>
+                    <button id="copyMatchesBtn" class="btn-link">Copy All Matches</button>
+                </div>
+                
+                <div id="highlightedOutput" class="highlighted-output"></div>
+            </div>
+
+            <!-- Matches List -->
+            <div class="matches-section">
+                <div class="matches-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Match Details
+                    </h3>
+                </div>
+                
+                <div id="matchesList" class="matches-list">
+                    <div class="matches-empty">
+                        No matches yet. Enter a pattern and test string above.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanation Section (Premium Feature Preview) -->
+            <div class="explanation-section">
+                <div class="explanation-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Pattern Explanation
+                        <span class="premium-tag">Premium Feature</span>
+                    </h3>
+                </div>
+                
+                <div class="explanation-content">
+                    <div class="explanation-empty">
+                        <p>Get AI-powered explanations of your regex patterns</p>
+                        <p class="explanation-empty-sub">Premium members get detailed breakdowns of each part of their pattern</p>
+                        <button class="btn btn-premium">Unlock Premium - $5/month</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Reference -->
+            <div class="reference-section">
+                <div class="reference-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Quick Reference
+                    </h3>
+                </div>
+                
+                <div class="reference-grid">
+                    <div class="reference-card">
+                        <h4>Character Classes</h4>
+                        <ul>
+                            <li><code>\d</code> - Digit (0-9)</li>
+                            <li><code>\w</code> - Word character (a-z, A-Z, 0-9, _)</li>
+                            <li><code>\s</code> - Whitespace</li>
+                            <li><code>.</code> - Any character (except newline)</li>
+                            <li><code>[abc]</code> - Any of a, b, or c</li>
+                            <li><code>[^abc]</code> - Not a, b, or c</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-card">
+                        <h4>Quantifiers</h4>
+                        <ul>
+                            <li><code>*</code> - 0 or more</li>
+                            <li><code>+</code> - 1 or more</li>
+                            <li><code>?</code> - 0 or 1</li>
+                            <li><code>{n}</code> - Exactly n times</li>
+                            <li><code>{n,}</code> - n or more times</li>
+                            <li><code>{n,m}</code> - Between n and m times</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-card">
+                        <h4>Anchors</h4>
+                        <ul>
+                            <li><code>^</code> - Start of string</li>
+                            <li><code>$</code> - End of string</li>
+                            <li><code>\b</code> - Word boundary</li>
+                            <li><code>\B</code> - Not word boundary</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-card">
+                        <h4>Groups</h4>
+                        <ul>
+                            <li><code>(abc)</code> - Capture group</li>
+                            <li><code>(?:abc)</code> - Non-capturing group</li>
+                            <li><code>a|b</code> - Alternation (a or b)</li>
+                            <li><code>(?=abc)</code> - Positive lookahead</li>
+                            <li><code>(?!abc)</code> - Negative lookahead</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>DevToolkit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="index.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="#">More Tools (Coming Soon)</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 DevToolkit. Built for developers, by developers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="script-regex.js"></script>
+</body>
+</html>

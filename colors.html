@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palette Generator & Converter | DevToolkit</title>
+    <meta name="description" content="Free color palette generator with HEX, RGB, HSL, CMYK converter. Create color schemes, gradients, and harmonies. Professional color picker tool for designers and developers.">
+    <link rel="stylesheet" href="styles-colors.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">DevToolkit</span>
+                <span class="logo-bracket">}</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">JSON</a>
+                <a href="regex.html" class="nav-link">RegEx</a>
+                <a href="base64.html" class="nav-link">Base64</a>
+                <a href="colors.html" class="nav-link active">Colors</a>
+                <a href="#" class="nav-link coming-soon">More<span class="badge">Soon</span></a>
+                <a href="#" class="nav-link premium-badge">Premium</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                <span class="glitch" data-text="COLORS">COLORS</span>
+                <span class="hero-subtitle">Palette Generator & Converter</span>
+            </h1>
+            <p class="hero-description">Create color palettes, convert between formats, and explore color harmonies instantly.</p>
+        </div>
+    </section>
+
+    <!-- Main Tool Area -->
+    <main class="tool-container">
+        <div class="container">
+            <!-- Color Picker Section -->
+            <div class="color-picker-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Color Picker
+                    </h3>
+                </div>
+                
+                <div class="picker-container">
+                    <div class="picker-main">
+                        <input type="color" id="colorPicker" class="color-input" value="#00ff9f">
+                        <div class="color-display" id="colorDisplay"></div>
+                    </div>
+                    
+                    <div class="color-info">
+                        <div class="color-name" id="colorName">Neon Green</div>
+                        <div class="color-values">
+                            <div class="value-group">
+                                <label>HEX</label>
+                                <input type="text" id="hexInput" value="#00ff9f" spellcheck="false">
+                                <button class="copy-btn" data-target="hexInput">⎘</button>
+                            </div>
+                            <div class="value-group">
+                                <label>RGB</label>
+                                <input type="text" id="rgbInput" value="rgb(0, 255, 159)" spellcheck="false">
+                                <button class="copy-btn" data-target="rgbInput">⎘</button>
+                            </div>
+                            <div class="value-group">
+                                <label>HSL</label>
+                                <input type="text" id="hslInput" value="hsl(157, 100%, 50%)" spellcheck="false">
+                                <button class="copy-btn" data-target="hslInput">⎘</button>
+                            </div>
+                            <div class="value-group">
+                                <label>CMYK</label>
+                                <input type="text" id="cmykInput" value="cmyk(100%, 0%, 38%, 0%)" spellcheck="false">
+                                <button class="copy-btn" data-target="cmykInput">⎘</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Random Color Generator -->
+            <div class="random-section">
+                <button id="randomColorBtn" class="btn btn-primary">
+                    <span class="btn-icon">🎲</span>
+                    Generate Random Color
+                </button>
+            </div>
+
+            <!-- Color Harmony Section -->
+            <div class="harmony-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Color Harmonies
+                    </h3>
+                </div>
+                
+                <div class="harmony-tabs">
+                    <button class="harmony-tab active" data-harmony="complementary">Complementary</button>
+                    <button class="harmony-tab" data-harmony="analogous">Analogous</button>
+                    <button class="harmony-tab" data-harmony="triadic">Triadic</button>
+                    <button class="harmony-tab" data-harmony="tetradic">Tetradic</button>
+                    <button class="harmony-tab" data-harmony="monochromatic">Monochromatic</button>
+                </div>
+                
+                <div id="harmonyPalette" class="palette-grid"></div>
+            </div>
+
+            <!-- Gradient Generator -->
+            <div class="gradient-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Gradient Generator
+                    </h3>
+                </div>
+                
+                <div class="gradient-controls">
+                    <div class="gradient-colors">
+                        <div class="gradient-color-input">
+                            <label>Color 1</label>
+                            <input type="color" id="gradientColor1" value="#00ff9f">
+                        </div>
+                        <div class="gradient-color-input">
+                            <label>Color 2</label>
+                            <input type="color" id="gradientColor2" value="#00d4ff">
+                        </div>
+                        <div class="gradient-type">
+                            <label>Type</label>
+                            <select id="gradientType">
+                                <option value="linear">Linear</option>
+                                <option value="radial">Radial</option>
+                            </select>
+                        </div>
+                        <div class="gradient-angle">
+                            <label>Angle</label>
+                            <input type="range" id="gradientAngle" min="0" max="360" value="90">
+                            <span id="angleValue">90°</span>
+                        </div>
+                    </div>
+                    
+                    <div id="gradientPreview" class="gradient-preview"></div>
+                    
+                    <div class="gradient-code">
+                        <label>CSS Code</label>
+                        <textarea id="gradientCSS" class="code-output" readonly spellcheck="false"></textarea>
+                        <button id="copyGradientBtn" class="btn btn-secondary">
+                            <span class="btn-icon">⎘</span>
+                            Copy CSS
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shades & Tints -->
+            <div class="shades-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Shades & Tints
+                    </h3>
+                </div>
+                
+                <div class="shades-grid">
+                    <div class="shade-category">
+                        <h4>Tints (+ White)</h4>
+                        <div id="tintsGrid" class="shade-colors"></div>
+                    </div>
+                    <div class="shade-category">
+                        <h4>Shades (+ Black)</h4>
+                        <div id="shadesGrid" class="shade-colors"></div>
+                    </div>
+                    <div class="shade-category">
+                        <h4>Tones (+ Gray)</h4>
+                        <div id="tonesGrid" class="shade-colors"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saved Palettes -->
+            <div class="saved-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Saved Palettes
+                        <span class="badge">Local</span>
+                    </h3>
+                    <button id="savePaletteBtn" class="btn-link">+ Save Current</button>
+                </div>
+                
+                <div id="savedPalettes" class="saved-palettes">
+                    <div class="saved-empty">
+                        <p>No saved palettes yet</p>
+                        <p class="saved-hint">Click "Save Current" to save the active harmony palette</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular Palettes -->
+            <div class="popular-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Popular Palettes
+                    </h3>
+                </div>
+                
+                <div class="popular-grid">
+                    <div class="palette-card" data-palette='["#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A", "#98D8C8"]'>
+                        <div class="palette-preview">
+                            <div style="background: #FF6B6B"></div>
+                            <div style="background: #4ECDC4"></div>
+                            <div style="background: #45B7D1"></div>
+                            <div style="background: #FFA07A"></div>
+                            <div style="background: #98D8C8"></div>
+                        </div>
+                        <div class="palette-name">Summer Vibes</div>
+                    </div>
+                    
+                    <div class="palette-card" data-palette='["#2D3436", "#636E72", "#B2BEC3", "#DFE6E9", "#FFFFFF"]'>
+                        <div class="palette-preview">
+                            <div style="background: #2D3436"></div>
+                            <div style="background: #636E72"></div>
+                            <div style="background: #B2BEC3"></div>
+                            <div style="background: #DFE6E9"></div>
+                            <div style="background: #FFFFFF"></div>
+                        </div>
+                        <div class="palette-name">Grayscale Modern</div>
+                    </div>
+                    
+                    <div class="palette-card" data-palette='["#6C5CE7", "#A29BFE", "#FD79A8", "#FDCB6E", "#00B894"]'>
+                        <div class="palette-preview">
+                            <div style="background: #6C5CE7"></div>
+                            <div style="background: #A29BFE"></div>
+                            <div style="background: #FD79A8"></div>
+                            <div style="background: #FDCB6E"></div>
+                            <div style="background: #00B894"></div>
+                        </div>
+                        <div class="palette-name">Playful Gradient</div>
+                    </div>
+                    
+                    <div class="palette-card" data-palette='["#1E3A8A", "#3B82F6", "#60A5FA", "#93C5FD", "#DBEAFE"]'>
+                        <div class="palette-preview">
+                            <div style="background: #1E3A8A"></div>
+                            <div style="background: #3B82F6"></div>
+                            <div style="background: #60A5FA"></div>
+                            <div style="background: #93C5FD"></div>
+                            <div style="background: #DBEAFE"></div>
+                        </div>
+                        <div class="palette-name">Ocean Blues</div>
+                    </div>
+                    
+                    <div class="palette-card" data-palette='["#F59E0B", "#FBBF24", "#FCD34D", "#FDE68A", "#FEF3C7"]'>
+                        <div class="palette-preview">
+                            <div style="background: #F59E0B"></div>
+                            <div style="background: #FBBF24"></div>
+                            <div style="background: #FCD34D"></div>
+                            <div style="background: #FDE68A"></div>
+                            <div style="background: #FEF3C7"></div>
+                        </div>
+                        <div class="palette-name">Golden Sunset</div>
+                    </div>
+                    
+                    <div class="palette-card" data-palette='["#DC2626", "#EF4444", "#F87171", "#FCA5A5", "#FEE2E2"]'>
+                        <div class="palette-preview">
+                            <div style="background: #DC2626"></div>
+                            <div style="background: #EF4444"></div>
+                            <div style="background: #F87171"></div>
+                            <div style="background: #FCA5A5"></div>
+                            <div style="background: #FEE2E2"></div>
+                        </div>
+                        <div class="palette-name">Cherry Red</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Color Reference -->
+            <div class="reference-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Color Theory Quick Reference
+                    </h3>
+                </div>
+                
+                <div class="reference-grid">
+                    <div class="reference-card">
+                        <h4>🎨 Color Formats</h4>
+                        <ul>
+                            <li><strong>HEX:</strong> #RRGGBB (web standard)</li>
+                            <li><strong>RGB:</strong> Red, Green, Blue (0-255)</li>
+                            <li><strong>HSL:</strong> Hue, Saturation, Lightness</li>
+                            <li><strong>CMYK:</strong> Print color model</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-card">
+                        <h4>🔄 Color Harmonies</h4>
+                        <ul>
+                            <li><strong>Complementary:</strong> Opposite on color wheel</li>
+                            <li><strong>Analogous:</strong> Adjacent colors</li>
+                            <li><strong>Triadic:</strong> 3 evenly spaced colors</li>
+                            <li><strong>Tetradic:</strong> 2 complementary pairs</li>
+                            <li><strong>Monochromatic:</strong> Shades of one color</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-card">
+                        <h4>💡 Usage Tips</h4>
+                        <ul>
+                            <li>60-30-10 rule for color distribution</li>
+                            <li>Limit to 3-5 colors per palette</li>
+                            <li>Consider accessibility (WCAG)</li>
+                            <li>Test on different screens</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-card">
+                        <h4>🎯 Common Uses</h4>
+                        <ul>
+                            <li>Web design color schemes</li>
+                            <li>Brand identity development</li>
+                            <li>CSS gradient generation</li>
+                            <li>UI component styling</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>DevToolkit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="index.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="#">More Tools (Coming Soon)</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 DevToolkit. Built for developers, by developers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="script-colors.js"></script>
+</body>
+</html>
