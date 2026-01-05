@@ -244,6 +244,130 @@ Examples:
                 </div>
             </div>
 
+            <!-- Usage Guide Section -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        How to Use with Files & Images
+                    </h3>
+                </div>
+
+                <div class="usage-guide">
+                    <div class="usage-card">
+                        <h4>📄 Working with Files</h4>
+                        <p class="card-subtitle">HTML, JSON, XML, etc.</p>
+
+                        <div class="step-group">
+                            <p class="step-title">To Encode:</p>
+                            <p>Click "File" tab → Upload your file → Click "Encode"</p>
+                        </div>
+
+                        <div class="step-group">
+                            <p class="step-title">Result:</p>
+                            <p>Base64 text appears in the output area</p>
+                        </div>
+
+                        <div class="step-group">
+                            <p class="step-title">To Download:</p>
+                            <p>Click "Download" button to save as .txt file</p>
+                        </div>
+
+                        <div class="step-group">
+                            <p class="step-title">To Decode:</p>
+                            <p>Switch to "Decode" mode → Paste Base64 text → Click "Decode"</p>
+                        </div>
+
+                        <div class="step-group">
+                            <p class="step-title">Save Original:</p>
+                            <p>Click "Download" and rename file with original extension</p>
+                            <p class="step-example">(e.g., rename "decoded.txt" to "myfile.html")</p>
+                        </div>
+
+                        <p class="usage-note"><strong>💡 Tip:</strong> The download gives you a text file - just rename it with the correct extension (.html, .json, .xml, etc.)</p>
+                    </div>
+
+                    <div class="usage-card">
+                        <h4>🖼️ Working with Images</h4>
+                        <p class="card-subtitle">PNG, JPG, GIF, SVG, WebP</p>
+
+                        <div class="step-group">
+                            <p class="step-title">To Encode:</p>
+                            <p>Click "Image" tab → Upload your image → Click "Encode"</p>
+                        </div>
+
+                        <div class="step-group">
+                            <p class="step-title">Result:</p>
+                            <p>Base64 string appears in output</p>
+                            <p class="step-example">(starts with "data:image/png;base64,")</p>
+                        </div>
+
+                        <div class="step-group">
+                            <p class="step-title">To Use:</p>
+                            <p>Copy this entire string and paste it into HTML/CSS as a data URI</p>
+                        </div>
+
+                        <div class="step-group">
+                            <p class="step-title">Example:</p>
+                            <code>&lt;img src="data:image/png;base64,iVBORw0KG..."&gt;</code>
+                        </div>
+
+                        <p class="usage-note"><strong>⚠️ Note:</strong> For images, you typically don't decode back to a file. Instead, use the Base64 string directly in your HTML/CSS as a data URI. To get the image back, paste the data URI into a browser address bar or use an online converter.</p>
+                    </div>
+
+                    <div class="usage-card">
+                        <h4>💻 Common Use Cases</h4>
+                        <p class="card-subtitle">When Base64 is useful</p>
+
+                        <div class="use-case">
+                            <strong>Email Attachments</strong>
+                            <p>Encode files to include in JSON/XML</p>
+                        </div>
+
+                        <div class="use-case">
+                            <strong>Inline Images</strong>
+                            <p>Embed small images directly in HTML/CSS</p>
+                        </div>
+
+                        <div class="use-case">
+                            <strong>API Data</strong>
+                            <p>Send binary files as text through REST APIs</p>
+                        </div>
+
+                        <div class="use-case">
+                            <strong>Data URLs</strong>
+                            <p>Create self-contained HTML files with embedded images</p>
+                        </div>
+                    </div>
+
+                    <div class="usage-card warning">
+                        <h4>⚠️ Important Limitations</h4>
+                        <p class="card-subtitle">Things to keep in mind</p>
+
+                        <div class="limitation">
+                            <strong>Base64 increases file size by ~33%</strong>
+                        </div>
+
+                        <div class="limitation">
+                            <strong>Not encryption</strong>
+                            <p>Anyone can decode it easily</p>
+                        </div>
+
+                        <div class="limitation">
+                            <strong>Large files (>5MB) may slow down your browser</strong>
+                        </div>
+
+                        <div class="limitation">
+                            <strong>When decoding files, remember to rename with correct extension</strong>
+                        </div>
+
+                        <div class="limitation">
+                            <strong>Images as data URIs work best for small files (<100KB)</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Info Section -->
             <div class="info-section">
                 <div class="section-header">
@@ -341,3 +465,135 @@ Examples:
     <script src="script-base64.js"></script>
 </body>
 </html>
+
+    <style>
+        /* Usage Guide Styles */
+        .usage-guide {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .usage-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+        }
+
+        .usage-card.warning {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+
+        .usage-card h4 {
+            color: var(--color-primary);
+            font-family: var(--font-display);
+            margin-bottom: var(--spacing-xs);
+            font-size: 1.25rem;
+        }
+
+        .usage-card.warning h4 {
+            color: #ff6b6b;
+        }
+
+        .card-subtitle {
+            color: var(--color-text-dim);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-lg);
+            margin-top: 0;
+        }
+
+        .step-group {
+            margin-bottom: var(--spacing-md);
+            padding-left: var(--spacing-sm);
+        }
+
+        .step-title {
+            color: var(--color-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-xs);
+            margin-top: 0;
+        }
+
+        .step-group > p {
+            color: var(--color-text-muted);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .step-example {
+            color: var(--color-text-dim) !important;
+            font-size: 0.85rem;
+            font-style: italic;
+            margin-top: var(--spacing-xs) !important;
+        }
+
+        .use-case {
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm) 0;
+        }
+
+        .use-case strong {
+            color: var(--color-text);
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-size: 0.95rem;
+        }
+
+        .use-case p {
+            color: var(--color-text-muted);
+            margin: 0;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .limitation {
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius-sm);
+        }
+
+        .limitation strong {
+            color: var(--color-text);
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .limitation p {
+            color: var(--color-text-dim);
+            margin: var(--spacing-xs) 0 0 0;
+            font-size: 0.85rem;
+        }
+
+        .usage-card code {
+            background: var(--color-bg);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-family: var(--font-mono);
+            display: block;
+            margin-top: var(--spacing-xs);
+            word-break: break-all;
+        }
+
+        .usage-note {
+            background: var(--color-bg);
+            border-left: 3px solid var(--color-primary);
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 968px) {
+            .usage-guide {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
