@@ -59,6 +59,7 @@ const elements = {
     clearAllBtn: document.getElementById('clearAllBtn'),
     
     // Other buttons
+    pasteBtn: document.getElementById('pasteBtn'),
     loadSampleBtn: document.getElementById('loadSampleBtn'),
     clearInputBtn: document.getElementById('clearInputBtn'),
     copyOutputBtn: document.getElementById('copyOutputBtn'),
@@ -121,6 +122,7 @@ function attachEventListeners() {
     elements.clearAllBtn.addEventListener('click', clearAll);
     
     // Other buttons
+    elements.pasteBtn.addEventListener('click', pasteInput);
     elements.loadSampleBtn.addEventListener('click', loadSample);
     elements.clearInputBtn.addEventListener('click', clearInput);
     elements.copyOutputBtn.addEventListener('click', copyOutput);
@@ -454,6 +456,25 @@ function clearAll() {
     elements.outputText.value = '';
     updateSizeInfo();
     showToast('Cleared');
+}
+
+/**
+ * Paste from clipboard to input
+ */
+async function pasteInput() {
+    try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+            elements.textInput.value = text;
+            updateSizeInfo();
+            showToast('Pasted from clipboard! 📋');
+        } else {
+            showToast('Clipboard is empty');
+        }
+    } catch (error) {
+        // Clipboard API not supported or permission denied
+        showToast('Please use Ctrl+V to paste');
+    }
 }
 
 /**

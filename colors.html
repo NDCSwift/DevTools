@@ -11,6 +11,213 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
      crossorigin="anonymous"></script>
+    
+    <!-- Working Palette Styles -->
+    <style>
+/* ========================================
+   WORKING PALETTE SECTION STYLES
+   ======================================== */
+
+.working-palette-section {
+    background: linear-gradient(135deg, rgba(0, 255, 159, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+}
+
+.working-palette-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.palette-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+}
+
+.palette-slot {
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.palette-slot:hover:not(.empty) {
+    border-color: var(--color-primary);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 255, 159, 0.2);
+}
+
+.palette-slot.empty {
+    opacity: 0.4;
+    cursor: default;
+    border-style: dashed;
+}
+
+.palette-slot.empty:hover {
+    transform: none;
+    border-color: var(--color-border);
+    box-shadow: none;
+}
+
+.slot-color {
+    width: 100%;
+    height: 60px;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    transition: transform 0.2s ease;
+}
+
+.palette-slot:hover:not(.empty) .slot-color {
+    transform: scale(1.05);
+}
+
+.slot-hex {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+}
+
+.palette-slot:not(.empty) .slot-hex {
+    color: var(--color-text);
+}
+
+.remove-color {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 59, 48, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.remove-color:hover {
+    background: rgba(255, 59, 48, 1);
+    transform: scale(1.1);
+}
+
+.palette-slot:hover .remove-color {
+    display: flex;
+}
+
+.palette-export {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.palette-export button {
+    flex: 1;
+    min-width: 150px;
+}
+
+.random-section {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.random-section .btn {
+    flex: 1;
+}
+
+.saved-palette-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.saved-palette-meta {
+    display: flex;
+    gap: var(--spacing-xs);
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+}
+
+.color-swatch {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.palette-slot:not(.empty) {
+    animation: slideIn 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .palette-slots {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .random-section {
+        flex-direction: column;
+    }
+    .palette-export {
+        flex-direction: column;
+    }
+    .palette-export button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .palette-slots {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .working-palette-section {
+        padding: var(--spacing-md);
+    }
+}
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -91,13 +298,51 @@
 
             <!-- Random Color Generator -->
             <div class="random-section">
-                <button id="randomColorBtn" class="btn btn-primary">
+                <button id="randomColorBtn" class="btn btn-secondary">
                     <span class="btn-icon">🎲</span>
                     Generate Random Color
                 </button>
+                <button id="addToPaletteBtn" class="btn btn-primary">
+                    <span class="btn-icon">➕</span>
+                    Add to Working Palette
+                </button>
+            </div>
+
+            <!-- Working Palette Section -->
+            <div class="working-palette-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">⚡</span>
+                        Working Palette
+                    </h3>
+                    <div class="section-controls">
+                        <button id="clearPaletteBtn" class="btn-link">Clear All</button>
+                        <button id="saveWorkingPaletteBtn" class="btn btn-primary">💾 Save Palette</button>
+                    </div>
+                </div>
+                
+                <div class="palette-slots" id="paletteSlots">
+                    <!-- 8 slots for colors -->
+                </div>
+                
+                <div class="palette-export">
+                    <button class="btn btn-ghost" onclick="exportPaletteAs('css')">Copy as CSS</button>
+                    <button class="btn btn-ghost" onclick="exportPaletteAs('array')">Copy as Array</button>
+                    <button class="btn btn-ghost" onclick="exportPaletteAs('json')">Copy as JSON</button>
+                </div>
             </div>
 
             <!-- Color Harmony Section -->
+            <div class="harmony-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Color Harmonies
+                    </h3>
+                    <div class="section-controls">
+                        <button id="loadHarmonyBtn" class="btn-link">📋 Load All to Palette</button>
+                    </div>
+                </div>
             <div class="harmony-section">
                 <div class="section-header">
                     <h3 class="section-title">

@@ -22,6 +22,7 @@ const elements = {
     minifyBtn: document.getElementById('minifyBtn'),
     clearBtn: document.getElementById('clearBtn'),
     copyBtn: document.getElementById('copyBtn'),
+    pasteBtn: document.getElementById('pasteBtn'),
     loadSampleBtn: document.getElementById('loadSampleBtn'),
     indentSize: document.getElementById('indentSize'),
     statusBar: document.getElementById('statusBar'),
@@ -51,10 +52,11 @@ function attachEventListeners() {
     elements.minifyBtn.addEventListener('click', minifyJSON);
     elements.clearBtn.addEventListener('click', clearAll);
     elements.copyBtn.addEventListener('click', copyOutput);
+    elements.pasteBtn.addEventListener('click', pasteInput);
     elements.loadSampleBtn.addEventListener('click', loadSample);
     elements.indentSize.addEventListener('change', updateIndentSize);
     elements.inputJson.addEventListener('input', updateCharCount);
-    
+
     // Auto-format on paste (optional UX enhancement)
     elements.inputJson.addEventListener('paste', () => {
         setTimeout(() => formatJSON(), 100);
@@ -148,16 +150,37 @@ function clearAll() {
 }
 
 /**
+ * Paste from clipboard to input
+ */
+async function pasteInput() {
+    try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+            elements.inputJson.value = text;
+            updateCharCount();
+            showToast('Pasted from clipboard! 📋');
+            // Auto-format after paste
+            setTimeout(() => formatJSON(), 100);
+        } else {
+            showToast('Clipboard is empty');
+        }
+    } catch (error) {
+        // Clipboard API not supported or permission denied
+        showToast('Please use Ctrl+V to paste');
+    }
+}
+
+/**
  * Copy output to clipboard
  */
 async function copyOutput() {
     const output = elements.outputJson.textContent;
-    
+
     if (!output) {
         showToast('Nothing to copy');
         return;
     }
-    
+
     try {
         await navigator.clipboard.writeText(output);
         showToast('Copied to clipboard! ⎘');

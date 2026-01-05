@@ -9,6 +9,7 @@ const CONFIG = {
 let state = {
     currentColor: '#00ff9f',
     currentHarmony: 'complementary',
+    workingPalette: [], // NEW: Array of colors in working palette (max 8)
     savedPalettes: []
 };
 
@@ -62,8 +63,10 @@ const elements = {
 function init() {
     loadSavedPalettes();
     attachEventListeners();
+    initializeWorkingPalette(); // NEW
+    renderWorkingPalette(); // NEW
     updateAllFromColor(state.currentColor);
-    console.log('🚀 DevToolkit Color Tool initialized');
+    console.log('🚀 ToolBit Color Tool initialized');
 }
 
 // ========================================
@@ -126,19 +129,238 @@ function attachEventListeners() {
         copyToClipboard(elements.gradientCSS.value);
     });
     
-    // Save palette
+    // Save palette (OLD - now saves harmony)
     elements.savePaletteBtn.addEventListener('click', saveCurrentPalette);
     
-    // Popular palettes
+    // NEW: Working Palette event listeners
+    document.getElementById('addToPaletteBtn').addEventListener('click', () => {
+        addToWorkingPalette(state.currentColor);
+    });
+    
+    document.getElementById('clearPaletteBtn').addEventListener('click', clearWorkingPalette);
+    
+    document.getElementById('saveWorkingPaletteBtn').addEventListener('click', saveWorkingPalette);
+    
+    document.getElementById('loadHarmonyBtn').addEventListener('click', loadHarmonyToWorking);
+    
+    // Popular palettes - UPDATED to load full palette
     document.querySelectorAll('.palette-card').forEach(card => {
         card.addEventListener('click', (e) => {
             const palette = JSON.parse(e.currentTarget.dataset.palette);
             if (palette && palette.length > 0) {
-                updateAllFromColor(palette[0]);
+                loadPopularPalette(palette); // NEW: Load all colors to working palette
             }
         });
     });
 }
+
+// ========================================
+// WORKING PALETTE FUNCTIONS
+// ========================================
+
+/**
+ * Initialize working palette slots in HTML
+ */
+function initializeWorkingPalette() {
+    const slotsContainer = document.getElementById('paletteSlots');
+    slotsContainer.innerHTML = '';
+    
+    for (let i = 0; i < 8; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'palette-slot empty';
+        slot.dataset.index = i;
+        slot.innerHTML = `
+            <div class="slot-color"></div>
+            <div class="slot-hex">Empty</div>
+            <button class="remove-color" title="Remove color">×</button>
+        `;
+        slotsContainer.appendChild(slot);
+    }
+}
+
+/**
+ * Add current color to working palette
+ */
+function addToWorkingPalette(color) {
+    if (state.workingPalette.length >= 8) {
+        showToast('Palette is full (max 8 colors)');
+        return;
+    }
+    
+    if (state.workingPalette.includes(color.toUpperCase())) {
+        showToast('Color already in palette');
+        return;
+    }
+    
+    state.workingPalette.push(color.toUpperCase());
+    renderWorkingPalette();
+    showToast('Added to palette! 🎨');
+}
+
+/**
+ * Remove color from working palette
+ */
+function removeFromWorkingPalette(index) {
+    state.workingPalette.splice(index, 1);
+    renderWorkingPalette();
+    showToast('Color removed');
+}
+
+/**
+ * Clear working palette
+ */
+function clearWorkingPalette() {
+    if (state.workingPalette.length === 0) {
+        showToast('Palette is already empty');
+        return;
+    }
+    
+    if (confirm('Clear all colors from working palette?')) {
+        state.workingPalette = [];
+        renderWorkingPalette();
+        showToast('Palette cleared');
+    }
+}
+
+/**
+ * Load current harmony colors to working palette
+ */
+function loadHarmonyToWorking() {
+    const harmonyColors = getCurrentHarmonyColors();
+    if (harmonyColors.length === 0) {
+        showToast('No harmony colors to load');
+        return;
+    }
+    
+    state.workingPalette = harmonyColors.map(c => c.toUpperCase());
+    renderWorkingPalette();
+    showToast(`Loaded ${harmonyColors.length} harmony colors! 🎨`);
+}
+
+/**
+ * Get current harmony colors from display
+ */
+function getCurrentHarmonyColors() {
+    const swatches = elements.harmonyPalette.querySelectorAll('.color-swatch');
+    return Array.from(swatches).map(swatch => swatch.dataset.hex);
+}
+
+/**
+ * Load popular palette to working palette
+ */
+function loadPopularPalette(colors) {
+    state.workingPalette = colors.map(c => c.toUpperCase());
+    renderWorkingPalette();
+    showToast(`Loaded ${colors.length} colors to palette! 🎨`);
+}
+
+/**
+ * Save working palette
+ */
+function saveWorkingPalette() {
+    if (state.workingPalette.length === 0) {
+        showToast('Add some colors first!');
+        return;
+    }
+    
+    const name = prompt('Name this palette:', 'My Palette');
+    if (!name) return;
+    
+    const palette = {
+        id: Date.now(),
+        name: name.trim(),
+        colors: [...state.workingPalette],
+        date: Date.now()
+    };
+    
+    state.savedPalettes.push(palette);
+    savePalettesToStorage();
+    renderSavedPalettes();
+    showToast('Palette saved! 💾');
+}
+
+/**
+ * Render working palette slots
+ */
+function renderWorkingPalette() {
+    const slots = document.querySelectorAll('.palette-slot');
+    
+    slots.forEach((slot, index) => {
+        const colorDiv = slot.querySelector('.slot-color');
+        const hexDiv = slot.querySelector('.slot-hex');
+        const removeBtn = slot.querySelector('.remove-color');
+        
+        if (index < state.workingPalette.length) {
+            const color = state.workingPalette[index];
+            
+            slot.classList.remove('empty');
+            colorDiv.style.background = color;
+            hexDiv.textContent = color;
+            removeBtn.style.display = 'flex';
+            
+            // Click to view/edit this color
+            slot.onclick = () => updateAllFromColor(color);
+            
+            // Remove button
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                removeFromWorkingPalette(index);
+            };
+            
+            // Add copy on hover tooltip
+            slot.title = `Click to edit ${color}\nRight-click to copy`;
+            
+            // Right-click to copy
+            slot.oncontextmenu = (e) => {
+                e.preventDefault();
+                copyToClipboard(color);
+            };
+            
+        } else {
+            slot.classList.add('empty');
+            colorDiv.style.background = 'transparent';
+            hexDiv.textContent = 'Empty';
+            removeBtn.style.display = 'none';
+            slot.onclick = null;
+            slot.oncontextmenu = null;
+            slot.title = 'Add a color to fill this slot';
+        }
+    });
+}
+
+/**
+ * Export working palette in different formats
+ */
+window.exportPaletteAs = function(format) {
+    if (state.workingPalette.length === 0) {
+        showToast('Palette is empty!');
+        return;
+    }
+    
+    let output;
+    
+    switch(format) {
+        case 'css':
+            output = ':root {\n' + state.workingPalette.map((c, i) => 
+                `  --color-${i + 1}: ${c};`
+            ).join('\n') + '\n}';
+            break;
+            
+        case 'array':
+            output = JSON.stringify(state.workingPalette);
+            break;
+            
+        case 'json':
+            output = JSON.stringify({
+                name: 'My Palette',
+                colors: state.workingPalette,
+                count: state.workingPalette.length
+            }, null, 2);
+            break;
+    }
+    
+    copyToClipboard(output);
+};
 
 // ========================================
 // COLOR CONVERSION FUNCTIONS
@@ -437,7 +659,13 @@ function adjustLightness(hex, amount) {
  */
 function displayPalette(colors) {
     elements.harmonyPalette.innerHTML = colors.map(color => `
-        <div class="color-swatch" style="background: ${color}" data-hex="${color}" onclick="updateAllFromColor('${color}')"></div>
+        <div class="color-swatch" 
+             style="background: ${color}" 
+             data-hex="${color}" 
+             title="${color} - Click to view"
+             onclick="updateAllFromColor('${color}')" 
+             oncontextmenu="event.preventDefault(); addToWorkingPalette('${color}')">
+        </div>
     `).join('');
 }
 
@@ -583,7 +811,7 @@ function renderSavedPalettes() {
         elements.savedPalettes.innerHTML = `
             <div class="saved-empty">
                 <p>No saved palettes yet</p>
-                <p class="saved-hint">Click "Save Current" to save the active harmony palette</p>
+                <p class="saved-hint">Click "💾 Save Palette" to save your working palette</p>
             </div>
         `;
         return;
@@ -592,11 +820,17 @@ function renderSavedPalettes() {
     elements.savedPalettes.innerHTML = state.savedPalettes.map(palette => `
         <div class="saved-palette-card" onclick="loadPalette(${palette.id})">
             <div class="saved-palette-preview">
-                ${palette.colors.map(c => `<div style="background: ${c}"></div>`).join('')}
+                ${palette.colors.map(c => `<div style="background: ${c}" title="${c}"></div>`).join('')}
             </div>
-            <div class="saved-palette-name">${palette.name}</div>
-            <div class="saved-palette-date">${new Date(palette.date).toLocaleDateString()}</div>
-            <button class="delete-palette" onclick="event.stopPropagation(); deletePalette(${palette.id})">🗑️</button>
+            <div class="saved-palette-info">
+                <div class="saved-palette-name">${palette.name}</div>
+                <div class="saved-palette-meta">
+                    <span>${palette.colors.length} colors</span>
+                    <span>•</span>
+                    <span>${new Date(palette.date).toLocaleDateString()}</span>
+                </div>
+            </div>
+            <button class="delete-palette" onclick="event.stopPropagation(); deletePalette(${palette.id})" title="Delete palette">🗑️</button>
         </div>
     `).join('');
 }
@@ -607,8 +841,10 @@ function renderSavedPalettes() {
 window.loadPalette = function(id) {
     const palette = state.savedPalettes.find(p => p.id === id);
     if (palette && palette.colors.length > 0) {
-        updateAllFromColor(palette.colors[0]);
-        showToast('Palette loaded');
+        state.workingPalette = [...palette.colors];
+        renderWorkingPalette();
+        updateAllFromColor(palette.colors[0]); // Also show first color in picker
+        showToast(`Loaded "${palette.name}" to working palette! 🎨`);
     }
 };
 
