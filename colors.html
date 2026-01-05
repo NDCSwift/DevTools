@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Palette Generator & Converter | DevToolkit</title>
+    <title>Color Palette Generator & Converter | ToolBit</title>
     <meta name="description" content="Free color palette generator with HEX, RGB, HSL, CMYK converter. Create color schemes, gradients, and harmonies. Professional color picker tool for designers and developers.">
     <link rel="stylesheet" href="styles-colors.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
+     crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Header -->
@@ -16,7 +18,7 @@
         <div class="container">
             <div class="logo">
                 <span class="logo-bracket">{</span>
-                <span class="logo-text">DevToolkit</span>
+                <span class="logo-text">ToolBit</span>
                 <span class="logo-bracket">}</span>
             </div>
             <nav class="main-nav">
@@ -25,7 +27,7 @@
                 <a href="base64.html" class="nav-link">Base64</a>
                 <a href="colors.html" class="nav-link active">Colors</a>
                 <a href="#" class="nav-link coming-soon">More<span class="badge">Soon</span></a>
-                <a href="#" class="nav-link premium-badge">Premium</a>
+                <a href="support.html" class="nav-link support-link">☕ Support</a>
             </nav>
         </div>
     </header>
@@ -55,7 +57,7 @@
                 
                 <div class="picker-container">
                     <div class="picker-main">
-                        <input type="color" id="colorPicker" class="color-input" value="#00ff9f">
+                        <input type="color" id="colorPicker" class="color-input" value="#00ff9f" aria-label="Main color picker">
                         <div class="color-display" id="colorDisplay"></div>
                     </div>
                     
@@ -63,22 +65,22 @@
                         <div class="color-name" id="colorName">Neon Green</div>
                         <div class="color-values">
                             <div class="value-group">
-                                <label>HEX</label>
+                                <label for="hexInput">HEX</label>
                                 <input type="text" id="hexInput" value="#00ff9f" spellcheck="false">
                                 <button class="copy-btn" data-target="hexInput">⎘</button>
                             </div>
                             <div class="value-group">
-                                <label>RGB</label>
+                                <label for="rgbInput">RGB</label>
                                 <input type="text" id="rgbInput" value="rgb(0, 255, 159)" spellcheck="false">
                                 <button class="copy-btn" data-target="rgbInput">⎘</button>
                             </div>
                             <div class="value-group">
-                                <label>HSL</label>
+                                <label for="hslInput">HSL</label>
                                 <input type="text" id="hslInput" value="hsl(157, 100%, 50%)" spellcheck="false">
                                 <button class="copy-btn" data-target="hslInput">⎘</button>
                             </div>
                             <div class="value-group">
-                                <label>CMYK</label>
+                                <label for="cmykInput">CMYK</label>
                                 <input type="text" id="cmykInput" value="cmyk(100%, 0%, 38%, 0%)" spellcheck="false">
                                 <button class="copy-btn" data-target="cmykInput">⎘</button>
                             </div>
@@ -127,22 +129,22 @@
                 <div class="gradient-controls">
                     <div class="gradient-colors">
                         <div class="gradient-color-input">
-                            <label>Color 1</label>
+                            <label for="gradientColor1">Color 1</label>
                             <input type="color" id="gradientColor1" value="#00ff9f">
                         </div>
                         <div class="gradient-color-input">
-                            <label>Color 2</label>
+                            <label for="gradientColor2">Color 2</label>
                             <input type="color" id="gradientColor2" value="#00d4ff">
                         </div>
                         <div class="gradient-type">
-                            <label>Type</label>
+                            <label for="gradientType">Type</label>
                             <select id="gradientType">
                                 <option value="linear">Linear</option>
                                 <option value="radial">Radial</option>
                             </select>
                         </div>
                         <div class="gradient-angle">
-                            <label>Angle</label>
+                            <label for="gradientAngle">Angle</label>
                             <input type="range" id="gradientAngle" min="0" max="360" value="90">
                             <span id="angleValue">90°</span>
                         </div>
@@ -151,7 +153,7 @@
                     <div id="gradientPreview" class="gradient-preview"></div>
                     
                     <div class="gradient-code">
-                        <label>CSS Code</label>
+                        <label for="gradientCSS">CSS Code</label>
                         <textarea id="gradientCSS" class="code-output" readonly spellcheck="false"></textarea>
                         <button id="copyGradientBtn" class="btn btn-secondary">
                             <span class="btn-icon">⎘</span>
@@ -343,8 +345,9 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>DevToolkit</h4>
+                    <h4>ToolBit</h4>
                     <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
                 </div>
                 <div class="footer-section">
                     <h4>Tools</h4>
@@ -355,13 +358,21 @@
                     <a href="#">More Tools (Coming Soon)</a>
                 </div>
                 <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
                     <h4>Legal</h4>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 DevToolkit. Built for developers, by developers.</p>
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
             </div>
         </div>
     </footer>

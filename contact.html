@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | ToolBit</title>
+    <meta name="description" content="Get in touch with ToolBit - feedback, questions, or collaboration ideas welcome!">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">JSON</a>
+                <a href="regex.html" class="nav-link">RegEx</a>
+                <a href="base64.html" class="nav-link">Base64</a>
+                <a href="colors.html" class="nav-link">Colors</a>
+                <a href="#" class="nav-link coming-soon">More<span class="badge">Soon</span></a>
+                <a href="support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="legal-container">
+        <div class="container">
+            <div class="legal-content">
+                <h1>Contact</h1>
+                <p class="legal-meta">Get in touch - I'd love to hear from you!</p>
+
+                <!-- Contact Form -->
+                <section class="legal-section">
+                    <h2>📧 Send a Message</h2>
+                    <p>Fill out the form below and I'll get back to you within 1-3 business days.</p>
+                    
+                    <form id="contactForm" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                        <div class="form-group">
+                            <label for="name">Your Name <span class="required">*</span></label>
+                            <input type="text" id="name" name="name" required placeholder="John Doe">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Your Email <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" required placeholder="you@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject <span class="required">*</span></label>
+                            <select id="subject" name="subject" required>
+                                <option value="">Select a topic...</option>
+                                <option value="bug">🐛 Bug Report</option>
+                                <option value="feature">💡 Feature Request</option>
+                                <option value="feedback">💬 General Feedback</option>
+                                <option value="business">💼 Business Inquiry</option>
+                                <option value="support">❓ Support Question</option>
+                                <option value="other">📌 Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message <span class="required">*</span></label>
+                            <textarea id="message" name="message" required placeholder="Your message here..." rows="8"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span class="btn-icon">📨</span>
+                            Send Message
+                        </button>
+                        
+                        <div id="formStatus" class="form-status hidden"></div>
+                    </form>
+                </section>
+
+                <!-- Alternative Contact Methods -->
+                <section class="legal-section">
+                    <h2>Other Ways to Reach Me</h2>
+                    <div class="contact-methods">
+                        <div class="contact-method-card">
+                            <span class="method-icon">🐙</span>
+                            <h3>GitHub</h3>
+                            <p>Open an issue or start a discussion</p>
+                            <a href="https://github.com/NDCSwift" target="_blank" rel="noopener" class="method-link">github.com/NDCSwift</a>
+                        </div>
+                        
+                        <div class="contact-method-card">
+                            <span class="method-icon">📺</span>
+                            <h3>YouTube</h3>
+                            <p>Comment on my videos or message me</p>
+                            <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener" class="method-link">@NoahDoesCoding97</a>
+                        </div>
+                        
+                        <div class="contact-method-card">
+                            <span class="method-icon">☕</span>
+                            <h3>Support</h3>
+                            <p>Show support and leave a message</p>
+                            <a href="support.html" class="method-link">Support ToolBit</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Response Time -->
+                <section class="legal-section">
+                    <h2>Response Time</h2>
+                    <div class="response-grid">
+                        <div class="response-item">
+                            <span class="response-icon">🔴</span>
+                            <div class="response-content">
+                                <h4>Critical Bugs</h4>
+                                <p>Within 24 hours</p>
+                            </div>
+                        </div>
+                        
+                        <div class="response-item">
+                            <span class="response-icon">🟡</span>
+                            <div class="response-content">
+                                <h4>Feature Requests</h4>
+                                <p>2-3 business days</p>
+                            </div>
+                        </div>
+                        
+                        <div class="response-item">
+                            <span class="response-icon">🟢</span>
+                            <div class="response-content">
+                                <h4>General Questions</h4>
+                                <p>3-5 business days</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="note">I'm a solo dev with a day job, so please be patient! I promise I read every message.</p>
+                </section>
+
+                <section class="legal-section">
+                    <p class="highlight-box">
+                        <strong>🙏 Thank You!</strong><br>
+                        Your feedback makes ToolBit better. Don't hesitate to reach out - I love hearing from the community!
+                        <br><br>
+                        - Noah
+                    </p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="index.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="#">More Tools (Coming Soon)</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Contact form submission
+        const form = document.getElementById('contactForm');
+        const status = document.getElementById('formStatus');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="btn-icon">⏳</span> Sending...';
+            status.className = 'form-status';
+            status.textContent = 'Sending your message...';
+            
+            // Get form data
+            const formData = new FormData(form);
+            
+            try {
+                // Using Formspree (free service)
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    status.className = 'form-status success';
+                    status.textContent = '✅ Message sent successfully! I\'ll get back to you soon.';
+                    form.reset();
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                status.className = 'form-status error';
+                status.textContent = '❌ Oops! Something went wrong. Please try again or contact me via GitHub.';
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="btn-icon">📨</span> Send Message';
+            }
+        });
+    </script>
+
+    <style>
+        .legal-container {
+            background: var(--color-bg);
+            min-height: 100vh;
+            padding: var(--spacing-2xl) 0;
+        }
+
+        .legal-content {
+            background: var(--color-bg-elevated);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-2xl);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .legal-content h1 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .legal-meta {
+            color: var(--color-text-dim);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .legal-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .legal-section h2 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .legal-section p {
+            color: var(--color-text-muted);
+            line-height: 1.8;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Contact Form Styles */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .form-group label {
+            color: var(--color-text);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .required {
+            color: var(--color-error);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: var(--color-bg-input);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            color: var(--color-text);
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--color-primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .form-status {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            text-align: center;
+            margin-top: var(--spacing-md);
+        }
+
+        .form-status.hidden {
+            display: none;
+        }
+
+        .form-status.success {
+            background: rgba(0, 255, 159, 0.1);
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .form-status.error {
+            background: rgba(255, 59, 48, 0.1);
+            border: 2px solid var(--color-error);
+            color: var(--color-error);
+        }
+
+        /* Contact Methods */
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .contact-method-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .contact-method-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        .method-icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .contact-method-card h3 {
+            color: var(--color-text);
+            font-family: var(--font-display);
+            margin-bottom: var(--spacing-sm);
+            font-size: 1.1rem;
+        }
+
+        .contact-method-card p {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .method-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .method-link:hover {
+            border-bottom-color: var(--color-primary);
+        }
+
+        /* Response Grid */
+        .response-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .response-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+        }
+
+        .response-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .response-content h4 {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .response-content p {
+            color: var(--color-text-dim);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .note {
+            font-size: 0.9rem;
+            color: var(--color-text-dim);
+            font-style: italic;
+        }
+
+        .highlight-box {
+            background: var(--color-surface);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            color: var(--color-text);
+        }
+
+        .footer-tagline {
+            font-size: 0.85rem;
+            color: var(--color-text-dim);
+            margin-top: var(--spacing-xs);
+        }
+
+        .footer-tagline a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .support-link {
+            color: var(--color-secondary) !important;
+        }
+
+        @media (max-width: 968px) {
+            .legal-content {
+                padding: var(--spacing-lg);
+            }
+
+            .legal-content h1 {
+                font-size: 2rem;
+            }
+
+            .contact-methods,
+            .response-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

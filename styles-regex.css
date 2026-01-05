@@ -1252,3 +1252,25 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--color-primary);
 }
+
+/* Support Link & Footer Additions */
+.support-link {
+    color: var(--color-secondary) !important;
+}
+
+.footer-tagline {
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+    margin-top: var(--spacing-xs);
+}
+
+.footer-tagline a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+    border-bottom: 1px solid transparent;
+}
+
+.footer-tagline a:hover {
+    border-bottom-color: var(--color-primary);
+}
