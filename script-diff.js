@@ -43,7 +43,70 @@ let state = {
 // ========================================
 function init() {
     attachEventListeners();
+    setupInputLineNumbers();
+    setupKeyboardShortcuts();
     console.log('📝 ToolBit Diff Checker initialized');
+}
+
+// ========================================
+// INPUT LINE NUMBERS
+// ========================================
+function setupInputLineNumbers() {
+    const leftTextarea = document.getElementById('originalText');
+    const rightTextarea = document.getElementById('modifiedText');
+    const leftLineNumbers = document.getElementById('leftLineNumbers');
+    const rightLineNumbers = document.getElementById('rightLineNumbers');
+
+    function updateLineNumbers(textarea, lineNumbersDiv) {
+        const lines = textarea.value.split('\n');
+        const lineCount = lines.length;
+
+        let lineNumbersHtml = '';
+        for (let i = 1; i <= lineCount; i++) {
+            lineNumbersHtml += i + '\n';
+        }
+
+        lineNumbersDiv.textContent = lineNumbersHtml;
+    }
+
+    function syncScroll(textarea, lineNumbersDiv) {
+        lineNumbersDiv.scrollTop = textarea.scrollTop;
+    }
+
+    // Update line numbers on input
+    leftTextarea.addEventListener('input', () => updateLineNumbers(leftTextarea, leftLineNumbers));
+    rightTextarea.addEventListener('input', () => updateLineNumbers(rightTextarea, rightLineNumbers));
+
+    // Sync scroll
+    leftTextarea.addEventListener('scroll', () => syncScroll(leftTextarea, leftLineNumbers));
+    rightTextarea.addEventListener('scroll', () => syncScroll(rightTextarea, rightLineNumbers));
+
+    // Initial line numbers
+    updateLineNumbers(leftTextarea, leftLineNumbers);
+    updateLineNumbers(rightTextarea, rightLineNumbers);
+}
+
+// ========================================
+// KEYBOARD SHORTCUTS
+// ========================================
+function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // Only activate when results are visible
+        const resultsSection = document.getElementById('resultsSection');
+        if (resultsSection.classList.contains('hidden')) return;
+
+        // Left arrow - previous change
+        if (e.key === 'ArrowLeft' && !e.target.matches('textarea, input')) {
+            e.preventDefault();
+            navigateChange(-1);
+        }
+
+        // Right arrow - next change
+        if (e.key === 'ArrowRight' && !e.target.matches('textarea, input')) {
+            e.preventDefault();
+            navigateChange(1);
+        }
+    });
 }
 
 // ========================================
@@ -73,6 +136,20 @@ function attachEventListeners() {
     
     document.getElementById('showLineNumbers').addEventListener('change', (e) => {
         state.showLineNumbers = e.target.checked;
+
+        // Toggle input line numbers
+        const leftLineNumbers = document.getElementById('leftLineNumbers');
+        const rightLineNumbers = document.getElementById('rightLineNumbers');
+
+        if (state.showLineNumbers) {
+            leftLineNumbers.classList.remove('hidden');
+            rightLineNumbers.classList.remove('hidden');
+        } else {
+            leftLineNumbers.classList.add('hidden');
+            rightLineNumbers.classList.add('hidden');
+        }
+
+        // Re-render diff if it exists
         if (state.diff) renderDiff();
     });
     
@@ -173,89 +250,137 @@ function switchViewMode(mode) {
 // DIFF COMPARISON
 // ========================================
 function compareDiff() {
+    console.log('🔍 Compare button clicked!');
+
     state.originalText = document.getElementById('originalText').value;
     state.modifiedText = document.getElementById('modifiedText').value;
-    
+
+    console.log('Original:', state.originalText.substring(0, 50));
+    console.log('Modified:', state.modifiedText.substring(0, 50));
+
     if (!state.originalText && !state.modifiedText) {
         showToast('Please enter some text to compare');
         return;
     }
-    
-    // Preprocess text
-    let text1 = state.originalText;
-    let text2 = state.modifiedText;
-    
-    if (state.ignoreWhitespace) {
-        text1 = text1.replace(/\s+/g, ' ').trim();
-        text2 = text2.replace(/\s+/g, ' ').trim();
-    }
-    
-    if (state.ignoreCase) {
-        text1 = text1.toLowerCase();
-        text2 = text2.toLowerCase();
-    }
-    
-    // Compute diff
-    const dmp = new diff_match_patch();
-    const diff = dmp.diff_main(text1, text2);
-    dmp.diff_cleanupSemantic(diff);
-    
-    state.diff = diff;
+
+    // Compute diff using our custom line-based algorithm
     state.diffLines = computeLineDiff(state.originalText, state.modifiedText);
     state.stats = calculateStats(state.diffLines);
-    
+
+    console.log('📊 Stats:', state.stats);
+    console.log('📝 Left lines:', state.diffLines.left.length);
+    console.log('📝 Right lines:', state.diffLines.right.length);
+
     // Render results
+    console.log('🎨 Rendering stats...');
     renderStats();
+    console.log('🎨 Rendering diff...');
     renderDiff();
-    
+
     // Show output
-    document.getElementById('statsPanel').classList.remove('hidden');
-    document.getElementById('diffOutput').classList.remove('hidden');
-    
+    const resultsSection = document.getElementById('resultsSection');
+
+    console.log('Results section element:', resultsSection);
+
+    if (resultsSection) {
+        resultsSection.classList.remove('hidden');
+        console.log('✅ Results section shown');
+
+        // Smooth scroll to results
+        setTimeout(() => {
+            resultsSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }, 100);
+    } else {
+        console.error('❌ Could not find results section!');
+    }
+
     // Find change positions
     findChangePositions();
-    
+
     showToast('Comparison complete! 🔍');
 }
 
 function computeLineDiff(text1, text2) {
     const lines1 = text1.split('\n');
     const lines2 = text2.split('\n');
-    
-    const dmp = new diff_match_patch();
-    const diff = dmp.diff_main(lines1.join('\n'), lines2.join('\n'));
-    dmp.diff_cleanupSemantic(diff);
-    
+
     const result = {
         left: [],
         right: []
     };
-    
-    let leftLine = 1;
-    let rightLine = 1;
-    
-    diff.forEach(([operation, text]) => {
-        const lines = text.split('\n');
-        
-        // Remove last empty line if exists
-        if (lines[lines.length - 1] === '') {
-            lines.pop();
+
+    // Helper function to normalize line for comparison
+    function normalizeLine(line) {
+        let normalized = line;
+        if (state.ignoreWhitespace) {
+            normalized = normalized.trim();
         }
-        
-        lines.forEach(line => {
-            if (operation === 0) { // Unchanged
-                result.left.push({ line: leftLine++, text: line, type: 'unchanged' });
-                result.right.push({ line: rightLine++, text: line, type: 'unchanged' });
-            } else if (operation === -1) { // Deleted
-                result.left.push({ line: leftLine++, text: line, type: 'deleted' });
-                result.right.push({ line: null, text: '', type: 'empty' });
-            } else { // Added
-                result.left.push({ line: null, text: '', type: 'empty' });
-                result.right.push({ line: rightLine++, text: line, type: 'added' });
+        if (state.ignoreCase) {
+            normalized = normalized.toLowerCase();
+        }
+        return normalized;
+    }
+
+    // Use a simple LCS-based line diff algorithm
+    let i = 0, j = 0;
+
+    while (i < lines1.length || j < lines2.length) {
+        if (i >= lines1.length) {
+            // Only lines2 remaining - all added
+            result.left.push({ line: null, text: '', type: 'empty' });
+            result.right.push({ line: j + 1, text: lines2[j], type: 'added' });
+            j++;
+        } else if (j >= lines2.length) {
+            // Only lines1 remaining - all deleted
+            result.left.push({ line: i + 1, text: lines1[i], type: 'deleted' });
+            result.right.push({ line: null, text: '', type: 'empty' });
+            i++;
+        } else {
+            // Compare lines (normalized for comparison, but store original)
+            const line1 = normalizeLine(lines1[i]);
+            const line2 = normalizeLine(lines2[j]);
+
+            if (line1 === line2) {
+                // Lines match - unchanged
+                result.left.push({ line: i + 1, text: lines1[i], type: 'unchanged' });
+                result.right.push({ line: j + 1, text: lines2[j], type: 'unchanged' });
+                i++;
+                j++;
+            } else {
+                // Lines differ - check if it's a modification or insertion/deletion
+                // Look ahead to see if next line matches
+                const nextMatch1 = lines2.slice(j + 1).findIndex(l => {
+                    return normalizeLine(l) === line1;
+                });
+
+                const nextMatch2 = lines1.slice(i + 1).findIndex(l => {
+                    return normalizeLine(l) === line2;
+                });
+
+                if (nextMatch1 !== -1 && (nextMatch2 === -1 || nextMatch1 <= nextMatch2)) {
+                    // Line was added
+                    result.left.push({ line: null, text: '', type: 'empty' });
+                    result.right.push({ line: j + 1, text: lines2[j], type: 'added' });
+                    j++;
+                } else if (nextMatch2 !== -1) {
+                    // Line was deleted
+                    result.left.push({ line: i + 1, text: lines1[i], type: 'deleted' });
+                    result.right.push({ line: null, text: '', type: 'empty' });
+                    i++;
+                } else {
+                    // Lines are different - treat as deletion + addition
+                    result.left.push({ line: i + 1, text: lines1[i], type: 'deleted' });
+                    result.right.push({ line: j + 1, text: lines2[j], type: 'added' });
+                    i++;
+                    j++;
+                }
             }
-        });
-    });
-    
+        }
+    }
+
     return result;
 }
 

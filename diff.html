@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff-match-patch/20121119/diff_match_patch.js"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
      crossorigin="anonymous"></script>
 </head>
@@ -60,17 +59,20 @@
                         <span class="panel-icon">←</span>
                         Original
                     </h3>
-                    <textarea 
-                        id="originalText" 
-                        class="text-input" 
-                        placeholder="Paste original text or code here...
+                    <div class="textarea-wrapper">
+                        <div id="leftLineNumbers" class="line-numbers-column"></div>
+                        <textarea
+                            id="originalText"
+                            class="text-input with-line-numbers"
+                            placeholder="Paste original text or code here...
 Example:
 function hello() {
   console.log(&quot;Hello World&quot;);
   return true;
 }"
-                        spellcheck="false"
-                    ></textarea>
+                            spellcheck="false"
+                        ></textarea>
+                    </div>
                     <div class="panel-actions">
                         <button class="btn-link" id="pasteLeft">
                             <span class="icon">📋</span>
@@ -86,24 +88,27 @@ function hello() {
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="input-panel right">
                     <h3 class="panel-title">
                         <span class="panel-icon">→</span>
                         Modified
                     </h3>
-                    <textarea 
-                        id="modifiedText" 
-                        class="text-input" 
-                        placeholder="Paste modified text or code here...
+                    <div class="textarea-wrapper">
+                        <div id="rightLineNumbers" class="line-numbers-column"></div>
+                        <textarea
+                            id="modifiedText"
+                            class="text-input with-line-numbers"
+                            placeholder="Paste modified text or code here...
 Example:
 function hello() {
   console.log(&quot;Hello World!&quot;);
   const name = &quot;User&quot;;
   return false;
 }"
-                        spellcheck="false"
-                    ></textarea>
+                            spellcheck="false"
+                        ></textarea>
+                    </div>
                     <div class="panel-actions">
                         <button class="btn-link" id="pasteRight">
                             <span class="icon">📋</span>
@@ -184,88 +189,40 @@ function hello() {
                 </div>
             </div>
 
-            <!-- Statistics Panel -->
-            <div id="statsPanel" class="stats-panel hidden">
-                <h3 class="stats-title">
-                    <span class="stats-icon">📊</span>
-                    Comparison Statistics
-                </h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-value" id="totalLines">0</span>
-                        <span class="stat-label">Total Lines</span>
-                    </div>
-                    <div class="stat-item stat-unchanged">
-                        <span class="stat-value" id="unchangedLines">0</span>
-                        <span class="stat-label">Unchanged</span>
-                    </div>
-                    <div class="stat-item stat-added">
-                        <span class="stat-value" id="addedLines">0</span>
-                        <span class="stat-label">Added</span>
-                    </div>
-                    <div class="stat-item stat-deleted">
-                        <span class="stat-value" id="deletedLines">0</span>
-                        <span class="stat-label">Deleted</span>
-                    </div>
-                </div>
-                <div class="stats-summary">
-                    <span id="statsSummary">-</span>
-                </div>
-            </div>
+            <!-- Results Section (Hidden until comparison) -->
+            <div id="resultsSection" class="results-section hidden">
 
-            <!-- Diff Output -->
-            <div id="diffOutput" class="diff-output hidden">
-                <!-- Side-by-Side View -->
-                <div id="sideBySideView" class="diff-view active">
-                    <div class="diff-container">
-                        <div class="diff-panel left-panel">
-                            <div class="panel-header">
-                                <span class="header-title">Original</span>
-                                <button class="copy-panel-btn" id="copyOriginal">
-                                    <span class="icon">⎘</span>
-                                    Copy
-                                </button>
-                            </div>
-                            <div id="leftDiff" class="diff-content">
-                                <!-- Populated by JavaScript -->
-                            </div>
+                <!-- Statistics Panel -->
+                <div id="statsPanel" class="stats-panel">
+                    <h3 class="stats-title">
+                        <span class="stats-icon">📊</span>
+                        Comparison Results
+                    </h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalLines">0</span>
+                            <span class="stat-label">Total Lines</span>
                         </div>
-                        
-                        <div class="diff-panel right-panel">
-                            <div class="panel-header">
-                                <span class="header-title">Modified</span>
-                                <button class="copy-panel-btn" id="copyModified">
-                                    <span class="icon">⎘</span>
-                                    Copy
-                                </button>
-                            </div>
-                            <div id="rightDiff" class="diff-content">
-                                <!-- Populated by JavaScript -->
-                            </div>
+                        <div class="stat-item stat-unchanged">
+                            <span class="stat-value" id="unchangedLines">0</span>
+                            <span class="stat-label">Unchanged</span>
+                        </div>
+                        <div class="stat-item stat-added">
+                            <span class="stat-value" id="addedLines">0</span>
+                            <span class="stat-label">Added</span>
+                        </div>
+                        <div class="stat-item stat-deleted">
+                            <span class="stat-value" id="deletedLines">0</span>
+                            <span class="stat-label">Deleted</span>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Inline View -->
-                <div id="inlineView" class="diff-view">
-                    <div class="diff-container">
-                        <div class="diff-panel inline-panel">
-                            <div class="panel-header">
-                                <span class="header-title">Unified Diff</span>
-                                <button class="copy-panel-btn" id="copyInline">
-                                    <span class="icon">⎘</span>
-                                    Copy
-                                </button>
-                            </div>
-                            <div id="inlineDiff" class="diff-content">
-                                <!-- Populated by JavaScript -->
-                            </div>
-                        </div>
+                    <div class="stats-summary">
+                        <span id="statsSummary">-</span>
                     </div>
                 </div>
-                
-                <!-- Actions -->
-                <div class="diff-actions">
+
+                <!-- Navigation Controls -->
+                <div class="navigation-panel">
                     <div class="navigation-controls">
                         <button id="prevChange" class="nav-btn" disabled>
                             <span class="icon">⬆️</span>
@@ -277,7 +234,70 @@ function hello() {
                             Next Change
                         </button>
                     </div>
-                    
+                </div>
+                  <!-- Keyboard Shortcuts Tips -->
+                <div class="tips-panel">
+                    <div class="tip-item">
+                        <span class="tip-icon">⌨️</span>
+                        <strong>Keyboard Shortcuts:</strong>
+                        Use <kbd>←</kbd> <kbd>→</kbd> arrow keys to navigate between changes
+                    </div>
+                </div>
+
+                <!-- Diff Output -->
+                <div id="diffOutput" class="diff-output">
+                    <!-- Side-by-Side View -->
+                    <div id="sideBySideView" class="diff-view active">
+                        <div class="diff-container">
+                            <div class="diff-panel left-panel">
+                                <div class="panel-header">
+                                    <span class="header-title">Original</span>
+                                    <button class="copy-panel-btn" id="copyOriginal">
+                                        <span class="icon">⎘</span>
+                                        Copy
+                                    </button>
+                                </div>
+                                <div id="leftDiff" class="diff-content">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+
+                            <div class="diff-panel right-panel">
+                                <div class="panel-header">
+                                    <span class="header-title">Modified</span>
+                                    <button class="copy-panel-btn" id="copyModified">
+                                        <span class="icon">⎘</span>
+                                        Copy
+                                    </button>
+                                </div>
+                                <div id="rightDiff" class="diff-content">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inline View -->
+                    <div id="inlineView" class="diff-view">
+                        <div class="diff-container">
+                            <div class="diff-panel inline-panel">
+                                <div class="panel-header">
+                                    <span class="header-title">Unified Diff</span>
+                                    <button class="copy-panel-btn" id="copyInline">
+                                        <span class="icon">⎘</span>
+                                        Copy
+                                    </button>
+                                </div>
+                                <div id="inlineDiff" class="diff-content">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Controls -->
+                <div class="export-panel">
                     <div class="export-controls">
                         <button id="exportUnified" class="btn-secondary">
                             <span class="icon">📄</span>
@@ -289,6 +309,9 @@ function hello() {
                         </button>
                     </div>
                 </div>
+
+              
+
             </div>
 
             <!-- Info Section -->
