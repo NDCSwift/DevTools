@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Optimizer - Improve Your ChatGPT & Claude Prompts | ToolBit</title>
+    <meta name="description" content="Free AI prompt optimizer. Transform casual prompts into professional AI instructions. Optimize for ChatGPT, Claude, and other AI tools. Better prompts = better results.">
+    <link rel="stylesheet" href="styles-prompt.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">JSON</a>
+                <a href="regex.html" class="nav-link">RegEx</a>
+                <a href="base64.html" class="nav-link">Base64</a>
+                <a href="colors.html" class="nav-link">Colors</a>
+                <a href="hash.html" class="nav-link">Hash</a>
+                <a href="url.html" class="nav-link">URL</a>
+                <a href="lorem.html" class="nav-link">Lorem</a>
+                <a href="timestamp.html" class="nav-link">Time</a>
+                <a href="diff.html" class="nav-link">Diff</a>
+                <a href="prompt.html" class="nav-link active">Prompt</a>
+                <a href="support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                <span class="glitch" data-text="PROMPT">PROMPT</span>
+                <span class="hero-subtitle">Optimizer</span>
+            </h1>
+            <p class="hero-description">Transform casual prompts into professional AI instructions. Get better results from ChatGPT, Claude, and other AI tools. Simple English in, optimized prompts out.</p>
+        </div>
+    </section>
+
+    <!-- Main Tool Area -->
+    <main class="tool-container">
+        <div class="container">
+            
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <div class="settings-grid">
+                    <div class="setting-group">
+                        <label class="setting-label">Prompt Type</label>
+                        <select id="promptType" class="select-input">
+                            <option value="general">General</option>
+                            <option value="code">Code/Programming</option>
+                            <option value="writing">Writing/Content</option>
+                            <option value="analysis">Analysis/Research</option>
+                            <option value="creative">Creative/Design</option>
+                            <option value="business">Business/Marketing</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">Enhancement Options</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="addStructure" checked>
+                                <span>Add structure & organization</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="addContext" checked>
+                                <span>Add context & details</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="requestExamples">
+                                <span>Request examples</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="stepByStep">
+                                <span>Ask for step-by-step</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="professionalTone" checked>
+                                <span>Professional tone</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Examples -->
+            <div class="quick-examples">
+                <h3 class="examples-title">
+                    <span class="examples-icon">💡</span>
+                    Quick Examples
+                </h3>
+                <div class="examples-grid">
+                    <button class="example-btn" data-example="login">
+                        <span class="example-icon">🔐</span>
+                        Login Page
+                    </button>
+                    <button class="example-btn" data-example="blog">
+                        <span class="example-icon">✍️</span>
+                        Blog Post
+                    </button>
+                    <button class="example-btn" data-example="api">
+                        <span class="example-icon">🔌</span>
+                        REST API
+                    </button>
+                    <button class="example-btn" data-example="email">
+                        <span class="example-icon">📧</span>
+                        Email Copy
+                    </button>
+                    <button class="example-btn" data-example="analyze">
+                        <span class="example-icon">📊</span>
+                        Data Analysis
+                    </button>
+                    <button class="example-btn" data-example="logo">
+                        <span class="example-icon">🎨</span>
+                        Logo Design
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input/Output Panels -->
+            <div class="prompt-panels">
+                <div class="prompt-panel input-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <span class="panel-icon">📝</span>
+                            Your Prompt
+                        </h3>
+                        <div class="panel-actions">
+                            <button class="action-btn" id="pasteBtn">
+                                <span class="icon">📋</span>
+                                Paste
+                            </button>
+                            <button class="action-btn" id="clearBtn">
+                                <span class="icon">✕</span>
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                    <textarea 
+                        id="inputPrompt" 
+                        class="prompt-textarea" 
+                        placeholder="Enter your prompt in plain English...
+
+Example:
+make me a login page
+
+We'll transform it into a detailed, structured prompt that gets better AI results!"
+                        spellcheck="true"
+                    ></textarea>
+                    <div class="panel-footer">
+                        <span id="inputWordCount" class="word-count">0 words</span>
+                        <button id="optimizeBtn" class="btn btn-primary">
+                            <span class="btn-icon">✨</span>
+                            Optimize Prompt
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="prompt-panel output-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <span class="panel-icon">✨</span>
+                            Optimized Prompt
+                        </h3>
+                        <div class="panel-actions">
+                            <button class="action-btn" id="copyBtn">
+                                <span class="icon">⎘</span>
+                                Copy
+                            </button>
+                            <button class="action-btn" id="downloadBtn">
+                                <span class="icon">📥</span>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                    <div id="outputPrompt" class="prompt-output">
+                        <p class="placeholder-text">Your optimized prompt will appear here...</p>
+                    </div>
+                    <div class="panel-footer">
+                        <span id="outputWordCount" class="word-count">0 words</span>
+                        <a href="https://claude.ai" target="_blank" rel="noopener" class="btn-secondary">
+                            <span class="icon">🤖</span>
+                            Try in Claude
+                        </a>
+                        <a href="https://chat.openai.com" target="_blank" rel="noopener" class="btn-secondary">
+                            <span class="icon">💬</span>
+                            Try in ChatGPT
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Improvements Panel -->
+            <div id="improvementsPanel" class="improvements-panel hidden">
+                <h3 class="improvements-title">
+                    <span class="improvements-icon">🎯</span>
+                    Improvements Applied
+                </h3>
+                <div id="improvementsList" class="improvements-list">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <div class="improvements-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Word Count:</span>
+                        <span id="wordDiff" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Clarity Score:</span>
+                        <span id="clarityScore" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Specificity:</span>
+                        <span id="specificityScore" class="stat-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Prompt Engineering Tips
+                    </h3>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>🎯 Why Optimize Prompts?</h4>
+                        <p>AI models respond better to clear, structured prompts. A well-crafted prompt can mean the difference between a vague response and exactly what you need.</p>
+                        <p>Better prompts = Better results = Less time wasted on back-and-forth.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>✨ What We Improve</h4>
+                        <ul>
+                            <li><strong>Structure:</strong> Break vague requests into clear sections with bullet points</li>
+                            <li><strong>Context:</strong> Add relevant background and constraints</li>
+                            <li><strong>Specificity:</strong> Replace vague words with concrete requirements</li>
+                            <li><strong>Tone:</strong> Professional phrasing that AI models understand better</li>
+                            <li><strong>Examples:</strong> Request sample outputs when helpful</li>
+                            <li><strong>Format:</strong> Specify desired output format and structure</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>💡 Prompt Engineering Best Practices</h4>
+                        <ul>
+                            <li>✅ Be specific about what you want</li>
+                            <li>✅ Break complex requests into sections</li>
+                            <li>✅ Provide context and constraints</li>
+                            <li>✅ Specify format (bullet points, code, essay, etc.)</li>
+                            <li>✅ Request examples when helpful</li>
+                            <li>✅ Use "Please explain" for learning</li>
+                            <li>✅ Iterate and refine based on results</li>
+                            <li>❌ Avoid vague language like "good" or "nice"</li>
+                            <li>❌ Don't assume the AI knows your context</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🚀 Use Cases</h4>
+                        <ul>
+                            <li><strong>Coding:</strong> Get better code with proper comments and error handling</li>
+                            <li><strong>Writing:</strong> Specify tone, length, and audience for better content</li>
+                            <li><strong>Analysis:</strong> Get structured insights with clear methodology</li>
+                            <li><strong>Creative Work:</strong> Add constraints to guide AI creativity</li>
+                            <li><strong>Learning:</strong> Request explanations with examples and analogies</li>
+                            <li><strong>Business:</strong> Professional communications with proper formatting</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Before/After Examples -->
+            <div class="examples-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Before & After Examples
+                    </h3>
+                </div>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <div class="comparison-before">
+                            <h4>❌ Before (Vague)</h4>
+                            <p class="comparison-text">"make me a website"</p>
+                        </div>
+                        <div class="comparison-after">
+                            <h4>✅ After (Optimized)</h4>
+                            <p class="comparison-text">Create a professional website with the following specifications:
+
+**Purpose:** Portfolio website for a freelance photographer
+
+**Required Pages:**
+- Homepage with hero image and introduction
+- Portfolio gallery with categories
+- About page with bio and experience
+- Contact page with form
+
+**Design Requirements:**
+- Modern, minimalist aesthetic
+- Mobile-responsive layout
+- Fast loading times
+- Accessibility compliance
+
+**Technical Stack:**
+- HTML5, CSS3, JavaScript
+- No frameworks (vanilla code)
+
+Please include semantic HTML and commented code.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-card">
+                        <div class="comparison-before">
+                            <h4>❌ Before (Vague)</h4>
+                            <p class="comparison-text">"write about ai"</p>
+                        </div>
+                        <div class="comparison-after">
+                            <h4>✅ After (Optimized)</h4>
+                            <p class="comparison-text">Write a blog post about artificial intelligence with the following parameters:
+
+**Topic:** The impact of AI on creative industries in 2024
+
+**Target Audience:** Creative professionals (designers, writers, artists)
+
+**Tone:** Informative but approachable, balanced perspective
+
+**Length:** 800-1000 words
+
+**Structure:**
+- Engaging introduction with hook
+- 3-4 main sections covering different creative fields
+- Real-world examples and case studies
+- Balanced view of opportunities and challenges
+- Conclusion with actionable takeaways
+
+**Style:** Use subheadings, include statistics where relevant, avoid technical jargon.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="index.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="hash.html">Hash Generator</a>
+                    <a href="url.html">URL Encoder</a>
+                    <a href="lorem.html">Lorem Ipsum Generator</a>
+                    <a href="timestamp.html">Timestamp Converter</a>
+                    <a href="diff.html">Diff Checker</a>
+                    <a href="prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="script-prompt.js"></script>
+</body>
+</html>

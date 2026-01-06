@@ -1,0 +1,494 @@
+/* Import shared base styles */
+@import url('styles.css');
+
+/* ========================================
+   TIMESTAMP CONVERTER SPECIFIC STYLES
+   ======================================== */
+
+/* Current Timestamp Display */
+.current-timestamp {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xxl);
+    box-shadow: 0 8px 24px rgba(0, 255, 159, 0.2);
+}
+
+.current-title {
+    color: var(--color-bg);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.pulse-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--color-bg);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+.timestamp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.timestamp-row {
+    background: rgba(10, 14, 26, 0.8);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.timestamp-row .label {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    min-width: 140px;
+}
+
+.timestamp-row .value {
+    flex: 1;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.copy-btn-small {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copy-btn-small:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+}
+
+/* Mode Tabs */
+.mode-tabs {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+}
+
+.mode-tab {
+    flex: 1;
+    min-width: 150px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: transparent;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+}
+
+.mode-tab:hover {
+    border-color: var(--color-primary);
+    background: rgba(0, 255, 159, 0.05);
+    transform: translateY(-2px);
+}
+
+.mode-tab.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-bg);
+    box-shadow: 0 4px 12px rgba(0, 255, 159, 0.3);
+}
+
+.tab-icon {
+    font-size: 1.1rem;
+}
+
+/* Mode Content */
+.mode-content {
+    display: none;
+}
+
+.mode-content.active {
+    display: block;
+}
+
+/* Converter Section */
+.converter-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xxl);
+}
+
+.input-section,
+.output-section {
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+}
+
+.input-label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    margin-top: var(--spacing-md);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.text-input.large {
+    font-size: 1.1rem;
+    padding: var(--spacing-md);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Quick Presets */
+.quick-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.preset-btn {
+    padding: 6px 12px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.preset-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(0, 255, 159, 0.05);
+}
+
+/* Format Outputs */
+.format-outputs,
+.unix-outputs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.format-row,
+.unix-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+}
+
+.format-row.highlight {
+    border-color: var(--color-primary);
+    background: rgba(0, 255, 159, 0.05);
+}
+
+.format-label,
+.unix-label {
+    min-width: 120px;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
+
+.format-value,
+.unix-value {
+    flex: 1;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Timezone List */
+.timezone-list {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.timezone-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.timezone-name {
+    min-width: 180px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.timezone-time {
+    flex: 1;
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Relative Time */
+.relative-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.relative-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.difference-output {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: var(--color-surface);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+}
+
+.difference-output h4 {
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    margin-bottom: var(--spacing-lg);
+}
+
+.difference-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.diff-item {
+    text-align: center;
+    padding: var(--spacing-md);
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+}
+
+.diff-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+.diff-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+.diff-summary {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+/* Batch Conversion */
+.batch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+}
+
+.batch-input-panel,
+.batch-output-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.batch-input-panel label,
+.batch-output-panel label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.batch-controls {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    align-items: center;
+}
+
+.batch-controls .select-input {
+    flex: 1;
+}
+
+.batch-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.batch-actions .btn-secondary {
+    flex: 1;
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.info-card {
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+}
+
+.info-card h4 {
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    margin-bottom: var(--spacing-md);
+    font-size: 1rem;
+}
+
+.info-card p,
+.info-card ul {
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+.info-card code {
+    background: var(--color-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+    font-size: 0.85rem;
+}
+
+.info-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-card li {
+    margin-bottom: var(--spacing-sm);
+    padding-left: var(--spacing-md);
+    position: relative;
+}
+
+.info-card li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+}
+
+/* Hidden State */
+.hidden {
+    display: none !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 968px) {
+    .converter-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .batch-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .relative-inputs {
+        grid-template-columns: 1fr;
+    }
+    
+    .difference-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .mode-tabs {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .timestamp-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .mode-tabs {
+        grid-template-columns: 1fr;
+    }
+    
+    .difference-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-presets {
+        flex-direction: column;
+    }
+    
+    .preset-btn {
+        width: 100%;
+    }
+    
+    .batch-controls {
+        flex-direction: column;
+    }
+    
+    .batch-controls .select-input,
+    .batch-controls .btn {
+        width: 100%;
+    }
+}

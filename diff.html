@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diff Checker - Compare Text & Code Online | ToolBit</title>
+    <meta name="description" content="Free diff checker tool. Compare text and code side-by-side with syntax highlighting, character-level diff, and export options. Perfect for code reviews and debugging.">
+    <link rel="stylesheet" href="styles-diff.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff-match-patch/20121119/diff_match_patch.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">JSON</a>
+                <a href="regex.html" class="nav-link">RegEx</a>
+                <a href="base64.html" class="nav-link">Base64</a>
+                <a href="colors.html" class="nav-link">Colors</a>
+                <a href="hash.html" class="nav-link">Hash</a>
+                <a href="url.html" class="nav-link">URL</a>
+                <a href="lorem.html" class="nav-link">Lorem</a>
+                <a href="timestamp.html" class="nav-link">Time</a>
+                <a href="diff.html" class="nav-link active">Diff</a>
+                <a href="prompt.html" class="nav-link">Prompt</a>
+                <a href="support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                <span class="glitch" data-text="DIFF">DIFF</span>
+                <span class="hero-subtitle">Checker</span>
+            </h1>
+            <p class="hero-description">Compare text and code with visual diff highlighting. Side-by-side and inline views, syntax highlighting, statistics, and export options. Essential for code reviews.</p>
+        </div>
+    </section>
+
+    <!-- Main Tool Area -->
+    <main class="tool-container">
+        <div class="container">
+            
+            <!-- Input Panels -->
+            <div class="input-panels">
+                <div class="input-panel left">
+                    <h3 class="panel-title">
+                        <span class="panel-icon">←</span>
+                        Original
+                    </h3>
+                    <textarea 
+                        id="originalText" 
+                        class="text-input" 
+                        placeholder="Paste original text or code here...
+Example:
+function hello() {
+  console.log(&quot;Hello World&quot;);
+  return true;
+}"
+                        spellcheck="false"
+                    ></textarea>
+                    <div class="panel-actions">
+                        <button class="btn-link" id="pasteLeft">
+                            <span class="icon">📋</span>
+                            Paste
+                        </button>
+                        <button class="btn-link" id="clearLeft">
+                            <span class="icon">✕</span>
+                            Clear
+                        </button>
+                        <button class="btn-link" id="sampleLeft">
+                            <span class="icon">📝</span>
+                            Load Sample
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="input-panel right">
+                    <h3 class="panel-title">
+                        <span class="panel-icon">→</span>
+                        Modified
+                    </h3>
+                    <textarea 
+                        id="modifiedText" 
+                        class="text-input" 
+                        placeholder="Paste modified text or code here...
+Example:
+function hello() {
+  console.log(&quot;Hello World!&quot;);
+  const name = &quot;User&quot;;
+  return false;
+}"
+                        spellcheck="false"
+                    ></textarea>
+                    <div class="panel-actions">
+                        <button class="btn-link" id="pasteRight">
+                            <span class="icon">📋</span>
+                            Paste
+                        </button>
+                        <button class="btn-link" id="clearRight">
+                            <span class="icon">✕</span>
+                            Clear
+                        </button>
+                        <button class="btn-link" id="sampleRight">
+                            <span class="icon">📝</span>
+                            Load Sample
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <div class="settings-grid">
+                    <div class="setting-group">
+                        <label class="setting-label">Language</label>
+                        <select id="languageSelect" class="select-input">
+                            <option value="plaintext">Plain Text</option>
+                            <option value="javascript" selected>JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="html">HTML</option>
+                            <option value="css">CSS</option>
+                            <option value="json">JSON</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                            <option value="csharp">C#</option>
+                            <option value="php">PHP</option>
+                            <option value="ruby">Ruby</option>
+                            <option value="go">Go</option>
+                            <option value="swift">Swift</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">Options</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="ignoreWhitespace" checked>
+                                <span>Ignore whitespace</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="ignoreCase">
+                                <span>Ignore case</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="showLineNumbers" checked>
+                                <span>Show line numbers</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">View Mode</label>
+                        <div class="view-mode-selector">
+                            <button class="view-btn active" data-mode="side-by-side">
+                                <span class="view-icon">⫸</span>
+                                Side-by-Side
+                            </button>
+                            <button class="view-btn" data-mode="inline">
+                                <span class="view-icon">☰</span>
+                                Inline
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <button id="compareBtn" class="btn btn-primary">
+                            <span class="btn-icon">🔍</span>
+                            Compare
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Panel -->
+            <div id="statsPanel" class="stats-panel hidden">
+                <h3 class="stats-title">
+                    <span class="stats-icon">📊</span>
+                    Comparison Statistics
+                </h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value" id="totalLines">0</span>
+                        <span class="stat-label">Total Lines</span>
+                    </div>
+                    <div class="stat-item stat-unchanged">
+                        <span class="stat-value" id="unchangedLines">0</span>
+                        <span class="stat-label">Unchanged</span>
+                    </div>
+                    <div class="stat-item stat-added">
+                        <span class="stat-value" id="addedLines">0</span>
+                        <span class="stat-label">Added</span>
+                    </div>
+                    <div class="stat-item stat-deleted">
+                        <span class="stat-value" id="deletedLines">0</span>
+                        <span class="stat-label">Deleted</span>
+                    </div>
+                </div>
+                <div class="stats-summary">
+                    <span id="statsSummary">-</span>
+                </div>
+            </div>
+
+            <!-- Diff Output -->
+            <div id="diffOutput" class="diff-output hidden">
+                <!-- Side-by-Side View -->
+                <div id="sideBySideView" class="diff-view active">
+                    <div class="diff-container">
+                        <div class="diff-panel left-panel">
+                            <div class="panel-header">
+                                <span class="header-title">Original</span>
+                                <button class="copy-panel-btn" id="copyOriginal">
+                                    <span class="icon">⎘</span>
+                                    Copy
+                                </button>
+                            </div>
+                            <div id="leftDiff" class="diff-content">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="diff-panel right-panel">
+                            <div class="panel-header">
+                                <span class="header-title">Modified</span>
+                                <button class="copy-panel-btn" id="copyModified">
+                                    <span class="icon">⎘</span>
+                                    Copy
+                                </button>
+                            </div>
+                            <div id="rightDiff" class="diff-content">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Inline View -->
+                <div id="inlineView" class="diff-view">
+                    <div class="diff-container">
+                        <div class="diff-panel inline-panel">
+                            <div class="panel-header">
+                                <span class="header-title">Unified Diff</span>
+                                <button class="copy-panel-btn" id="copyInline">
+                                    <span class="icon">⎘</span>
+                                    Copy
+                                </button>
+                            </div>
+                            <div id="inlineDiff" class="diff-content">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="diff-actions">
+                    <div class="navigation-controls">
+                        <button id="prevChange" class="nav-btn" disabled>
+                            <span class="icon">⬆️</span>
+                            Previous Change
+                        </button>
+                        <span id="changeCounter" class="change-counter">-</span>
+                        <button id="nextChange" class="nav-btn" disabled>
+                            <span class="icon">⬇️</span>
+                            Next Change
+                        </button>
+                    </div>
+                    
+                    <div class="export-controls">
+                        <button id="exportUnified" class="btn-secondary">
+                            <span class="icon">📄</span>
+                            Export Unified Diff
+                        </button>
+                        <button id="exportHTML" class="btn-secondary">
+                            <span class="icon">🌐</span>
+                            Export HTML
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Understanding Diff
+                    </h3>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>📝 What is a Diff?</h4>
+                        <p>A diff (difference) shows the changes between two versions of text or code. It highlights additions, deletions, and modifications, making it easy to see exactly what changed.</p>
+                        <p>Diffs are commonly used in version control systems (like Git), code reviews, and document comparison to track changes over time.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🎯 When to Use a Diff Checker</h4>
+                        <ul>
+                            <li><strong>Code Reviews:</strong> Compare code before and after changes</li>
+                            <li><strong>Debugging:</strong> Find what changed to cause a bug</li>
+                            <li><strong>Version Control:</strong> Review commits, merges, and pull requests</li>
+                            <li><strong>Document Editing:</strong> Track changes in contracts, agreements, or articles</li>
+                            <li><strong>Configuration Files:</strong> Spot differences in config files across environments</li>
+                            <li><strong>Data Validation:</strong> Compare database dumps, JSON responses, or API outputs</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🎨 Understanding the Color Coding</h4>
+                        <ul>
+                            <li><strong style="color: #28a745;">Green (Added):</strong> New lines or text that didn't exist in the original</li>
+                            <li><strong style="color: #dc3545;">Red (Deleted):</strong> Lines or text that were removed from the original</li>
+                            <li><strong style="color: #ffc107;">Yellow (Changed):</strong> Lines that were modified (combination of additions and deletions)</li>
+                            <li><strong style="color: #6c757d;">Gray (Unchanged):</strong> Lines that stayed exactly the same</li>
+                        </ul>
+                        <p>Character-level highlights within lines show the exact text that was added or removed.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>💡 Tips for Better Comparisons</h4>
+                        <ul>
+                            <li>✅ Enable "Ignore whitespace" to focus on actual content changes</li>
+                            <li>✅ Use "Ignore case" when comparing text where capitalization doesn't matter</li>
+                            <li>✅ Select the correct programming language for syntax awareness</li>
+                            <li>✅ Use Side-by-Side view for quick visual comparison</li>
+                            <li>✅ Use Inline view for detailed line-by-line review</li>
+                            <li>✅ Export to Unified Diff format for sharing with Git or version control tools</li>
+                            <li>✅ Use the navigation buttons to jump between changes quickly</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="index.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="hash.html">Hash Generator</a>
+                    <a href="url.html">URL Encoder</a>
+                    <a href="lorem.html">Lorem Ipsum Generator</a>
+                    <a href="timestamp.html">Timestamp Converter</a>
+                    <a href="diff.html">Diff Checker</a>
+                    <a href="#">More Tools (Coming Soon)</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="script-diff.js"></script>
+</body>
+</html>

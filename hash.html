@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash Generator - MD5, SHA-256, SHA-512 | ToolBit</title>
+    <meta name="description" content="Free hash generator for MD5, SHA-1, SHA-256, SHA-512, SHA-3. Generate file hashes, HMAC, and verify checksums. 100% client-side and secure.">
+    <link rel="stylesheet" href="styles-hash.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">JSON</a>
+                <a href="regex.html" class="nav-link">RegEx</a>
+                <a href="base64.html" class="nav-link">Base64</a>
+                <a href="colors.html" class="nav-link">Colors</a>
+                <a href="hash.html" class="nav-link active">Hash</a>
+                <a href="url.html" class="nav-link">URL</a>
+                <a href="lorem.html" class="nav-link">Lorem</a>
+                <a href="timestamp.html" class="nav-link">Time</a>
+                <a href="diff.html" class="nav-link">Diff</a>
+                <a href="prompt.html" class="nav-link">Prompt</a>
+                <a href="support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                <span class="glitch" data-text="HASH">HASH</span>
+                <span class="hero-subtitle">Generator & Verifier</span>
+            </h1>
+            <p class="hero-description">Generate cryptographic hashes from text and files. MD5, SHA-1, SHA-256, SHA-512, and SHA-3. All processing happens locally in your browser.</p>
+        </div>
+    </section>
+
+    <!-- Main Tool Area -->
+    <main class="tool-container">
+        <div class="container">
+            <!-- Mode Selector -->
+            <div class="mode-selector">
+                <button class="mode-btn active" data-mode="text">
+                    <span class="mode-icon">📝</span>
+                    Text
+                </button>
+                <button class="mode-btn" data-mode="file">
+                    <span class="mode-icon">📁</span>
+                    File
+                </button>
+                <button class="mode-btn" data-mode="hmac">
+                    <span class="mode-icon">🔐</span>
+                    HMAC
+                </button>
+                <button class="mode-btn" data-mode="compare">
+                    <span class="mode-icon">⚖️</span>
+                    Compare
+                </button>
+            </div>
+
+            <!-- Text Mode -->
+            <div id="textMode" class="mode-content active">
+                <div class="input-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Text Input
+                        </h3>
+                        <div class="section-controls">
+                            <button id="sampleBtn" class="btn-link">Load Sample</button>
+                            <button id="clearTextBtn" class="btn-link">Clear</button>
+                            <span id="charCount" class="char-count">0 characters</span>
+                        </div>
+                    </div>
+                    
+                    <textarea
+                        id="textInput"
+                        class="text-area"
+                        placeholder="Enter text to hash...
+
+Examples:
+- Passwords (for storage)
+- API keys
+- File contents
+- Any string data"
+                        rows="10"
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Select Algorithms
+                        </h3>
+                    </div>
+                    
+                    <div class="algorithm-checkboxes">
+                        <label class="algo-checkbox md5">
+                            <input type="checkbox" value="MD5">
+                            <span class="algo-name">MD5</span>
+                            <span class="algo-badge deprecated">Deprecated</span>
+                        </label>
+                        <label class="algo-checkbox sha1">
+                            <input type="checkbox" value="SHA-1">
+                            <span class="algo-name">SHA-1</span>
+                            <span class="algo-badge weakened">Weakened</span>
+                        </label>
+                        <label class="algo-checkbox sha256">
+                            <input type="checkbox" value="SHA-256" checked>
+                            <span class="algo-name">SHA-256</span>
+                            <span class="algo-badge recommended">Recommended</span>
+                        </label>
+                        <label class="algo-checkbox sha512">
+                            <input type="checkbox" value="SHA-512" checked>
+                            <span class="algo-name">SHA-512</span>
+                            <span class="algo-badge secure">Secure</span>
+                        </label>
+                        <label class="algo-checkbox sha3-256">
+                            <input type="checkbox" value="SHA3-256">
+                            <span class="algo-name">SHA3-256</span>
+                            <span class="algo-badge modern">Modern</span>
+                        </label>
+                        <label class="algo-checkbox sha3-512">
+                            <input type="checkbox" value="SHA3-512">
+                            <span class="algo-name">SHA3-512</span>
+                            <span class="algo-badge modern">Modern</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="btn btn-primary">
+                    <span class="btn-icon">🔐</span>
+                    Generate Hashes
+                </button>
+
+                <div id="hashOutput" class="hash-output"></div>
+            </div>
+
+            <!-- File Mode -->
+            <div id="fileMode" class="mode-content">
+                <div class="file-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            File Upload
+                        </h3>
+                    </div>
+                    
+                    <div class="file-upload-area">
+                        <input type="file" id="fileInput" hidden>
+                        <div id="fileDropZone" class="drop-zone">
+                            <div class="drop-zone-content">
+                                <span class="drop-icon">📁</span>
+                                <p class="drop-text">Drag & drop a file here</p>
+                                <p class="drop-hint">or click to browse</p>
+                                <p class="drop-limit">Max 100MB for best performance</p>
+                            </div>
+                        </div>
+                        
+                        <div id="fileInfo" class="file-info hidden">
+                            <div class="file-details">
+                                <span class="file-icon">📄</span>
+                                <div class="file-meta">
+                                    <strong id="fileName"></strong>
+                                    <span id="fileSize"></span>
+                                </div>
+                            </div>
+                            <button id="removeFileBtn" class="btn-link">Remove</button>
+                        </div>
+                        
+                        <div id="fileProgress" class="progress-bar hidden">
+                            <div class="progress-fill"></div>
+                            <span class="progress-text">Processing...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="generateFileHashBtn" class="btn btn-primary">
+                    <span class="btn-icon">🔐</span>
+                    Generate File Hashes
+                </button>
+
+                <div id="fileHashOutput" class="hash-output"></div>
+            </div>
+
+            <!-- HMAC Mode -->
+            <div id="hmacMode" class="mode-content">
+                <div class="hmac-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            HMAC Generator
+                        </h3>
+                    </div>
+                    
+                    <div class="hmac-inputs">
+                        <div class="input-group">
+                            <label for="hmacMessage">Message</label>
+                            <textarea 
+                                id="hmacMessage" 
+                                class="text-area" 
+                                placeholder="Enter message to authenticate..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="hmacKey">Secret Key</label>
+                            <div class="key-input-wrapper">
+                                <input 
+                                    type="password" 
+                                    id="hmacKey" 
+                                    class="text-input" 
+                                    placeholder="Enter secret key..."
+                                >
+                                <button id="toggleKeyBtn" class="toggle-btn" title="Show/Hide key">
+                                    <span class="eye-icon">👁️</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="hmacAlgorithm">Algorithm</label>
+                            <select id="hmacAlgorithm" class="select-input">
+                                <option value="SHA-256">HMAC-SHA-256</option>
+                                <option value="SHA-512">HMAC-SHA-512</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button id="generateHMACBtn" class="btn btn-primary">
+                        <span class="btn-icon">🔐</span>
+                        Generate HMAC
+                    </button>
+                    
+                    <div id="hmacOutput" class="hash-output"></div>
+                    
+                    <div class="hmac-info">
+                        <h4>💡 Common Use Cases</h4>
+                        <ul>
+                            <li><strong>API Authentication:</strong> Sign API requests with HMAC</li>
+                            <li><strong>Webhook Verification:</strong> Verify webhook payloads</li>
+                            <li><strong>Message Authentication:</strong> Ensure message integrity</li>
+                            <li><strong>JWT Signing:</strong> Sign JSON Web Tokens</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compare Mode -->
+            <div id="compareMode" class="mode-content">
+                <div class="compare-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Hash Comparison
+                        </h3>
+                    </div>
+                    
+                    <div class="comparison-inputs">
+                        <div class="input-group">
+                            <label for="hash1">Hash 1 (Generated)</label>
+                            <input 
+                                type="text" 
+                                id="hash1" 
+                                class="text-input hash-input" 
+                                placeholder="Paste generated hash here..."
+                                spellcheck="false"
+                            >
+                        </div>
+                        
+                        <div class="comparison-indicator" id="comparisonResult">
+                            <span class="status-icon">⏳</span>
+                            <span class="status-text">Enter hashes to compare</span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="hash2">Hash 2 (Expected)</label>
+                            <input 
+                                type="text" 
+                                id="hash2" 
+                                class="text-input hash-input" 
+                                placeholder="Paste expected hash here..."
+                                spellcheck="false"
+                            >
+                        </div>
+                    </div>
+                    
+                    <button id="compareBtn" class="btn btn-secondary">
+                        <span class="btn-icon">⚖️</span>
+                        Compare Hashes
+                    </button>
+                    
+                    <div class="compare-info">
+                        <h4>💡 How to Use</h4>
+                        <ol>
+                            <li>Generate a hash from your file/text (using Text or File mode)</li>
+                            <li>Copy the generated hash</li>
+                            <li>Paste it in "Hash 1" field above</li>
+                            <li>Paste the expected/known hash in "Hash 2" field</li>
+                            <li>Compare to verify they match</li>
+                        </ol>
+                        <p><strong>Common use:</strong> Verify downloaded files haven't been corrupted or tampered with.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        What Are Hashes?
+                    </h3>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>🔐 What is a Hash?</h4>
+                        <p>A hash is a unique fixed-size string generated from input data using a mathematical algorithm. The same input always produces the same hash, but even tiny changes create completely different hashes.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🎯 When to Use Hashes</h4>
+                        <ul>
+                            <li><strong>File Integrity:</strong> Verify downloads aren't corrupted</li>
+                            <li><strong>Password Storage:</strong> Store hashed passwords, not plaintext</li>
+                            <li><strong>Digital Signatures:</strong> Prove authenticity</li>
+                            <li><strong>Data Deduplication:</strong> Identify duplicate files</li>
+                            <li><strong>Blockchain:</strong> Bitcoin and cryptocurrencies</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>📊 Which Algorithm to Use?</h4>
+                        <ul>
+                            <li><strong>MD5</strong> ❌ Broken - Don't use for security</li>
+                            <li><strong>SHA-1</strong> ⚠️ Weakened - Being phased out</li>
+                            <li><strong>SHA-256</strong> ✅ Recommended - Industry standard</li>
+                            <li><strong>SHA-512</strong> ✅ More secure - Longer hash</li>
+                            <li><strong>SHA-3</strong> ✅ Modern - Latest standard</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>⚠️ Security Notes</h4>
+                        <ul>
+                            <li>Hashing is <strong>NOT encryption</strong> (cannot be reversed)</li>
+                            <li>Hashes are <strong>deterministic</strong> (same input = same output)</li>
+                            <li>Even 1 byte change creates completely different hash</li>
+                            <li>Use for verification, not hiding secrets</li>
+                            <li><strong>Never store passwords in plaintext!</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="index.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="hash.html">Hash Generator</a>
+                    <a href="#">More Tools (Coming Soon)</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="script-hash.js"></script>
+</body>
+</html>

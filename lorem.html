@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator - Smart Placeholder Text | ToolBit</title>
+    <meta name="description" content="Free Lorem Ipsum generator with 8 content types (Classic, Hipster, Corporate, Tech, Bacon, Cupcake, Pirate, Zombie). Smart templates, live preview, multiple formats.">
+    <link rel="stylesheet" href="styles-lorem.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">JSON</a>
+                <a href="regex.html" class="nav-link">RegEx</a>
+                <a href="base64.html" class="nav-link">Base64</a>
+                <a href="colors.html" class="nav-link">Colors</a>
+                <a href="hash.html" class="nav-link">Hash</a>
+                <a href="url.html" class="nav-link">URL</a>
+                <a href="lorem.html" class="nav-link active">Lorem</a>
+                <a href="timestamp.html" class="nav-link">Time</a>
+                <a href="diff.html" class="nav-link">Diff</a>
+                <a href="prompt.html" class="nav-link">Prompt</a>
+                <a href="support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                <span class="glitch" data-text="LOREM">LOREM</span>
+                <span class="hero-subtitle">Ipsum Generator</span>
+            </h1>
+            <p class="hero-description">Smart placeholder text for modern developers. 8 content types, smart templates, live preview, and multiple formats. Way better than plain Latin.</p>
+        </div>
+    </section>
+
+    <!-- Main Tool Area -->
+    <main class="tool-container">
+        <div class="container">
+            
+            <!-- Content Type Selector -->
+            <div class="content-type-selector">
+                <button class="type-pill active" data-type="classic">
+                    <span class="type-icon">📜</span>
+                    Classic
+                </button>
+                <button class="type-pill" data-type="hipster">
+                    <span class="type-icon">🎨</span>
+                    Hipster
+                </button>
+                <button class="type-pill" data-type="corporate">
+                    <span class="type-icon">💼</span>
+                    Corporate
+                </button>
+                <button class="type-pill" data-type="tech">
+                    <span class="type-icon">💻</span>
+                    Tech
+                </button>
+                <button class="type-pill" data-type="bacon">
+                    <span class="type-icon">🥓</span>
+                    Bacon
+                </button>
+                <button class="type-pill" data-type="cupcake">
+                    <span class="type-icon">🧁</span>
+                    Cupcake
+                </button>
+                <button class="type-pill" data-type="pirate">
+                    <span class="type-icon">🏴‍☠️</span>
+                    Pirate
+                </button>
+                <button class="type-pill" data-type="zombie">
+                    <span class="type-icon">🧟</span>
+                    Zombie
+                </button>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <!-- Controls Panel -->
+                <div class="controls-panel">
+                    <div class="control-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Generate
+                        </h3>
+                        
+                        <div class="amount-controls">
+                            <label class="radio-option">
+                                <input type="radio" name="amountType" value="paragraphs" checked>
+                                <span class="option-label">Paragraphs</span>
+                                <input type="number" id="paragraphCount" class="number-input" min="1" max="20" value="3">
+                            </label>
+                            
+                            <label class="radio-option">
+                                <input type="radio" name="amountType" value="sentences">
+                                <span class="option-label">Sentences</span>
+                                <input type="number" id="sentenceCount" class="number-input" min="1" max="50" value="5">
+                            </label>
+                            
+                            <label class="radio-option">
+                                <input type="radio" name="amountType" value="words">
+                                <span class="option-label">Words</span>
+                                <input type="number" id="wordCount" class="number-input" min="10" max="500" value="50">
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="control-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Format
+                        </h3>
+                        
+                        <div class="format-controls">
+                            <label class="radio-option">
+                                <input type="radio" name="format" value="plain" checked>
+                                <span class="option-label">Plain Text</span>
+                            </label>
+                            
+                            <label class="radio-option">
+                                <input type="radio" name="format" value="html">
+                                <span class="option-label">HTML Paragraphs</span>
+                            </label>
+                            
+                            <label class="radio-option">
+                                <input type="radio" name="format" value="markdown">
+                                <span class="option-label">Markdown</span>
+                            </label>
+                            
+                            <label class="radio-option">
+                                <input type="radio" name="format" value="json">
+                                <span class="option-label">JSON Array</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="control-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Options
+                        </h3>
+                        
+                        <div class="options-checkboxes">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="startWithLorem" checked>
+                                <span class="option-label">Start with "Lorem ipsum..."</span>
+                            </label>
+                            
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="sentenceVariety">
+                                <span class="option-label">Sentence variety (short, long)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="control-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Quick Templates
+                        </h3>
+                        
+                        <div class="template-buttons">
+                            <button class="template-btn" data-template="email">
+                                <span class="template-icon">📧</span>
+                                Email
+                            </button>
+                            <button class="template-btn" data-template="blog">
+                                <span class="template-icon">📝</span>
+                                Blog Post
+                            </button>
+                            <button class="template-btn" data-template="profile">
+                                <span class="template-icon">👤</span>
+                                Profile
+                            </button>
+                            <button class="template-btn" data-template="product">
+                                <span class="template-icon">🛍️</span>
+                                Product
+                            </button>
+                            <button class="template-btn" data-template="testimonial">
+                                <span class="template-icon">💬</span>
+                                Testimonial
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button id="generateBtn" class="btn btn-primary">
+                        <span class="btn-icon">✨</span>
+                        Generate Text
+                    </button>
+                </div>
+                
+                <!-- Preview Panel -->
+                <div class="preview-panel">
+                    <div class="preview-header">
+                        <h3 class="preview-title">Preview</h3>
+                        <div class="preview-mode-selector">
+                            <button class="preview-mode-btn active" data-mode="styled" title="Styled preview">
+                                Aa
+                            </button>
+                            <button class="preview-mode-btn" data-mode="raw" title="Raw text">
+                                { }
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-content" id="previewContent">
+                        <p class="preview-placeholder">Click "Generate Text" or choose a template to get started!</p>
+                    </div>
+                    
+                    <div class="preview-actions">
+                        <button id="copyTextBtn" class="btn-secondary">
+                            <span class="btn-icon">⎘</span>
+                            Copy Text
+                        </button>
+                        <button id="copyHTMLBtn" class="btn-secondary">
+                            <span class="btn-icon">⎘</span>
+                            Copy HTML
+                        </button>
+                        <button id="downloadBtn" class="btn-secondary">
+                            <span class="btn-icon">📥</span>
+                            Download
+                        </button>
+                    </div>
+                    
+                    <div class="preview-stats" id="previewStats">
+                        <span id="wordCount">0 words</span>
+                        <span class="stat-separator">•</span>
+                        <span id="charCount">0 characters</span>
+                        <span class="stat-separator">•</span>
+                        <span id="paraCount">0 paragraphs</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        About Lorem Ipsum
+                    </h3>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>📜 What is Lorem Ipsum?</h4>
+                        <p>Lorem Ipsum is placeholder text used in design and publishing since the 1500s. It's derived from Cicero's "De Finibus Bonorum et Malorum" and scrambled to create meaningless Latin-like text that focuses attention on layout, not content.</p>
+                        <p>The standard "Lorem ipsum dolor sit amet..." passage has been used for over 500 years!</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🎯 When to Use Placeholder Text</h4>
+                        <ul>
+                            <li><strong>Wireframes & Mockups:</strong> Show text layout without real content</li>
+                            <li><strong>Component Testing:</strong> Test how UI handles different text lengths</li>
+                            <li><strong>Client Presentations:</strong> Show design without distracting copy</li>
+                            <li><strong>Development:</strong> Build features before content is ready</li>
+                            <li><strong>Typography Testing:</strong> See how fonts look at various sizes</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🎨 Choose Your Content Style</h4>
+                        <ul>
+                            <li><strong>Classic:</strong> Traditional Lorem Ipsum for professional projects</li>
+                            <li><strong>Hipster:</strong> Trendy, creative text for modern designs</li>
+                            <li><strong>Corporate:</strong> Business jargon for enterprise sites</li>
+                            <li><strong>Tech:</strong> Developer-focused text for SaaS products</li>
+                            <li><strong>Bacon:</strong> Meat-themed fun for casual projects</li>
+                            <li><strong>Cupcake:</strong> Sweet-themed text for playful designs</li>
+                            <li><strong>Pirate:</strong> Nautical nonsense for adventure themes</li>
+                            <li><strong>Zombie:</strong> Spooky text for horror projects</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>💡 Best Practices</h4>
+                        <ul>
+                            <li>✅ Use realistic text lengths for your use case</li>
+                            <li>✅ Test with different content types to see layout flexibility</li>
+                            <li>✅ Try sentence variety to test line wrapping</li>
+                            <li>✅ Use templates for common scenarios (emails, profiles, etc.)</li>
+                            <li>❌ Don't use for SEO or accessibility testing</li>
+                            <li>❌ Never ship Lorem Ipsum to production!</li>
+                            <li>❌ Don't rely solely on placeholder text - test with real content too</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="index.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="hash.html">Hash Generator</a>
+                    <a href="url.html">URL Encoder</a>
+                    <a href="lorem.html">Lorem Ipsum Generator</a>
+                    <a href="#">More Tools (Coming Soon)</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="script-lorem.js"></script>
+</body>
+</html>

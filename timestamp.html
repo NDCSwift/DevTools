@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timestamp Converter - Unix to Date, Timezone Converter | ToolBit</title>
+    <meta name="description" content="Free timestamp converter with live updates. Convert Unix timestamps to human-readable dates, handle timezones, calculate relative time, and batch convert. Supports seconds and milliseconds.">
+    <link rel="stylesheet" href="styles-timestamp.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">JSON</a>
+                <a href="regex.html" class="nav-link">RegEx</a>
+                <a href="base64.html" class="nav-link">Base64</a>
+                <a href="colors.html" class="nav-link">Colors</a>
+                <a href="hash.html" class="nav-link">Hash</a>
+                <a href="url.html" class="nav-link">URL</a>
+                <a href="lorem.html" class="nav-link">Lorem</a>
+                <a href="timestamp.html" class="nav-link active">Time</a>
+                <a href="diff.html" class="nav-link">Diff</a>
+                <a href="prompt.html" class="nav-link">Prompt</a>
+                <a href="support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                <span class="glitch" data-text="TIME">TIME</span>
+                <span class="hero-subtitle">Timestamp Converter</span>
+            </h1>
+            <p class="hero-description">Convert Unix timestamps to human-readable dates and vice versa. Live updates, timezone support, relative time, and batch conversion. Essential for developers.</p>
+        </div>
+    </section>
+
+    <!-- Main Tool Area -->
+    <main class="tool-container">
+        <div class="container">
+            
+            <!-- Current Timestamp Display -->
+            <div class="current-timestamp">
+                <h3 class="current-title">
+                    <span class="pulse-dot"></span>
+                    Current Time (Live)
+                </h3>
+                <div class="timestamp-grid">
+                    <div class="timestamp-row">
+                        <span class="label">Unix (seconds):</span>
+                        <span id="currentUnix" class="value">0</span>
+                        <button class="copy-btn-small" onclick="copyValue('currentUnix')" title="Copy">⎘</button>
+                    </div>
+                    <div class="timestamp-row">
+                        <span class="label">Unix (milliseconds):</span>
+                        <span id="currentUnixMs" class="value">0</span>
+                        <button class="copy-btn-small" onclick="copyValue('currentUnixMs')" title="Copy">⎘</button>
+                    </div>
+                    <div class="timestamp-row">
+                        <span class="label">ISO 8601:</span>
+                        <span id="currentISO" class="value">-</span>
+                        <button class="copy-btn-small" onclick="copyValue('currentISO')" title="Copy">⎘</button>
+                    </div>
+                    <div class="timestamp-row">
+                        <span class="label">Local Time:</span>
+                        <span id="currentLocal" class="value">-</span>
+                        <button class="copy-btn-small" onclick="copyValue('currentLocal')" title="Copy">⎘</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode Tabs -->
+            <div class="mode-tabs">
+                <button class="mode-tab active" data-mode="unix-to-human">
+                    <span class="tab-icon">→</span>
+                    Unix → Human
+                </button>
+                <button class="mode-tab" data-mode="human-to-unix">
+                    <span class="tab-icon">←</span>
+                    Human → Unix
+                </button>
+                <button class="mode-tab" data-mode="timezone">
+                    <span class="tab-icon">🌍</span>
+                    Timezones
+                </button>
+                <button class="mode-tab" data-mode="relative">
+                    <span class="tab-icon">⏱️</span>
+                    Relative Time
+                </button>
+                <button class="mode-tab" data-mode="batch">
+                    <span class="tab-icon">📋</span>
+                    Batch
+                </button>
+            </div>
+
+            <!-- Unix to Human Mode -->
+            <div id="unixToHumanMode" class="mode-content active">
+                <div class="converter-section">
+                    <div class="input-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Unix Timestamp
+                        </h3>
+                        <input 
+                            type="text" 
+                            id="unixInput" 
+                            class="text-input large" 
+                            placeholder="1736140800 or 1736140800000"
+                            spellcheck="false"
+                        >
+                        <div class="quick-presets">
+                            <button class="preset-btn" data-preset="now">Now</button>
+                            <button class="preset-btn" data-preset="1h_ago">1h Ago</button>
+                            <button class="preset-btn" data-preset="1h_from_now">1h From Now</button>
+                            <button class="preset-btn" data-preset="yesterday">Yesterday</button>
+                            <button class="preset-btn" data-preset="tomorrow">Tomorrow</button>
+                        </div>
+                    </div>
+                    
+                    <div class="output-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Human-Readable Formats
+                        </h3>
+                        <div class="format-outputs">
+                            <div class="format-row">
+                                <span class="format-label">UTC:</span>
+                                <span id="outputUTC" class="format-value">-</span>
+                                <button class="copy-btn-small" onclick="copyValue('outputUTC')">⎘</button>
+                            </div>
+                            <div class="format-row">
+                                <span class="format-label">ISO 8601:</span>
+                                <span id="outputISO" class="format-value">-</span>
+                                <button class="copy-btn-small" onclick="copyValue('outputISO')">⎘</button>
+                            </div>
+                            <div class="format-row">
+                                <span class="format-label">Local Time:</span>
+                                <span id="outputLocal" class="format-value">-</span>
+                                <button class="copy-btn-small" onclick="copyValue('outputLocal')">⎘</button>
+                            </div>
+                            <div class="format-row">
+                                <span class="format-label">Locale String:</span>
+                                <span id="outputLocaleString" class="format-value">-</span>
+                                <button class="copy-btn-small" onclick="copyValue('outputLocaleString')">⎘</button>
+                            </div>
+                            <div class="format-row highlight">
+                                <span class="format-label">Relative Time:</span>
+                                <span id="outputRelative" class="format-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Human to Unix Mode -->
+            <div id="humanToUnixMode" class="mode-content">
+                <div class="converter-section">
+                    <div class="input-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Date & Time
+                        </h3>
+                        
+                        <label class="input-label">Date</label>
+                        <input type="date" id="dateInput" class="text-input">
+                        
+                        <label class="input-label">Time</label>
+                        <input type="time" id="timeInput" step="1" class="text-input">
+                        
+                        <label class="input-label">Timezone</label>
+                        <select id="timezoneSelect" class="select-input">
+                            <option value="UTC">UTC</option>
+                            <option value="America/New_York">America/New York (EST/EDT)</option>
+                            <option value="America/Chicago">America/Chicago (CST/CDT)</option>
+                            <option value="America/Denver">America/Denver (MST/MDT)</option>
+                            <option value="America/Los_Angeles">America/Los Angeles (PST/PDT)</option>
+                            <option value="Europe/London">Europe/London (GMT/BST)</option>
+                            <option value="Europe/Paris">Europe/Paris (CET/CEST)</option>
+                            <option value="Europe/Berlin">Europe/Berlin (CET/CEST)</option>
+                            <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                            <option value="Asia/Shanghai">Asia/Shanghai (CST)</option>
+                            <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+                            <option value="Australia/Sydney">Australia/Sydney (AEDT/AEST)</option>
+                        </select>
+                        
+                        <div class="quick-presets">
+                            <button class="preset-btn" data-preset="now">Now</button>
+                            <button class="preset-btn" data-preset="today_start">Start of Today</button>
+                            <button class="preset-btn" data-preset="today_end">End of Today</button>
+                        </div>
+                        
+                        <button id="convertToUnixBtn" class="btn btn-primary">
+                            <span class="btn-icon">⏰</span>
+                            Convert to Unix
+                        </button>
+                    </div>
+                    
+                    <div class="output-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Unix Timestamps
+                        </h3>
+                        <div class="unix-outputs">
+                            <div class="unix-row">
+                                <span class="unix-label">Seconds:</span>
+                                <span id="unixSeconds" class="unix-value">-</span>
+                                <button class="copy-btn-small" onclick="copyValue('unixSeconds')">⎘</button>
+                            </div>
+                            <div class="unix-row">
+                                <span class="unix-label">Milliseconds:</span>
+                                <span id="unixMilliseconds" class="unix-value">-</span>
+                                <button class="copy-btn-small" onclick="copyValue('unixMilliseconds')">⎘</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timezone Mode -->
+            <div id="timezoneMode" class="mode-content">
+                <div class="timezone-section">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Timestamp in Multiple Timezones
+                    </h3>
+                    
+                    <input 
+                        type="text" 
+                        id="timezoneInput" 
+                        class="text-input large" 
+                        placeholder="Enter Unix timestamp (e.g., 1736140800)"
+                    >
+                    
+                    <div id="timezoneList" class="timezone-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relative Time Mode -->
+            <div id="relativeMode" class="mode-content">
+                <div class="relative-section">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Calculate Time Difference
+                    </h3>
+                    
+                    <div class="relative-inputs">
+                        <div class="relative-input-group">
+                            <label class="input-label">From</label>
+                            <input type="text" id="relativeFrom" class="text-input" placeholder="Unix timestamp">
+                            <button class="preset-btn" onclick="setRelativeNow('from')">Now</button>
+                        </div>
+                        
+                        <div class="relative-input-group">
+                            <label class="input-label">To</label>
+                            <input type="text" id="relativeTo" class="text-input" placeholder="Unix timestamp">
+                            <button class="preset-btn" onclick="setRelativeNow('to')">Now</button>
+                        </div>
+                    </div>
+                    
+                    <button id="calculateBtn" class="btn btn-primary">
+                        <span class="btn-icon">⏱️</span>
+                        Calculate Difference
+                    </button>
+                    
+                    <div id="relativeDifference" class="difference-output hidden">
+                        <h4>Time Difference:</h4>
+                        <div class="difference-grid">
+                            <div class="diff-item">
+                                <span class="diff-value" id="diffDays">0</span>
+                                <span class="diff-label">days</span>
+                            </div>
+                            <div class="diff-item">
+                                <span class="diff-value" id="diffHours">0</span>
+                                <span class="diff-label">hours</span>
+                            </div>
+                            <div class="diff-item">
+                                <span class="diff-value" id="diffMinutes">0</span>
+                                <span class="diff-label">minutes</span>
+                            </div>
+                            <div class="diff-item">
+                                <span class="diff-value" id="diffSeconds">0</span>
+                                <span class="diff-label">seconds</span>
+                            </div>
+                        </div>
+                        <p class="diff-summary" id="diffSummary"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Mode -->
+            <div id="batchMode" class="mode-content">
+                <div class="batch-section">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Batch Conversion
+                    </h3>
+                    
+                    <div class="batch-grid">
+                        <div class="batch-input-panel">
+                            <label>Input (one timestamp per line)</label>
+                            <textarea 
+                                id="batchInput" 
+                                class="text-area" 
+                                rows="10"
+                                placeholder="1736140800
+1736227200
+1736313600"
+                            ></textarea>
+                            <div class="batch-controls">
+                                <label class="input-label">Format:</label>
+                                <select id="batchFormat" class="select-input">
+                                    <option value="utc">UTC</option>
+                                    <option value="iso">ISO 8601</option>
+                                    <option value="local">Local Time</option>
+                                    <option value="relative">Relative</option>
+                                </select>
+                                <button id="convertBatchBtn" class="btn btn-primary">Convert</button>
+                            </div>
+                        </div>
+                        
+                        <div class="batch-output-panel">
+                            <label>Output</label>
+                            <textarea 
+                                id="batchOutput" 
+                                class="text-area" 
+                                rows="10" 
+                                readonly
+                                placeholder="Results will appear here..."
+                            ></textarea>
+                            <div class="batch-actions">
+                                <button id="copyBatchBtn" class="btn-secondary">Copy All</button>
+                                <button id="downloadBatchBtn" class="btn-secondary">Download CSV</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Understanding Timestamps
+                    </h3>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>⏰ What is Unix Time?</h4>
+                        <p>Unix time (also called POSIX time or Epoch time) is the number of seconds that have elapsed since January 1, 1970 00:00:00 UTC, not counting leap seconds.</p>
+                        <p>It's timezone-independent and widely used in programming, databases, and APIs because it's a simple integer that's easy to store and compare.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>📋 Common Timestamp Formats</h4>
+                        <ul>
+                            <li><strong>Unix (seconds):</strong> <code>1736140800</code> - Most common format</li>
+                            <li><strong>Unix (milliseconds):</strong> <code>1736140800000</code> - JavaScript default</li>
+                            <li><strong>ISO 8601:</strong> <code>2026-01-06T04:00:00.000Z</code> - International standard</li>
+                            <li><strong>RFC 2822:</strong> <code>Mon, 06 Jan 2026 04:00:00 GMT</code> - Email headers</li>
+                            <li><strong>Relative:</strong> "2 hours ago" - Human-friendly display</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🎯 When to Use Each Format</h4>
+                        <ul>
+                            <li><strong>Unix timestamps:</strong> Database storage, API responses, date calculations</li>
+                            <li><strong>ISO 8601:</strong> API requests, JSON data, international applications</li>
+                            <li><strong>Local time:</strong> UI display for end users in their timezone</li>
+                            <li><strong>Relative time:</strong> Social media posts, activity feeds, notifications</li>
+                            <li><strong>UTC:</strong> Server logs, coordination across multiple timezones</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>⚠️ Common Gotchas</h4>
+                        <ul>
+                            <li>Unix timestamps are always in <strong>UTC</strong> by default</li>
+                            <li>JavaScript uses <strong>milliseconds</strong>, most other systems use <strong>seconds</strong></li>
+                            <li>Daylight Saving Time can cause unexpected issues</li>
+                            <li>Always store timestamps in UTC, convert to local time only for display</li>
+                            <li>The Unix epoch is January 1, 1970 (not 1900!)</li>
+                            <li>The Year 2038 problem: 32-bit timestamps will overflow on January 19, 2038</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="index.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="hash.html">Hash Generator</a>
+                    <a href="url.html">URL Encoder</a>
+                    <a href="lorem.html">Lorem Ipsum Generator</a>
+                    <a href="timestamp.html">Timestamp Converter</a>
+                    <a href="#">More Tools (Coming Soon)</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="script-timestamp.js"></script>
+</body>
+</html>
