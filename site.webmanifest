@@ -1,6 +1,6 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "ToolBit.dev",
+  "short_name": "ToolBit",
   "icons": [
     {
       "src": "/favicon.svg/web-app-manifest-192x192.png",
