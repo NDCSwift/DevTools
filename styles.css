@@ -569,14 +569,36 @@ body {
    RESPONSIVE DESIGN
    ======================================== */
 @media (max-width: 968px) {
+    .site-header {
+        padding: 1rem 0;
+    }
+
     .site-header .container {
         flex-direction: column;
-        gap: var(--spacing-md);
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 1.5rem;
     }
 
     .main-nav {
+        display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        gap: 0.5rem;
+        max-width: 100%;
+    }
+
+    .nav-link {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .nav-link.support-link {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
     }
 
     .hero {
@@ -603,5 +625,20 @@ body {
 
     .legal-content {
         padding: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.3rem;
+    }
+
+    .main-nav {
+        gap: 0.4rem;
+    }
+
+    .nav-link {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.6rem;
     }
 }
