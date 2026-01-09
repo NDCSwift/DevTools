@@ -3,12 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Formatter & Validator | ToolBit</title>
-    <meta name="description" content="Free JSON formatter, validator, and beautifier. Format, validate, and minify JSON instantly with syntax highlighting and error detection.">
-    <link rel="stylesheet" href="styles.css">
+    <title>ToolBit - Professional Developer Tools | Free Online Dev Tools</title>
+    <meta name="description" content="Free professional developer tools. JSON formatter, RegEx tester, Base64 encoder, Hash generator, Diff checker, and more. No bloat, no tracking, 100% client-side.">
+    <meta name="keywords" content="developer tools, online tools, JSON formatter, regex tester, base64 encoder, hash generator, diff checker, timestamp converter, URL encoder, developer utilities">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://toolbit.dev/">
+    <meta property="og:title" content="ToolBit - Professional Developer Tools">
+    <meta property="og:description" content="10 essential developer tools. No bloat, no tracking, 100% client-side. Lightning fast.">
+    <meta property="og:image" content="https://toolbit.dev/social-preview.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://toolbit.dev/">
+    <meta property="twitter:title" content="ToolBit - Professional Developer Tools">
+    <meta property="twitter:description" content="10 essential developer tools. No bloat, no tracking, 100% client-side.">
+    <meta property="twitter:image" content="https://toolbit.dev/social-preview.png">
+    
+    <link rel="stylesheet" href="styles-index.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
      crossorigin="anonymous"></script>
 </head>
@@ -16,13 +38,13 @@
     <!-- Header -->
     <header class="site-header">
         <div class="container">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <span class="logo-bracket">{</span>
                 <span class="logo-text">ToolBit</span>
                 <span class="logo-bracket">}</span>
-            </div>
+            </a>
             <nav class="main-nav">
-                <a href="index.html" class="nav-link active">JSON</a>
+                <a href="json.html" class="nav-link">JSON</a>
                 <a href="regex.html" class="nav-link">RegEx</a>
                 <a href="base64.html" class="nav-link">Base64</a>
                 <a href="colors.html" class="nav-link">Colors</a>
@@ -38,94 +60,263 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero hero-home">
         <div class="container">
-            <h1 class="hero-title">
-                <span class="glitch" data-text="JSON">JSON</span>
-                <span class="hero-subtitle">Formatter & Validator</span>
-            </h1>
-            <p class="hero-description">Format, validate, and beautify JSON instantly. Zero fluff. Maximum speed.</p>
+            <div class="hero-content">
+                <h1 class="hero-title-home">
+                    <span class="glitch" data-text="TOOLBIT">TOOLBIT</span>
+                </h1>
+                <p class="hero-tagline">Professional Developer Tools That Just Work</p>
+                <p class="hero-description-home">
+                    10 essential tools for developers. No bloat, no tracking, no sign-up required. 
+                    100% client-side processing. Lightning fast. Always free.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">10</span>
+                        <span class="stat-label">Tools</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Client-Side</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">0</span>
+                        <span class="stat-label">Tracking</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">Free</span>
+                        <span class="stat-label">Forever</span>
+                    </div>
+                </div>
+                <a href="#tools" class="cta-button">
+                    <span class="cta-icon">▼</span>
+                    Browse Tools
+                </a>
+            </div>
         </div>
     </section>
 
-    <!-- Main Tool Area -->
-    <main class="tool-container">
+    <!-- Tools Grid -->
+    <main id="tools" class="tools-section">
         <div class="container">
-            <!-- Controls -->
-            <div class="controls">
-                <div class="control-group">
-                    <button id="formatBtn" class="btn btn-primary">
-                        <span class="btn-icon">✓</span>
-                        Format & Validate
-                    </button>
-                    <button id="minifyBtn" class="btn btn-secondary">
-                        <span class="btn-icon">⊟</span>
-                        Minify
-                    </button>
-                    <button id="clearBtn" class="btn btn-ghost">
-                        <span class="btn-icon">⌫</span>
-                        Clear
-                    </button>
-                </div>
-                
-                <div class="control-group">
-                    <label class="indent-control">
-                        <span class="label-text">Indent:</span>
-                        <select id="indentSize" class="select-input">
-                            <option value="2" selected>2 spaces</option>
-                            <option value="4">4 spaces</option>
-                            <option value="tab">Tab</option>
-                        </select>
-                    </label>
-                    <button id="copyBtn" class="btn btn-ghost">
-                        <span class="btn-icon">⎘</span>
-                        Copy
-                    </button>
-                </div>
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">▸</span>
+                    All Tools
+                </h2>
+                <p class="section-description">
+                    Professional-grade utilities for everyday development tasks. 
+                    Click any tool to get started.
+                </p>
             </div>
-
-            <!-- Status Bar -->
-            <div id="statusBar" class="status-bar">
-                <span class="status-indicator"></span>
-                <span id="statusText">Ready to format JSON</span>
-                <span id="charCount" class="char-count">0 characters</span>
-            </div>
-
-            <!-- Editor Area -->
-            <div class="editor-wrapper">
-                <div class="editor-panel">
-                    <div class="panel-header">
-                        <span class="panel-title">INPUT</span>
-                        <div class="panel-actions">
-                            <button id="pasteBtn" class="btn-link">Paste</button>
-                            <button id="loadSampleBtn" class="btn-link">Load Sample</button>
-                        </div>
+            
+            <div class="tools-grid">
+                <!-- Tool Card 1: JSON Formatter -->
+                <a href="json.html" class="tool-card">
+                    <div class="tool-icon">📄</div>
+                    <h3 class="tool-name">JSON Formatter</h3>
+                    <p class="tool-description">Format, validate, and minify JSON. Tree view, error detection, and syntax highlighting.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">Format</span>
+                        <span class="tool-tag">Validate</span>
+                        <span class="tool-tag">Minify</span>
                     </div>
-                    <textarea 
-                        id="inputJson" 
-                        class="json-editor" 
-                        placeholder='Paste your JSON here...
-Example:
-{
-  "name": "DevToolkit",
-  "version": "1.0.0",
-  "tools": ["JSON", "RegEx", "Basee64", "Colors"]
-}'
-                        spellcheck="false"
-                    ></textarea>
-                </div>
+                    <span class="tool-arrow">→</span>
+                </a>
 
-                <div class="editor-panel">
-                    <div class="panel-header">
-                        <span class="panel-title">OUTPUT</span>
-                        <span id="validBadge" class="valid-badge hidden">VALID ✓</span>
+                <!-- Tool Card 2: RegEx Tester -->
+                <a href="regex.html" class="tool-card">
+                    <div class="tool-icon">🔍</div>
+                    <h3 class="tool-name">RegEx Tester</h3>
+                    <p class="tool-description">Test regular expressions with live matching, explanations, and common patterns library.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">Test</span>
+                        <span class="tool-tag">Match</span>
+                        <span class="tool-tag">Patterns</span>
                     </div>
-                    <div id="outputJson" class="json-output"></div>
-                </div>
-            </div>
+                    <span class="tool-arrow">→</span>
+                </a>
 
+                <!-- Tool Card 3: Base64 Encoder -->
+                <a href="base64.html" class="tool-card">
+                    <div class="tool-icon">🔐</div>
+                    <h3 class="tool-name">Base64 Encoder</h3>
+                    <p class="tool-description">Encode and decode Base64, with support for text, images, and URL-safe encoding.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">Encode</span>
+                        <span class="tool-tag">Decode</span>
+                        <span class="tool-tag">Images</span>
+                    </div>
+                    <span class="tool-arrow">→</span>
+                </a>
+
+                <!-- Tool Card 4: Color Palette Generator -->
+                <a href="colors.html" class="tool-card">
+                    <div class="tool-icon">🎨</div>
+                    <h3 class="tool-name">Color Palette</h3>
+                    <p class="tool-description">Generate color schemes with harmony rules, export in multiple formats, accessibility testing.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">Generate</span>
+                        <span class="tool-tag">Harmony</span>
+                        <span class="tool-tag">A11y</span>
+                    </div>
+                    <span class="tool-arrow">→</span>
+                </a>
+
+                <!-- Tool Card 5: Hash Generator -->
+                <a href="hash.html" class="tool-card">
+                    <div class="tool-icon">🔒</div>
+                    <h3 class="tool-name">Hash Generator</h3>
+                    <p class="tool-description">Generate MD5, SHA-1, SHA-256, SHA-512 hashes. Verify file integrity and checksums.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">MD5</span>
+                        <span class="tool-tag">SHA</span>
+                        <span class="tool-tag">Checksum</span>
+                    </div>
+                    <span class="tool-arrow">→</span>
+                </a>
+
+                <!-- Tool Card 6: URL Encoder -->
+                <a href="url.html" class="tool-card">
+                    <div class="tool-icon">🔗</div>
+                    <h3 class="tool-name">URL Encoder</h3>
+                    <p class="tool-description">Encode and decode URLs, parse query strings, component encoding with auto-detection.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">Encode</span>
+                        <span class="tool-tag">Parse</span>
+                        <span class="tool-tag">Query</span>
+                    </div>
+                    <span class="tool-arrow">→</span>
+                </a>
+
+                <!-- Tool Card 7: Lorem Ipsum Generator -->
+                <a href="lorem.html" class="tool-card">
+                    <div class="tool-icon">📝</div>
+                    <h3 class="tool-name">Lorem Ipsum</h3>
+                    <p class="tool-description">Generate placeholder text in 8 styles, smart templates for emails, blogs, and profiles.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">Text</span>
+                        <span class="tool-tag">Templates</span>
+                        <span class="tool-tag">8 Styles</span>
+                    </div>
+                    <span class="tool-arrow">→</span>
+                </a>
+
+                <!-- Tool Card 8: Timestamp Converter -->
+                <a href="timestamp.html" class="tool-card">
+                    <div class="tool-icon">⏰</div>
+                    <h3 class="tool-name">Timestamp</h3>
+                    <p class="tool-description">Convert Unix timestamps, handle timezones, calculate relative time with live updates.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">Unix</span>
+                        <span class="tool-tag">Timezone</span>
+                        <span class="tool-tag">Live</span>
+                    </div>
+                    <span class="tool-arrow">→</span>
+                </a>
+
+                <!-- Tool Card 9: Diff Checker -->
+                <a href="diff.html" class="tool-card">
+                    <div class="tool-icon">📊</div>
+                    <h3 class="tool-name">Diff Checker</h3>
+                    <p class="tool-description">Compare text and code with visual diff, side-by-side and inline views, export options.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">Compare</span>
+                        <span class="tool-tag">Visual</span>
+                        <span class="tool-tag">Export</span>
+                    </div>
+                    <span class="tool-arrow">→</span>
+                </a>
+
+                <!-- Tool Card 10: AI Prompt Optimizer -->
+                <a href="prompt.html" class="tool-card">
+                    <div class="tool-icon">✨</div>
+                    <h3 class="tool-name">Prompt Optimizer</h3>
+                    <p class="tool-description">Transform casual prompts into professional AI instructions for ChatGPT and Claude.</p>
+                    <div class="tool-tags">
+                        <span class="tool-tag">AI</span>
+                        <span class="tool-tag">Optimize</span>
+                        <span class="tool-tag">Smart</span>
+                    </div>
+                    <span class="tool-arrow">→</span>
+                </a>
+            </div>
         </div>
     </main>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">▸</span>
+                    Why ToolBit?
+                </h2>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">Lightning Fast</h3>
+                    <p class="feature-description">100% client-side processing means instant results. No server delays, no waiting.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Privacy First</h3>
+                    <p class="feature-description">Your data never leaves your browser. No tracking, no analytics, no data collection.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💯</div>
+                    <h3 class="feature-title">Always Free</h3>
+                    <p class="feature-description">No premium tiers, no paywalls, no limits. Professional tools accessible to everyone.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Mobile Ready</h3>
+                    <p class="feature-description">Fully responsive design works perfectly on desktop, tablet, and mobile devices.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Beautiful UI</h3>
+                    <p class="feature-description">Modern brutalist-terminal aesthetic. Dark theme, clean layout, zero bloat.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">No Sign-Up</h3>
+                    <p class="feature-description">Just click and use. No accounts, no emails, no friction. Tools when you need them.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Built by Developers, for Developers</h2>
+                <p class="cta-description">
+                    ToolBit is an open-source project created to provide high-quality developer tools without the bloat. 
+                    If you find these tools useful, consider supporting the project.
+                </p>
+                <div class="cta-buttons">
+                    <a href="support.html" class="btn btn-primary">
+                        <span class="btn-icon">☕</span>
+                        Support ToolBit
+                    </a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener" class="btn-secondary">
+                        <span class="icon">⭐</span>
+                        Star on GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="site-footer">
@@ -138,11 +329,16 @@ Example:
                 </div>
                 <div class="footer-section">
                     <h4>Tools</h4>
-                    <a href="index.html">JSON Formatter</a>
+                    <a href="json.html">JSON Formatter</a>
                     <a href="regex.html">RegEx Tester</a>
                     <a href="base64.html">Base64 Encoder</a>
                     <a href="colors.html">Color Palette Generator</a>
-                    <a href="#">More Tools (Coming Soon)</a>
+                    <a href="hash.html">Hash Generator</a>
+                    <a href="url.html">URL Encoder</a>
+                    <a href="lorem.html">Lorem Ipsum Generator</a>
+                    <a href="timestamp.html">Timestamp Converter</a>
+                    <a href="diff.html">Diff Checker</a>
+                    <a href="prompt.html">AI Prompt Optimizer</a>
                 </div>
                 <div class="footer-section">
                     <h4>Connect</h4>
@@ -164,11 +360,6 @@ Example:
         </div>
     </footer>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast hidden">
-        <span id="toastMessage"></span>
-    </div>
-
-    <script src="script.js"></script>
+    <script src="script-index.js"></script>
 </body>
 </html>

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://toolbit.dev/sitemap.xml
+
+# Crawl-delay (optional, be nice to servers)
+Crawl-delay: 1

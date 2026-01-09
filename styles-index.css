@@ -1,0 +1,334 @@
+/* Import shared base styles */
+@import url('styles.css');
+
+/* ========================================
+   HOMEPAGE SPECIFIC STYLES
+   ======================================== */
+
+/* Hero Section - Homepage */
+.hero-home {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-title-home {
+    font-size: clamp(3rem, 10vw, 8rem);
+    margin-bottom: 1rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+}
+
+.hero-tagline {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.hero-description-home {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    max-width: 700px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+}
+
+/* Hero Stats Grid */
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* CTA Button */
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: var(--color-primary);
+    color: var(--color-bg);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border: 2px solid var(--color-primary);
+}
+
+.cta-button:hover {
+    background: transparent;
+    color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 255, 159, 0.3);
+}
+
+.cta-icon {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Tools Section */
+.tools-section {
+    padding: 4rem 0;
+    background: var(--color-bg-alt);
+}
+
+.section-description {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+/* Tool Cards */
+.tool-card {
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.tool-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 255, 159, 0.2);
+}
+
+.tool-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.tool-name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
+}
+
+.tool-description {
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex: 1;
+}
+
+.tool-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tool-tag {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+}
+
+.tool-arrow {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+.tool-card:hover .tool-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Features Section */
+.features-section {
+    padding: 4rem 0;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--color-primary);
+}
+
+.feature-description {
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 4rem 0;
+    background: var(--color-surface);
+    border-top: 2px solid var(--color-border);
+    border-bottom: 2px solid var(--color-border);
+}
+
+.cta-content {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.cta-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+}
+
+.cta-description {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Smooth Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .tools-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cta-button,
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-home {
+        min-height: 70vh;
+    }
+
+    .hero-stats {
+        gap: 1rem;
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .tool-card {
+        padding: 1.5rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
+    }
+}
