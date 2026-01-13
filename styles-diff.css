@@ -440,6 +440,7 @@ kbd {
     color: var(--color-text-dim);
     background: var(--color-bg);
     border-right: 1px solid var(--color-border);
+    -webkit-user-select: none;
     user-select: none;
     font-variant-numeric: tabular-nums;
 }
@@ -631,6 +632,23 @@ kbd {
     position: absolute;
     left: 0;
     color: var(--color-primary);
+}
+
+/* Color Legend Styles */
+.color-added {
+    color: var(--color-added);
+}
+
+.color-deleted {
+    color: var(--color-deleted);
+}
+
+.color-changed {
+    color: var(--color-changed);
+}
+
+.color-unchanged {
+    color: var(--color-unchanged);
 }
 
 /* Hidden State */

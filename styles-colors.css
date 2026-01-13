@@ -964,6 +964,24 @@ body {
     color: var(--color-primary);
 }
 
+.harmony-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    background: rgba(0, 255, 159, 0.05);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
+
+.hint-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
 .palette-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -983,6 +1001,7 @@ body {
 .color-swatch:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
 }
 
 .color-swatch::after {
@@ -2330,4 +2349,104 @@ body {
 
 .footer-tagline a:hover {
     border-bottom-color: var(--color-primary);
+}
+
+/* ========================================
+   DRAG & DROP STYLES
+   ======================================== */
+.palette-slot.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.palette-slot.drag-over {
+    border-color: var(--color-primary);
+    background: rgba(0, 255, 159, 0.1);
+    transform: scale(1.05);
+}
+
+.palette-slot:not(.empty) {
+    cursor: grab;
+}
+
+.palette-slot:not(.empty):active {
+    cursor: grabbing;
+}
+
+/* ========================================
+   ACCESSIBILITY MODE STYLES
+   ======================================== */
+.accessibility-toggle-container {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    justify-content: center;
+}
+
+.accessibility-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.accessibility-toggle-label:hover {
+    border-color: var(--color-primary);
+}
+
+.accessibility-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+.accessibility-text {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Accessibility Mode Active */
+body.accessibility-mode {
+    --color-border: #4a5568;
+}
+
+body.accessibility-mode .palette-slot:not(.empty) {
+    border-width: 3px;
+    border-color: var(--color-text);
+}
+
+body.accessibility-mode .color-swatch {
+    border-width: 3px;
+}
+
+body.accessibility-mode .btn {
+    border-width: 3px;
+}
+
+body.accessibility-mode .section-title {
+    font-weight: 900;
+}
+
+body.accessibility-mode .color-name {
+    text-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
+}
+
+/* Palette Hint Styles (for working palette) */
+.working-palette-section .palette-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    background: rgba(0, 255, 159, 0.05);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
 }

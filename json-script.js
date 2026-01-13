@@ -9,7 +9,12 @@ const CONFIG = {
 
 let state = {
     history: [],
-    currentIndent: 2
+    currentIndent: 2,
+    currentJson: null,
+    treeViewEnabled: false,
+    searchQuery: '',
+    currentPath: '',
+    lineNumbersEnabled: false
 };
 
 // ========================================
@@ -22,6 +27,9 @@ const elements = {
     minifyBtn: document.getElementById('minifyBtn'),
     clearBtn: document.getElementById('clearBtn'),
     copyBtn: document.getElementById('copyBtn'),
+    downloadBtn: document.getElementById('downloadBtn'),
+    uploadBtn: document.getElementById('uploadBtn'),
+    fileInput: document.getElementById('fileInput'),
     pasteBtn: document.getElementById('pasteBtn'),
     loadSampleBtn: document.getElementById('loadSampleBtn'),
     indentSize: document.getElementById('indentSize'),
@@ -31,7 +39,15 @@ const elements = {
     validBadge: document.getElementById('validBadge'),
     historyList: document.getElementById('historyList'),
     toast: document.getElementById('toast'),
-    toastMessage: document.getElementById('toastMessage')
+    toastMessage: document.getElementById('toastMessage'),
+    treeViewBtn: document.getElementById('treeViewBtn'),
+    searchInput: document.getElementById('searchInput'),
+    jsonPath: document.getElementById('jsonPath'),
+    escapeBtn: document.getElementById('escapeBtn'),
+    unescapeBtn: document.getElementById('unescapeBtn'),
+    collapseAllBtn: document.getElementById('collapseAllBtn'),
+    expandAllBtn: document.getElementById('expandAllBtn'),
+    lineNumbersToggle: document.getElementById('lineNumbersToggle')
 };
 
 // ========================================
@@ -52,14 +68,42 @@ function attachEventListeners() {
     elements.minifyBtn.addEventListener('click', minifyJSON);
     elements.clearBtn.addEventListener('click', clearAll);
     elements.copyBtn.addEventListener('click', copyOutput);
+    elements.downloadBtn.addEventListener('click', downloadOutput);
+    elements.uploadBtn.addEventListener('click', triggerFileUpload);
+    elements.fileInput.addEventListener('change', handleFileUpload);
     elements.pasteBtn.addEventListener('click', pasteInput);
     elements.loadSampleBtn.addEventListener('click', loadSample);
     elements.indentSize.addEventListener('change', updateIndentSize);
-    elements.inputJson.addEventListener('input', updateCharCount);
+    elements.inputJson.addEventListener('input', () => {
+        updateCharCount();
+        if (state.lineNumbersEnabled) {
+            updateInputLineNumbers();
+        }
+    });
+    elements.inputJson.addEventListener('scroll', syncInputLineNumbersScroll);
+
+    // New feature listeners
+    elements.treeViewBtn.addEventListener('click', toggleTreeView);
+    elements.searchInput.addEventListener('input', handleSearch);
+    elements.escapeBtn.addEventListener('click', escapeJSON);
+    elements.unescapeBtn.addEventListener('click', unescapeJSON);
+    elements.collapseAllBtn.addEventListener('click', collapseAll);
+    elements.expandAllBtn.addEventListener('click', expandAll);
+    elements.lineNumbersToggle.addEventListener('change', toggleLineNumbers);
+
+    // Drag and drop listeners
+    elements.inputJson.addEventListener('dragover', handleDragOver);
+    elements.inputJson.addEventListener('dragleave', handleDragLeave);
+    elements.inputJson.addEventListener('drop', handleDrop);
 
     // Auto-format on paste (optional UX enhancement)
     elements.inputJson.addEventListener('paste', () => {
-        setTimeout(() => formatJSON(), 100);
+        setTimeout(() => {
+            formatJSON();
+            if (state.lineNumbersEnabled) {
+                updateInputLineNumbers();
+            }
+        }, 100);
     });
 }
 
@@ -72,39 +116,44 @@ function attachEventListeners() {
  */
 function formatJSON() {
     const input = elements.inputJson.value.trim();
-    
+
     if (!input) {
         showStatus('Please enter some JSON to format', 'error');
         return;
     }
-    
+
     try {
         // Parse JSON to validate
         const parsed = JSON.parse(input);
-        
+        state.currentJson = parsed;
+
         // Get indent size
         const indent = state.currentIndent === 'tab' ? '\t' : state.currentIndent;
-        
+
         // Stringify with formatting
         const formatted = JSON.stringify(parsed, null, indent);
-        
-        // Display with syntax highlighting
-        displayFormattedJSON(formatted);
-        
+
+        // Display with syntax highlighting or tree view
+        if (state.treeViewEnabled) {
+            displayTreeView(parsed);
+        } else {
+            displayFormattedJSON(formatted);
+        }
+
         // Update UI
         showStatus('✓ Valid JSON formatted successfully', 'success');
         elements.validBadge.classList.remove('hidden');
-        
+
         // Save to history
         saveToHistory(input, formatted);
-        
+
         // Show success toast
         showToast('JSON formatted and validated ✓');
-        
+
     } catch (error) {
         showStatus(`✗ Invalid JSON: ${error.message}`, 'error');
         elements.validBadge.classList.add('hidden');
-        elements.outputJson.innerHTML = `<span style="color: var(--color-error);">Error: ${error.message}</span>`;
+        displayJSONError(input, error);
     }
 }
 
@@ -171,6 +220,82 @@ async function pasteInput() {
 }
 
 /**
+ * Trigger file upload dialog
+ */
+function triggerFileUpload() {
+    elements.fileInput.click();
+}
+
+/**
+ * Handle file upload
+ */
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        readFile(file);
+    }
+}
+
+/**
+ * Handle drag over event
+ */
+function handleDragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    elements.inputJson.classList.add('drag-over');
+}
+
+/**
+ * Handle drag leave event
+ */
+function handleDragLeave(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    elements.inputJson.classList.remove('drag-over');
+}
+
+/**
+ * Handle drop event
+ */
+function handleDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    elements.inputJson.classList.remove('drag-over');
+
+    const file = event.dataTransfer.files[0];
+    if (file) {
+        // Check if it's a JSON file
+        if (file.type === 'application/json' || file.name.endsWith('.json')) {
+            readFile(file);
+        } else {
+            showToast('Please upload a JSON file');
+        }
+    }
+}
+
+/**
+ * Read file content
+ */
+function readFile(file) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        const content = e.target.result;
+        elements.inputJson.value = content;
+        updateCharCount();
+        showToast(`Loaded ${file.name} 📁`);
+        // Auto-format after load
+        setTimeout(() => formatJSON(), 100);
+    };
+
+    reader.onerror = () => {
+        showToast('Failed to read file');
+    };
+
+    reader.readAsText(file);
+}
+
+/**
  * Copy output to clipboard
  */
 async function copyOutput() {
@@ -197,51 +322,143 @@ async function copyOutput() {
 }
 
 /**
+ * Download output as JSON file
+ */
+function downloadOutput() {
+    const output = elements.outputJson.textContent;
+
+    if (!output) {
+        showToast('Nothing to download');
+        return;
+    }
+
+    try {
+        // Validate that it's proper JSON
+        JSON.parse(output);
+
+        // Create blob with JSON content
+        const blob = new Blob([output], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        // Create temporary download link
+        const link = document.createElement('a');
+        link.href = url;
+
+        // Generate filename with timestamp
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+        link.download = `formatted-json-${timestamp}.json`;
+
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Clean up the URL object
+        URL.revokeObjectURL(url);
+
+        showToast('JSON downloaded! ⬇');
+        trackEvent('Tool', 'Download', 'JSON');
+    } catch (error) {
+        showToast('Invalid JSON - cannot download');
+    }
+}
+
+/**
  * Load sample JSON
  */
 function loadSample() {
     const sample = {
-        "name": "DevToolkit",
-        "version": "1.0.0",
-        "description": "Professional developer tools suite",
-        "tools": [
-            {
-                "name": "JSON Formatter",
+        "project": {
+            "name": "ToolBit",
+            "tagline": "Professional developer tools, zero bloat",
+            "version": "2.0.0",
+            "repository": "https://github.com/toolbit/toolbit",
+            "license": "MIT"
+        },
+
+        "features": {
+            "json": {
+                "name": "JSON Formatter & Validator",
+                "capabilities": [
+                    "Format & beautify",
+                    "Minify",
+                    "Tree view with collapse/expand",
+                    "Search keys and values",
+                    "Escape/unescape strings",
+                    "Download formatted JSON",
+                    "Syntax highlighting"
+                ],
                 "status": "live",
-                "features": ["format", "validate", "minify", "syntax-highlight"]
+                "users": 15420
             },
-            {
-                "name": "RegEx Tester",
-                "status": "coming-soon"
+
+            "colors": {
+                "name": "Color Palette Generator",
+                "capabilities": [
+                    "Generate palettes",
+                    "Extract from images",
+                    "Export formats"
+                ],
+                "status": "live",
+                "users": 8930
             },
-            {
-                "name": "Cron Builder",
-                "status": "coming-soon"
-            }
-        ],
-        "pricing": {
-            "free": {
-                "tools": "all",
-                "history": 10,
-                "ads": true
-            },
-            "premium": {
-                "price": "$5/month",
-                "history": "unlimited",
-                "ads": false,
-                "sync": true
+
+            "diff": {
+                "name": "Text Diff Checker",
+                "capabilities": [
+                    "Side-by-side comparison",
+                    "Inline diff",
+                    "Word-level highlighting"
+                ],
+                "status": "live",
+                "users": 6780
             }
         },
+
+        "tech_stack": {
+            "frontend": [
+                "HTML5",
+                "CSS3",
+                "Vanilla JavaScript"
+            ],
+            "fonts": [
+                "JetBrains Mono",
+                "Unbounded"
+            ],
+            "deployment": "Static hosting",
+            "analytics": "Google Analytics"
+        },
+
         "stats": {
-            "users": 1337,
-            "formatsToday": 42069,
-            "isAwesome": true,
-            "bugs": null
+            "totalUsers": 31130,
+            "dailyActive": 2847,
+            "avgSessionTime": "4m 32s",
+            "satisfaction": 4.8,
+            "openSource": true,
+            "mobileReady": true,
+            "lastUpdated": "2026-01-13T12:00:00Z",
+            "nextFeature": "API Endpoint Tester"
+        },
+
+        "community": {
+            "discord": "https://discord.gg/toolbit",
+            "github": "https://github.com/toolbit",
+            "twitter": "@toolbit_dev",
+            "contributors": 47,
+            "stars": 1337
+        },
+
+        "metadata": {
+            "createdBy": "Noah",
+            "purpose": "Making developer tools accessible and fast",
+            "philosophy": "Client-side processing, privacy-first, zero tracking of user data",
+            "sponsorship": null
         }
     };
-    
-    elements.inputJson.value = JSON.stringify(sample);
+
+    elements.inputJson.value = JSON.stringify(sample, null, 2);
     updateCharCount();
+    updateInputLineNumbers();
     formatJSON();
 }
 
@@ -266,6 +483,560 @@ function updateCharCount() {
     elements.charCount.textContent = `${count.toLocaleString()} characters`;
 }
 
+/**
+ * Toggle line numbers in input and output
+ */
+function toggleLineNumbers() {
+    state.lineNumbersEnabled = elements.lineNumbersToggle.checked;
+
+    // Update input line numbers visibility
+    const inputWrapper = elements.inputJson.parentElement;
+    const lineNumbersGutter = document.getElementById('inputLineNumbers');
+
+    if (state.lineNumbersEnabled) {
+        inputWrapper.classList.add('with-line-numbers');
+        elements.inputJson.classList.add('with-line-numbers');
+        updateInputLineNumbers();
+    } else {
+        inputWrapper.classList.remove('with-line-numbers');
+        elements.inputJson.classList.remove('with-line-numbers');
+        lineNumbersGutter.innerHTML = '';
+    }
+
+    // Re-render the output if we have JSON
+    if (state.currentJson) {
+        if (state.treeViewEnabled) {
+            // Tree view doesn't support line numbers, show message
+            showToast('Line numbers not available in tree view');
+            elements.lineNumbersToggle.checked = false;
+            state.lineNumbersEnabled = false;
+            inputWrapper.classList.remove('with-line-numbers');
+            elements.inputJson.classList.remove('with-line-numbers');
+            lineNumbersGutter.innerHTML = '';
+        } else {
+            const indent = state.currentIndent === 'tab' ? '\t' : state.currentIndent;
+            const formatted = JSON.stringify(state.currentJson, null, indent);
+            displayFormattedJSON(formatted);
+            showToast(state.lineNumbersEnabled ? 'Line numbers enabled' : 'Line numbers disabled');
+        }
+    } else {
+        showToast(state.lineNumbersEnabled ? 'Line numbers enabled' : 'Line numbers disabled');
+    }
+}
+
+/**
+ * Update input line numbers based on content
+ */
+function updateInputLineNumbers() {
+    const lineNumbersGutter = document.getElementById('inputLineNumbers');
+
+    if (!state.lineNumbersEnabled) {
+        return;
+    }
+
+    const lines = elements.inputJson.value.split('\n').length;
+    const lineNumbersHTML = Array.from({ length: lines }, (_, i) =>
+        `<div class="line-number">${i + 1}</div>`
+    ).join('');
+
+    lineNumbersGutter.innerHTML = lineNumbersHTML;
+}
+
+/**
+ * Sync input line numbers scroll with textarea
+ */
+function syncInputLineNumbersScroll() {
+    const lineNumbersGutter = document.getElementById('inputLineNumbers');
+    lineNumbersGutter.scrollTop = elements.inputJson.scrollTop;
+}
+
+// ========================================
+// TREE VIEW FUNCTIONALITY
+// ========================================
+
+/**
+ * Toggle between tree view and regular view
+ */
+function toggleTreeView() {
+    state.treeViewEnabled = !state.treeViewEnabled;
+    elements.treeViewBtn.textContent = state.treeViewEnabled ? '📄 Plain View' : '🌲 Tree View';
+
+    if (state.currentJson) {
+        if (state.treeViewEnabled) {
+            displayTreeView(state.currentJson);
+        } else {
+            const indent = state.currentIndent === 'tab' ? '\t' : state.currentIndent;
+            const formatted = JSON.stringify(state.currentJson, null, indent);
+            displayFormattedJSON(formatted);
+        }
+    }
+}
+
+/**
+ * Display JSON as interactive tree
+ */
+function displayTreeView(data, path = '') {
+    elements.outputJson.innerHTML = '';
+    elements.outputJson.className = 'json-output tree-view';
+    const tree = createTreeNode(data, path, 'root');
+    elements.outputJson.appendChild(tree);
+}
+
+/**
+ * Create a tree node element
+ */
+function createTreeNode(data, path, key, isExpanded = true) {
+    const container = document.createElement('div');
+    container.className = 'tree-node';
+
+    const type = Array.isArray(data) ? 'array' : typeof data === 'object' && data !== null ? 'object' : 'value';
+
+    if (type === 'object' || type === 'array') {
+        const header = document.createElement('div');
+        header.className = 'tree-node-header';
+
+        const toggle = document.createElement('span');
+        toggle.className = `tree-toggle ${isExpanded ? 'expanded' : 'collapsed'}`;
+        toggle.textContent = isExpanded ? '▼' : '▶';
+
+        const keySpan = document.createElement('span');
+        keySpan.className = 'tree-key json-key';
+        keySpan.textContent = key !== 'root' ? `"${key}"` : '';
+        keySpan.dataset.path = path || key;
+
+        const colon = document.createElement('span');
+        colon.textContent = key !== 'root' ? ': ' : '';
+
+        const bracket = document.createElement('span');
+        bracket.className = 'tree-bracket';
+        const isArray = Array.isArray(data);
+        const openBracket = isArray ? '[' : '{';
+        const closeBracket = isArray ? ']' : '}';
+        const length = isArray ? data.length : Object.keys(data).length;
+        bracket.textContent = `${openBracket} ${length} items ${closeBracket}`;
+
+        header.appendChild(toggle);
+        if (key !== 'root') {
+            header.appendChild(keySpan);
+            header.appendChild(colon);
+        }
+        header.appendChild(bracket);
+
+        // Add click to show path
+        keySpan.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showJsonPath(keySpan.dataset.path);
+            highlightNode(keySpan);
+        });
+
+        const content = document.createElement('div');
+        content.className = 'tree-node-content';
+        content.style.display = isExpanded ? 'block' : 'none';
+
+        const entries = isArray ? data.map((v, i) => [i, v]) : Object.entries(data);
+        entries.forEach(([k, v]) => {
+            const childPath = path ? `${path}.${k}` : String(k);
+            const childNode = createTreeNode(v, childPath, k, false);
+            content.appendChild(childNode);
+        });
+
+        // Toggle expand/collapse functionality
+        const toggleExpansion = (e) => {
+            // Don't toggle if clicking on the key to show path
+            if (e.target.classList.contains('tree-key')) {
+                return;
+            }
+
+            const isCurrentlyExpanded = content.style.display === 'block';
+            content.style.display = isCurrentlyExpanded ? 'none' : 'block';
+            toggle.className = `tree-toggle ${isCurrentlyExpanded ? 'collapsed' : 'expanded'}`;
+            toggle.textContent = isCurrentlyExpanded ? '▶' : '▼';
+        };
+
+        // Make entire header clickable
+        header.addEventListener('click', toggleExpansion);
+        header.style.cursor = 'pointer';
+
+        container.appendChild(header);
+        container.appendChild(content);
+    } else {
+        // Leaf node
+        const leaf = document.createElement('div');
+        leaf.className = 'tree-leaf';
+
+        const keySpan = document.createElement('span');
+        keySpan.className = 'tree-key json-key';
+        keySpan.textContent = `"${key}"`;
+        keySpan.dataset.path = path || key;
+
+        const colon = document.createElement('span');
+        colon.textContent = ': ';
+
+        const valueSpan = document.createElement('span');
+        const valueType = typeof data;
+        let valueClass = 'json-value';
+
+        if (data === null) {
+            valueClass = 'json-null';
+            valueSpan.textContent = 'null';
+        } else if (valueType === 'boolean') {
+            valueClass = 'json-boolean';
+            valueSpan.textContent = String(data);
+        } else if (valueType === 'number') {
+            valueClass = 'json-number';
+            valueSpan.textContent = String(data);
+        } else if (valueType === 'string') {
+            valueClass = 'json-string';
+            valueSpan.textContent = `"${data}"`;
+        }
+
+        valueSpan.className = valueClass;
+
+        // Add click to show path
+        keySpan.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showJsonPath(keySpan.dataset.path);
+            highlightNode(keySpan);
+        });
+
+        leaf.appendChild(keySpan);
+        leaf.appendChild(colon);
+        leaf.appendChild(valueSpan);
+
+        container.appendChild(leaf);
+    }
+
+    return container;
+}
+
+/**
+ * Collapse all tree nodes
+ */
+function collapseAll() {
+    if (!state.treeViewEnabled || !state.currentJson) {
+        showToast('Enable tree view first');
+        return;
+    }
+
+    const contents = elements.outputJson.querySelectorAll('.tree-node-content');
+    const toggles = elements.outputJson.querySelectorAll('.tree-toggle');
+
+    contents.forEach(content => content.style.display = 'none');
+    toggles.forEach(toggle => {
+        toggle.className = 'tree-toggle collapsed';
+        toggle.textContent = '▶';
+    });
+
+    showToast('All nodes collapsed');
+}
+
+/**
+ * Expand all tree nodes
+ */
+function expandAll() {
+    if (!state.treeViewEnabled || !state.currentJson) {
+        showToast('Enable tree view first');
+        return;
+    }
+
+    const contents = elements.outputJson.querySelectorAll('.tree-node-content');
+    const toggles = elements.outputJson.querySelectorAll('.tree-toggle');
+
+    contents.forEach(content => content.style.display = 'block');
+    toggles.forEach(toggle => {
+        toggle.className = 'tree-toggle expanded';
+        toggle.textContent = '▼';
+    });
+
+    showToast('All nodes expanded');
+}
+
+// ========================================
+// JSON PATH DISPLAY
+// ========================================
+
+/**
+ * Show the JSON path of selected element
+ */
+function showJsonPath(path) {
+    state.currentPath = path;
+    elements.jsonPath.innerHTML = `Path: <span class="path-value">${path || 'root'}</span>`;
+    elements.jsonPath.classList.remove('hidden');
+
+    // Copy path on click
+    elements.jsonPath.onclick = async () => {
+        try {
+            await navigator.clipboard.writeText(path);
+            showToast('Path copied! 📋');
+        } catch (err) {
+            showToast('Failed to copy path');
+        }
+    };
+}
+
+/**
+ * Highlight selected node
+ */
+function highlightNode(element) {
+    // Remove previous highlights
+    document.querySelectorAll('.tree-key.highlighted').forEach(el => {
+        el.classList.remove('highlighted');
+    });
+
+    // Add highlight to current
+    element.classList.add('highlighted');
+}
+
+// ========================================
+// SEARCH/FILTER FUNCTIONALITY
+// ========================================
+
+/**
+ * Handle search input
+ */
+function handleSearch() {
+    const query = elements.searchInput.value.toLowerCase().trim();
+    state.searchQuery = query;
+
+    if (!state.currentJson) {
+        return;
+    }
+
+    if (!query) {
+        // Clear search highlights and restore original view
+        if (state.treeViewEnabled) {
+            clearSearchHighlights();
+        } else {
+            // Re-render the plain view without highlights
+            const indent = state.currentIndent === 'tab' ? '\t' : state.currentIndent;
+            const formatted = JSON.stringify(state.currentJson, null, indent);
+            displayFormattedJSON(formatted);
+        }
+        showStatus('Ready to format JSON', 'ready');
+        return;
+    }
+
+    if (state.treeViewEnabled) {
+        searchInTreeView(query);
+    } else {
+        // Re-render first to clear any previous highlights
+        const indent = state.currentIndent === 'tab' ? '\t' : state.currentIndent;
+        const formatted = JSON.stringify(state.currentJson, null, indent);
+        displayFormattedJSON(formatted);
+        // Then apply new search
+        searchInPlainView(query);
+    }
+}
+
+/**
+ * Search in tree view
+ */
+function searchInTreeView(query) {
+    const allKeys = elements.outputJson.querySelectorAll('.tree-key');
+    const allValues = elements.outputJson.querySelectorAll('.json-string, .json-number, .json-boolean, .json-null');
+
+    let matchCount = 0;
+
+    // Clear previous highlights
+    clearSearchHighlights();
+
+    // Helper function to highlight matching text within an element
+    const highlightMatches = (element) => {
+        const text = element.textContent;
+        const lowerText = text.toLowerCase();
+        const lowerQuery = query.toLowerCase();
+
+        if (lowerText.includes(lowerQuery)) {
+            const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+            const highlighted = text.replace(regex, '<mark class="search-match">$1</mark>');
+            element.innerHTML = highlighted;
+            return true;
+        }
+        return false;
+    };
+
+    // Search keys
+    allKeys.forEach(key => {
+        if (highlightMatches(key)) {
+            matchCount++;
+
+            // Expand parent nodes to show match
+            let parent = key.closest('.tree-node-content');
+            while (parent) {
+                parent.style.display = 'block';
+                const toggle = parent.previousElementSibling?.querySelector('.tree-toggle');
+                if (toggle) {
+                    toggle.className = 'tree-toggle expanded';
+                    toggle.textContent = '▼';
+                }
+                parent = parent.parentElement?.closest('.tree-node-content');
+            }
+        }
+    });
+
+    // Search values
+    allValues.forEach(value => {
+        if (highlightMatches(value)) {
+            matchCount++;
+
+            // Expand parent nodes to show match
+            let parent = value.closest('.tree-node-content');
+            while (parent) {
+                parent.style.display = 'block';
+                const toggle = parent.previousElementSibling?.querySelector('.tree-toggle');
+                if (toggle) {
+                    toggle.className = 'tree-toggle expanded';
+                    toggle.textContent = '▼';
+                }
+                parent = parent.parentElement?.closest('.tree-node-content');
+            }
+        }
+    });
+
+    showStatus(`Found ${matchCount} matches for "${query}"`, matchCount > 0 ? 'success' : 'error');
+}
+
+/**
+ * Search in plain view
+ */
+function searchInPlainView(query) {
+    // Clear previous highlights first
+    clearSearchHighlights();
+
+    let matchCount = 0;
+    const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+
+    // Helper function to highlight text in text nodes only
+    const highlightTextNodes = (node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent;
+            const lowerText = text.toLowerCase();
+            const lowerQuery = query.toLowerCase();
+
+            if (lowerText.includes(lowerQuery)) {
+                // Count matches
+                const matches = text.match(regex);
+                if (matches) {
+                    matchCount += matches.length;
+                }
+
+                // Create a temporary container
+                const span = document.createElement('span');
+                span.innerHTML = text.replace(regex, '<mark class="search-match">$1</mark>');
+
+                // Replace the text node with the highlighted content
+                const fragment = document.createDocumentFragment();
+                while (span.firstChild) {
+                    fragment.appendChild(span.firstChild);
+                }
+                node.parentNode.replaceChild(fragment, node);
+            }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            // Recursively process child nodes
+            // Create a copy of childNodes array since we'll be modifying the DOM
+            const children = Array.from(node.childNodes);
+            children.forEach(child => highlightTextNodes(child));
+        }
+    };
+
+    highlightTextNodes(elements.outputJson);
+    showStatus(`Found ${matchCount} matches for "${query}"`, matchCount > 0 ? 'success' : 'error');
+}
+
+/**
+ * Clear search highlights
+ */
+function clearSearchHighlights() {
+    document.querySelectorAll('.search-match').forEach(el => {
+        if (el.tagName === 'MARK') {
+            el.outerHTML = el.innerHTML;
+        } else {
+            el.classList.remove('search-match');
+        }
+    });
+}
+
+/**
+ * Escape regex special characters
+ */
+function escapeRegex(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// ========================================
+// ESCAPE/UNESCAPE FUNCTIONALITY
+// ========================================
+
+/**
+ * Escape JSON string
+ */
+function escapeJSON() {
+    const input = elements.inputJson.value.trim();
+
+    if (!input) {
+        showStatus('Please enter some JSON to escape', 'error');
+        return;
+    }
+
+    try {
+        // Parse to validate
+        const parsed = JSON.parse(input);
+        // Convert to escaped string
+        const escaped = JSON.stringify(JSON.stringify(parsed));
+
+        // Remove outer quotes
+        const result = escaped.slice(1, -1);
+
+        elements.outputJson.textContent = result;
+        showStatus('✓ JSON escaped successfully', 'success');
+        showToast('JSON escaped ✓');
+
+    } catch (error) {
+        showStatus(`✗ Invalid JSON: ${error.message}`, 'error');
+    }
+}
+
+/**
+ * Unescape JSON string
+ */
+function unescapeJSON() {
+    const input = elements.inputJson.value.trim();
+
+    if (!input) {
+        showStatus('Please enter an escaped JSON string', 'error');
+        return;
+    }
+
+    try {
+        // Try to parse as escaped JSON
+        let unescaped;
+
+        // Try parsing with quotes
+        try {
+            unescaped = JSON.parse(`"${input}"`);
+        } catch {
+            // If that fails, try parsing directly
+            unescaped = JSON.parse(input);
+        }
+
+        // Parse the unescaped string as JSON to validate
+        const parsed = JSON.parse(unescaped);
+        state.currentJson = parsed;
+
+        // Format the result
+        const indent = state.currentIndent === 'tab' ? '\t' : state.currentIndent;
+        const formatted = JSON.stringify(parsed, null, indent);
+
+        displayFormattedJSON(formatted);
+        showStatus('✓ JSON unescaped successfully', 'success');
+        elements.validBadge.classList.remove('hidden');
+        showToast('JSON unescaped ✓');
+
+    } catch (error) {
+        showStatus(`✗ Invalid escaped JSON: ${error.message}`, 'error');
+    }
+}
+
 // ========================================
 // SYNTAX HIGHLIGHTING
 // ========================================
@@ -274,8 +1045,22 @@ function updateCharCount() {
  * Display JSON with syntax highlighting
  */
 function displayFormattedJSON(json) {
+    elements.outputJson.className = 'json-output';
+
+    if (state.lineNumbersEnabled) {
+        elements.outputJson.classList.add('with-line-numbers');
+    }
+
     const highlighted = syntaxHighlight(json);
-    elements.outputJson.innerHTML = highlighted;
+
+    if (state.lineNumbersEnabled) {
+        // Wrap each line in a span for line number display
+        const lines = highlighted.split('\n');
+        const wrappedLines = lines.map(line => `<span class="line">${line || ' '}</span>`).join('\n');
+        elements.outputJson.innerHTML = wrappedLines;
+    } else {
+        elements.outputJson.innerHTML = highlighted;
+    }
 }
 
 /**
@@ -301,6 +1086,88 @@ function syntaxHighlight(json) {
         
         return '<span class="' + cls + '">' + match + '</span>';
     });
+}
+
+/**
+ * Display JSON error with line highlighting
+ */
+function displayJSONError(input, error) {
+    elements.outputJson.className = 'json-output';
+
+    // Try to extract line and column from error message
+    const positionMatch = error.message.match(/position (\d+)/i);
+    const lineMatch = error.message.match(/line (\d+)/i);
+    const columnMatch = error.message.match(/column (\d+)/i);
+
+    let errorHTML = '<div class="json-error">';
+    errorHTML += '<div class="error-title">⚠ JSON Syntax Error</div>';
+    errorHTML += `<div class="error-message">${escapeHtml(error.message)}</div>`;
+
+    if (positionMatch || lineMatch) {
+        const lines = input.split('\n');
+        let errorLine = 0;
+        let errorColumn = 0;
+
+        if (positionMatch) {
+            // Calculate line and column from position
+            const position = parseInt(positionMatch[1]);
+            let charCount = 0;
+
+            for (let i = 0; i < lines.length; i++) {
+                const lineLength = lines[i].length + 1; // +1 for newline
+                if (charCount + lineLength > position) {
+                    errorLine = i;
+                    errorColumn = position - charCount;
+                    break;
+                }
+                charCount += lineLength;
+            }
+        } else if (lineMatch) {
+            errorLine = parseInt(lineMatch[1]) - 1; // Convert to 0-based
+            if (columnMatch) {
+                errorColumn = parseInt(columnMatch[1]) - 1;
+            }
+        }
+
+        // Show context: 2 lines before, error line, 2 lines after
+        const contextStart = Math.max(0, errorLine - 2);
+        const contextEnd = Math.min(lines.length, errorLine + 3);
+
+        errorHTML += '<div class="error-preview">';
+
+        for (let i = contextStart; i < contextEnd; i++) {
+            const lineNum = i + 1;
+            const line = lines[i];
+            const isErrorLine = i === errorLine;
+
+            errorHTML += `<div style="margin-bottom: ${isErrorLine ? '0.5rem' : '0.25rem'};">`;
+            errorHTML += `<span class="error-line-number${isErrorLine ? '" style="color: var(--color-error); font-weight: 900;' : ''}">${lineNum}:</span>`;
+            errorHTML += `<span class="error-line"${isErrorLine ? ' style="background: rgba(255, 0, 110, 0.1); font-weight: 600;"' : ''}>${escapeHtml(line)}</span>`;
+
+            if (isErrorLine && errorColumn > 0) {
+                errorHTML += '<div>';
+                errorHTML += `<span class="error-line-number"></span>`;
+                errorHTML += `<span class="error-pointer">${' '.repeat(errorColumn)}^--- Error here</span>`;
+                errorHTML += '</div>';
+            }
+
+            errorHTML += '</div>';
+        }
+
+        errorHTML += '</div>';
+    }
+
+    errorHTML += '</div>';
+    elements.outputJson.innerHTML = errorHTML;
+}
+
+/**
+ * Escape HTML special characters
+ */
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // ========================================

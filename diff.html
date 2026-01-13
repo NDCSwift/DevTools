@@ -148,7 +148,7 @@ function hello() {
             <div class="settings-panel">
                 <div class="settings-grid">
                     <div class="setting-group">
-                        <label class="setting-label">Language</label>
+                        <label class="setting-label" for="languageSelect">Language</label>
                         <select id="languageSelect" class="select-input">
                             <option value="plaintext">Plain Text</option>
                             <option value="javascript" selected>JavaScript</option>
@@ -363,10 +363,10 @@ function hello() {
                     <div class="info-card">
                         <h4>🎨 Understanding the Color Coding</h4>
                         <ul>
-                            <li><strong style="color: #28a745;">Green (Added):</strong> New lines or text that didn't exist in the original</li>
-                            <li><strong style="color: #dc3545;">Red (Deleted):</strong> Lines or text that were removed from the original</li>
-                            <li><strong style="color: #ffc107;">Yellow (Changed):</strong> Lines that were modified (combination of additions and deletions)</li>
-                            <li><strong style="color: #6c757d;">Gray (Unchanged):</strong> Lines that stayed exactly the same</li>
+                            <li><strong class="color-added">Green (Added):</strong> New lines or text that didn't exist in the original</li>
+                            <li><strong class="color-deleted">Red (Deleted):</strong> Lines or text that were removed from the original</li>
+                            <li><strong class="color-changed">Yellow (Changed):</strong> Lines that were modified (combination of additions and deletions)</li>
+                            <li><strong class="color-unchanged">Gray (Unchanged):</strong> Lines that stayed exactly the same</li>
                         </ul>
                         <p>Character-level highlights within lines show the exact text that was added or removed.</p>
                     </div>

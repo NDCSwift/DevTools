@@ -3,14 +3,19 @@
 // ========================================
 const CONFIG = {
     TOAST_DURATION: 3000,
-    STORAGE_KEY: 'colorPalettes'
+    STORAGE_KEY: 'colorPalettes',
+    MAX_HISTORY: 50 // Maximum undo/redo history
 };
 
 let state = {
     currentColor: '#00ff9f',
     currentHarmony: 'complementary',
     workingPalette: [], // NEW: Array of colors in working palette (max 8)
-    savedPalettes: []
+    savedPalettes: [],
+    history: [], // Undo/redo history for working palette
+    historyIndex: -1, // Current position in history
+    accessibilityMode: false, // High contrast mode
+    draggedIndex: null // For drag & drop
 };
 
 // ========================================
@@ -54,7 +59,14 @@ const elements = {
     
     // Toast
     toast: document.getElementById('toast'),
-    toastMessage: document.getElementById('toastMessage')
+    toastMessage: document.getElementById('toastMessage'),
+
+    // NEW: Undo/Redo & Export buttons
+    undoBtn: document.getElementById('undoBtn'),
+    redoBtn: document.getElementById('redoBtn'),
+    eyedropperBtn: document.getElementById('eyedropperBtn'),
+    exportPngBtn: document.getElementById('exportPngBtn'),
+    accessibilityToggle: document.getElementById('accessibilityToggle')
 };
 
 // ========================================
@@ -62,10 +74,12 @@ const elements = {
 // ========================================
 function init() {
     loadSavedPalettes();
+    loadAccessibilityMode(); // NEW: Load accessibility preference
     attachEventListeners();
     initializeWorkingPalette(); // NEW
     renderWorkingPalette(); // NEW
     updateAllFromColor(state.currentColor);
+    updateHistoryButtons(); // NEW: Initialize undo/redo buttons
     console.log('🚀 ToolBit Color Tool initialized');
 }
 
@@ -142,7 +156,41 @@ function attachEventListeners() {
     document.getElementById('saveWorkingPaletteBtn').addEventListener('click', saveWorkingPalette);
     
     document.getElementById('loadHarmonyBtn').addEventListener('click', loadHarmonyToWorking);
-    
+
+    // NEW: Undo/Redo buttons
+    if (elements.undoBtn) {
+        elements.undoBtn.addEventListener('click', undo);
+    }
+    if (elements.redoBtn) {
+        elements.redoBtn.addEventListener('click', redo);
+    }
+
+    // NEW: Eyedropper button
+    if (elements.eyedropperBtn) {
+        elements.eyedropperBtn.addEventListener('click', openEyeDropper);
+    }
+
+    // NEW: Export PNG button
+    if (elements.exportPngBtn) {
+        elements.exportPngBtn.addEventListener('click', exportPaletteAsPng);
+    }
+
+    // NEW: Accessibility toggle
+    if (elements.accessibilityToggle) {
+        elements.accessibilityToggle.addEventListener('change', toggleAccessibilityMode);
+    }
+
+    // NEW: Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+            e.preventDefault();
+            undo();
+        } else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+            e.preventDefault();
+            redo();
+        }
+    });
+
     // Popular palettes - UPDATED to load full palette
     document.querySelectorAll('.palette-card').forEach(card => {
         card.addEventListener('click', (e) => {
@@ -157,6 +205,68 @@ function attachEventListeners() {
 // ========================================
 // WORKING PALETTE FUNCTIONS
 // ========================================
+
+/**
+ * Save current palette state to history
+ */
+function saveToHistory() {
+    // Remove any future history if we're not at the end
+    if (state.historyIndex < state.history.length - 1) {
+        state.history = state.history.slice(0, state.historyIndex + 1);
+    }
+
+    // Add current state
+    state.history.push([...state.workingPalette]);
+
+    // Limit history size
+    if (state.history.length > CONFIG.MAX_HISTORY) {
+        state.history.shift();
+    } else {
+        state.historyIndex++;
+    }
+
+    updateHistoryButtons();
+}
+
+/**
+ * Undo last palette change
+ */
+function undo() {
+    if (state.historyIndex > 0) {
+        state.historyIndex--;
+        state.workingPalette = [...state.history[state.historyIndex]];
+        renderWorkingPalette();
+        updateHistoryButtons();
+        showToast('Undo ↶');
+    }
+}
+
+/**
+ * Redo last undone change
+ */
+function redo() {
+    if (state.historyIndex < state.history.length - 1) {
+        state.historyIndex++;
+        state.workingPalette = [...state.history[state.historyIndex]];
+        renderWorkingPalette();
+        updateHistoryButtons();
+        showToast('Redo ↷');
+    }
+}
+
+/**
+ * Update undo/redo button states
+ */
+function updateHistoryButtons() {
+    if (elements.undoBtn) {
+        elements.undoBtn.disabled = state.historyIndex <= 0;
+        elements.undoBtn.style.opacity = state.historyIndex <= 0 ? '0.5' : '1';
+    }
+    if (elements.redoBtn) {
+        elements.redoBtn.disabled = state.historyIndex >= state.history.length - 1;
+        elements.redoBtn.style.opacity = state.historyIndex >= state.history.length - 1 ? '0.5' : '1';
+    }
+}
 
 /**
  * Initialize working palette slots in HTML
@@ -186,12 +296,13 @@ function addToWorkingPalette(color) {
         showToast('Palette is full (max 8 colors)');
         return;
     }
-    
+
     if (state.workingPalette.includes(color.toUpperCase())) {
         showToast('Color already in palette');
         return;
     }
-    
+
+    saveToHistory(); // Save before modifying
     state.workingPalette.push(color.toUpperCase());
     renderWorkingPalette();
     showToast('Added to palette! 🎨');
@@ -201,6 +312,7 @@ function addToWorkingPalette(color) {
  * Remove color from working palette
  */
 function removeFromWorkingPalette(index) {
+    saveToHistory(); // Save before modifying
     state.workingPalette.splice(index, 1);
     renderWorkingPalette();
     showToast('Color removed');
@@ -214,8 +326,9 @@ function clearWorkingPalette() {
         showToast('Palette is already empty');
         return;
     }
-    
+
     if (confirm('Clear all colors from working palette?')) {
+        saveToHistory(); // Save before modifying
         state.workingPalette = [];
         renderWorkingPalette();
         showToast('Palette cleared');
@@ -231,7 +344,8 @@ function loadHarmonyToWorking() {
         showToast('No harmony colors to load');
         return;
     }
-    
+
+    saveToHistory(); // Save before modifying
     state.workingPalette = harmonyColors.map(c => c.toUpperCase());
     renderWorkingPalette();
     showToast(`Loaded ${harmonyColors.length} harmony colors! 🎨`);
@@ -249,6 +363,7 @@ function getCurrentHarmonyColors() {
  * Load popular palette to working palette
  */
 function loadPopularPalette(colors) {
+    saveToHistory(); // Save before modifying
     state.workingPalette = colors.map(c => c.toUpperCase());
     renderWorkingPalette();
     showToast(`Loaded ${colors.length} colors to palette! 🎨`);
@@ -284,45 +399,89 @@ function saveWorkingPalette() {
  */
 function renderWorkingPalette() {
     const slots = document.querySelectorAll('.palette-slot');
-    
+
     slots.forEach((slot, index) => {
         const colorDiv = slot.querySelector('.slot-color');
         const hexDiv = slot.querySelector('.slot-hex');
         const removeBtn = slot.querySelector('.remove-color');
-        
+
         if (index < state.workingPalette.length) {
             const color = state.workingPalette[index];
-            
+
             slot.classList.remove('empty');
+            slot.setAttribute('draggable', 'true');
             colorDiv.style.background = color;
             hexDiv.textContent = color;
             removeBtn.style.display = 'flex';
-            
+
             // Click to view/edit this color
             slot.onclick = () => updateAllFromColor(color);
-            
+
             // Remove button
             removeBtn.onclick = (e) => {
                 e.stopPropagation();
                 removeFromWorkingPalette(index);
             };
-            
+
             // Add copy on hover tooltip
-            slot.title = `Click to edit ${color}\nRight-click to copy`;
-            
+            slot.title = `Click to edit ${color}\nRight-click to copy\nDrag to reorder`;
+
             // Right-click to copy
             slot.oncontextmenu = (e) => {
                 e.preventDefault();
                 copyToClipboard(color);
             };
-            
+
+            // NEW: Drag & drop functionality
+            slot.ondragstart = (e) => {
+                state.draggedIndex = index;
+                slot.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            };
+
+            slot.ondragend = (e) => {
+                slot.classList.remove('dragging');
+                slots.forEach(s => s.classList.remove('drag-over'));
+            };
+
+            slot.ondragover = (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                slot.classList.add('drag-over');
+            };
+
+            slot.ondragleave = (e) => {
+                slot.classList.remove('drag-over');
+            };
+
+            slot.ondrop = (e) => {
+                e.preventDefault();
+                slot.classList.remove('drag-over');
+
+                if (state.draggedIndex !== null && state.draggedIndex !== index) {
+                    saveToHistory(); // Save before reordering
+                    const draggedColor = state.workingPalette[state.draggedIndex];
+                    state.workingPalette.splice(state.draggedIndex, 1);
+                    state.workingPalette.splice(index, 0, draggedColor);
+                    renderWorkingPalette();
+                    showToast('Colors reordered');
+                }
+                state.draggedIndex = null;
+            };
+
         } else {
             slot.classList.add('empty');
+            slot.removeAttribute('draggable');
             colorDiv.style.background = 'transparent';
             hexDiv.textContent = 'Empty';
             removeBtn.style.display = 'none';
             slot.onclick = null;
             slot.oncontextmenu = null;
+            slot.ondragstart = null;
+            slot.ondragend = null;
+            slot.ondragover = null;
+            slot.ondragleave = null;
+            slot.ondrop = null;
             slot.title = 'Add a color to fill this slot';
         }
     });
@@ -336,20 +495,20 @@ window.exportPaletteAs = function(format) {
         showToast('Palette is empty!');
         return;
     }
-    
+
     let output;
-    
+
     switch(format) {
         case 'css':
-            output = ':root {\n' + state.workingPalette.map((c, i) => 
+            output = ':root {\n' + state.workingPalette.map((c, i) =>
                 `  --color-${i + 1}: ${c};`
             ).join('\n') + '\n}';
             break;
-            
+
         case 'array':
             output = JSON.stringify(state.workingPalette);
             break;
-            
+
         case 'json':
             output = JSON.stringify({
                 name: 'My Palette',
@@ -358,9 +517,111 @@ window.exportPaletteAs = function(format) {
             }, null, 2);
             break;
     }
-    
+
     copyToClipboard(output);
 };
+
+/**
+ * Open EyeDropper API to pick color from screen
+ */
+async function openEyeDropper() {
+    if (!window.EyeDropper) {
+        showToast('EyeDropper not supported in this browser');
+        return;
+    }
+
+    try {
+        const eyeDropper = new EyeDropper();
+        const result = await eyeDropper.open();
+        updateAllFromColor(result.sRGBHex);
+        showToast('Color picked! 🎨');
+    } catch (error) {
+        if (error.name !== 'AbortError') {
+            showToast('Failed to pick color');
+            console.error('EyeDropper error:', error);
+        }
+    }
+}
+
+/**
+ * Export palette as PNG image
+ */
+function exportPaletteAsPng() {
+    if (state.workingPalette.length === 0) {
+        showToast('Palette is empty!');
+        return;
+    }
+
+    // Create canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const swatchWidth = 200;
+    const swatchHeight = 200;
+    const cols = Math.min(4, state.workingPalette.length);
+    const rows = Math.ceil(state.workingPalette.length / cols);
+
+    canvas.width = cols * swatchWidth;
+    canvas.height = rows * swatchHeight;
+
+    // Draw background
+    ctx.fillStyle = '#0a0e14';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw color swatches
+    state.workingPalette.forEach((color, i) => {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const x = col * swatchWidth;
+        const y = row * swatchHeight;
+
+        // Draw color
+        ctx.fillStyle = color;
+        ctx.fillRect(x + 10, y + 10, swatchWidth - 20, swatchHeight - 60);
+
+        // Draw text
+        ctx.fillStyle = '#e6edf3';
+        ctx.font = 'bold 24px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(color, x + swatchWidth / 2, y + swatchHeight - 20);
+    });
+
+    // Download
+    canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `palette-${Date.now()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Palette exported as PNG! 📸');
+    });
+}
+
+/**
+ * Toggle accessibility mode
+ */
+function toggleAccessibilityMode() {
+    state.accessibilityMode = !state.accessibilityMode;
+    document.body.classList.toggle('accessibility-mode', state.accessibilityMode);
+    localStorage.setItem('accessibilityMode', state.accessibilityMode);
+    showToast(state.accessibilityMode ? 'Accessibility mode ON' : 'Accessibility mode OFF');
+}
+
+/**
+ * Load accessibility mode from localStorage
+ */
+function loadAccessibilityMode() {
+    const saved = localStorage.getItem('accessibilityMode');
+    if (saved === 'true') {
+        state.accessibilityMode = true;
+        document.body.classList.add('accessibility-mode');
+        if (elements.accessibilityToggle) {
+            elements.accessibilityToggle.checked = true;
+        }
+    }
+}
 
 // ========================================
 // COLOR CONVERSION FUNCTIONS
@@ -659,11 +920,11 @@ function adjustLightness(hex, amount) {
  */
 function displayPalette(colors) {
     elements.harmonyPalette.innerHTML = colors.map(color => `
-        <div class="color-swatch" 
-             style="background: ${color}" 
-             data-hex="${color}" 
-             title="${color} - Click to view"
-             onclick="updateAllFromColor('${color}')" 
+        <div class="color-swatch"
+             style="background: ${color}"
+             data-hex="${color}"
+             title="${color}&#10;Left-click: View color&#10;Right-click: Add to palette"
+             onclick="updateAllFromColor('${color}')"
              oncontextmenu="event.preventDefault(); addToWorkingPalette('${color}')">
         </div>
     `).join('');
@@ -681,14 +942,26 @@ function updateGradient() {
     const color2 = elements.gradientColor2.value;
     const type = elements.gradientType.value;
     const angle = elements.gradientAngle.value;
-    
+
+    // Show/hide angle control based on gradient type
+    const angleContainer = elements.gradientAngle.parentElement;
+    if (type === 'radial') {
+        angleContainer.style.opacity = '0.5';
+        angleContainer.style.pointerEvents = 'none';
+        elements.gradientAngle.disabled = true;
+    } else {
+        angleContainer.style.opacity = '1';
+        angleContainer.style.pointerEvents = 'auto';
+        elements.gradientAngle.disabled = false;
+    }
+
     let css;
     if (type === 'linear') {
         css = `linear-gradient(${angle}deg, ${color1}, ${color2})`;
     } else {
         css = `radial-gradient(circle, ${color1}, ${color2})`;
     }
-    
+
     elements.gradientPreview.style.background = css;
     elements.gradientCSS.value = `background: ${css};`;
 }
@@ -905,7 +1178,21 @@ elements.randomColorBtn.addEventListener('click', () => trackEvent('Tool', 'Rand
 elements.savePaletteBtn.addEventListener('click', () => trackEvent('Tool', 'Save', 'Palette'));
 
 // ========================================
+// APPLY PALETTE PREVIEW COLORS
+// ========================================
+function applyPalettePreviewColors() {
+    // Apply colors to all palette preview divs from data-color attributes
+    document.querySelectorAll('.palette-preview div[data-color]').forEach(div => {
+        const color = div.getAttribute('data-color');
+        if (color) {
+            div.style.background = color;
+        }
+    });
+}
+
+// ========================================
 // START APP
 // ========================================
 init();
 updateGradient();
+applyPalettePreviewColors();

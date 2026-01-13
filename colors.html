@@ -270,6 +270,12 @@
                 <span class="hero-subtitle">Palette Generator & Converter</span>
             </h1>
             <p class="hero-description">Create color palettes, convert between formats, and explore color harmonies instantly.</p>
+            <div class="accessibility-toggle-container">
+                <label class="accessibility-toggle-label">
+                    <input type="checkbox" id="accessibilityToggle" class="accessibility-checkbox">
+                    <span class="accessibility-text">High Contrast Mode</span>
+                </label>
+            </div>
         </div>
     </section>
 
@@ -325,6 +331,10 @@
                     <span class="btn-icon">🎲</span>
                     Generate Random Color
                 </button>
+                <button id="eyedropperBtn" class="btn btn-secondary">
+                    <span class="btn-icon">💧</span>
+                    Pick Color from Screen
+                </button>
                 <button id="addToPaletteBtn" class="btn btn-primary">
                     <span class="btn-icon">➕</span>
                     Add to Working Palette
@@ -339,19 +349,27 @@
                         Working Palette
                     </h3>
                     <div class="section-controls">
+                        <button id="undoBtn" class="btn-link" title="Undo (Ctrl+Z)">↶ Undo</button>
+                        <button id="redoBtn" class="btn-link" title="Redo (Ctrl+Y)">↷ Redo</button>
                         <button id="clearPaletteBtn" class="btn-link">Clear All</button>
                         <button id="saveWorkingPaletteBtn" class="btn btn-primary">💾 Save Palette</button>
                     </div>
                 </div>
-                
+
+                <div class="palette-hint">
+                    <span class="hint-icon">💡</span>
+                    <span>Drag colors to reorder • Click to edit • Right-click to copy</span>
+                </div>
+
                 <div class="palette-slots" id="paletteSlots">
                     <!-- 8 slots for colors -->
                 </div>
-                
+
                 <div class="palette-export">
                     <button class="btn btn-ghost" onclick="exportPaletteAs('css')">Copy as CSS</button>
                     <button class="btn btn-ghost" onclick="exportPaletteAs('array')">Copy as Array</button>
                     <button class="btn btn-ghost" onclick="exportPaletteAs('json')">Copy as JSON</button>
+                    <button id="exportPngBtn" class="btn btn-ghost">📸 Export as PNG</button>
                 </div>
             </div>
 
@@ -366,23 +384,21 @@
                         <button id="loadHarmonyBtn" class="btn-link">📋 Load All to Palette</button>
                     </div>
                 </div>
-            <div class="harmony-section">
-                <div class="section-header">
-                    <h3 class="section-title">
-                        <span class="section-icon">▸</span>
-                        Color Harmonies
-                    </h3>
-                </div>
-                
+
                 <div class="harmony-tabs">
-                    <button class="harmony-tab active" data-harmony="complementary">Complementary</button>
-                    <button class="harmony-tab" data-harmony="analogous">Analogous</button>
-                    <button class="harmony-tab" data-harmony="triadic">Triadic</button>
-                    <button class="harmony-tab" data-harmony="tetradic">Tetradic</button>
-                    <button class="harmony-tab" data-harmony="monochromatic">Monochromatic</button>
+                    <button type="button" class="harmony-tab active" data-harmony="complementary">Complementary</button>
+                    <button type="button" class="harmony-tab" data-harmony="analogous">Analogous</button>
+                    <button type="button" class="harmony-tab" data-harmony="triadic">Triadic</button>
+                    <button type="button" class="harmony-tab" data-harmony="tetradic">Tetradic</button>
+                    <button type="button" class="harmony-tab" data-harmony="monochromatic">Monochromatic</button>
                 </div>
-                
+
                 <div id="harmonyPalette" class="palette-grid"></div>
+
+                <div class="harmony-hint">
+                    <span class="hint-icon">💡</span>
+                    <span>Click a color to view it • Right-click to add to palette • Use button above to load all</span>
+                </div>
             </div>
 
             <!-- Gradient Generator -->
@@ -487,66 +503,66 @@
                 <div class="popular-grid">
                     <div class="palette-card" data-palette='["#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A", "#98D8C8"]'>
                         <div class="palette-preview">
-                            <div style="background: #FF6B6B"></div>
-                            <div style="background: #4ECDC4"></div>
-                            <div style="background: #45B7D1"></div>
-                            <div style="background: #FFA07A"></div>
-                            <div style="background: #98D8C8"></div>
+                            <div data-color="#FF6B6B"></div>
+                            <div data-color="#4ECDC4"></div>
+                            <div data-color="#45B7D1"></div>
+                            <div data-color="#FFA07A"></div>
+                            <div data-color="#98D8C8"></div>
                         </div>
                         <div class="palette-name">Summer Vibes</div>
                     </div>
-                    
+
                     <div class="palette-card" data-palette='["#2D3436", "#636E72", "#B2BEC3", "#DFE6E9", "#FFFFFF"]'>
                         <div class="palette-preview">
-                            <div style="background: #2D3436"></div>
-                            <div style="background: #636E72"></div>
-                            <div style="background: #B2BEC3"></div>
-                            <div style="background: #DFE6E9"></div>
-                            <div style="background: #FFFFFF"></div>
+                            <div data-color="#2D3436"></div>
+                            <div data-color="#636E72"></div>
+                            <div data-color="#B2BEC3"></div>
+                            <div data-color="#DFE6E9"></div>
+                            <div data-color="#FFFFFF"></div>
                         </div>
                         <div class="palette-name">Grayscale Modern</div>
                     </div>
-                    
+
                     <div class="palette-card" data-palette='["#6C5CE7", "#A29BFE", "#FD79A8", "#FDCB6E", "#00B894"]'>
                         <div class="palette-preview">
-                            <div style="background: #6C5CE7"></div>
-                            <div style="background: #A29BFE"></div>
-                            <div style="background: #FD79A8"></div>
-                            <div style="background: #FDCB6E"></div>
-                            <div style="background: #00B894"></div>
+                            <div data-color="#6C5CE7"></div>
+                            <div data-color="#A29BFE"></div>
+                            <div data-color="#FD79A8"></div>
+                            <div data-color="#FDCB6E"></div>
+                            <div data-color="#00B894"></div>
                         </div>
                         <div class="palette-name">Playful Gradient</div>
                     </div>
-                    
+
                     <div class="palette-card" data-palette='["#1E3A8A", "#3B82F6", "#60A5FA", "#93C5FD", "#DBEAFE"]'>
                         <div class="palette-preview">
-                            <div style="background: #1E3A8A"></div>
-                            <div style="background: #3B82F6"></div>
-                            <div style="background: #60A5FA"></div>
-                            <div style="background: #93C5FD"></div>
-                            <div style="background: #DBEAFE"></div>
+                            <div data-color="#1E3A8A"></div>
+                            <div data-color="#3B82F6"></div>
+                            <div data-color="#60A5FA"></div>
+                            <div data-color="#93C5FD"></div>
+                            <div data-color="#DBEAFE"></div>
                         </div>
                         <div class="palette-name">Ocean Blues</div>
                     </div>
-                    
+
                     <div class="palette-card" data-palette='["#F59E0B", "#FBBF24", "#FCD34D", "#FDE68A", "#FEF3C7"]'>
                         <div class="palette-preview">
-                            <div style="background: #F59E0B"></div>
-                            <div style="background: #FBBF24"></div>
-                            <div style="background: #FCD34D"></div>
-                            <div style="background: #FDE68A"></div>
-                            <div style="background: #FEF3C7"></div>
+                            <div data-color="#F59E0B"></div>
+                            <div data-color="#FBBF24"></div>
+                            <div data-color="#FCD34D"></div>
+                            <div data-color="#FDE68A"></div>
+                            <div data-color="#FEF3C7"></div>
                         </div>
                         <div class="palette-name">Golden Sunset</div>
                     </div>
-                    
+
                     <div class="palette-card" data-palette='["#DC2626", "#EF4444", "#F87171", "#FCA5A5", "#FEE2E2"]'>
                         <div class="palette-preview">
-                            <div style="background: #DC2626"></div>
-                            <div style="background: #EF4444"></div>
-                            <div style="background: #F87171"></div>
-                            <div style="background: #FCA5A5"></div>
-                            <div style="background: #FEE2E2"></div>
+                            <div data-color="#DC2626"></div>
+                            <div data-color="#EF4444"></div>
+                            <div data-color="#F87171"></div>
+                            <div data-color="#FCA5A5"></div>
+                            <div data-color="#FEE2E2"></div>
                         </div>
                         <div class="palette-name">Cherry Red</div>
                     </div>

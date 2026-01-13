@@ -80,12 +80,16 @@
                         <span class="btn-icon">⊟</span>
                         Minify
                     </button>
+                    <button id="treeViewBtn" class="btn btn-secondary">
+                        <span class="btn-icon">🌲</span>
+                        Tree View
+                    </button>
                     <button id="clearBtn" class="btn btn-ghost">
                         <span class="btn-icon">⌫</span>
                         Clear
                     </button>
                 </div>
-                
+
                 <div class="control-group">
                     <label class="indent-control">
                         <span class="label-text">Indent:</span>
@@ -95,10 +99,41 @@
                             <option value="tab">Tab</option>
                         </select>
                     </label>
-                    <button id="copyBtn" class="btn btn-ghost">
-                        <span class="btn-icon">⎘</span>
-                        Copy
+                    <label class="toggle-control">
+                        <input type="checkbox" id="lineNumbersToggle" class="toggle-input" />
+                        <span class="toggle-label">Line Numbers</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- New Feature Controls -->
+            <div class="feature-controls">
+                <div class="control-group">
+                    <button id="escapeBtn" class="btn btn-secondary">
+                        <span class="btn-icon">🔒</span>
+                        Escape
                     </button>
+                    <button id="unescapeBtn" class="btn btn-secondary">
+                        <span class="btn-icon">🔓</span>
+                        Unescape
+                    </button>
+                    <button id="collapseAllBtn" class="btn btn-ghost">
+                        <span class="btn-icon">⊖</span>
+                        Collapse All
+                    </button>
+                    <button id="expandAllBtn" class="btn btn-ghost">
+                        <span class="btn-icon">⊕</span>
+                        Expand All
+                    </button>
+                </div>
+
+                <div class="search-group">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search-input"
+                        placeholder="🔍 Search keys or values..."
+                    />
                 </div>
             </div>
 
@@ -109,34 +144,68 @@
                 <span id="charCount" class="char-count">0 characters</span>
             </div>
 
+            <!-- JSON Path Display -->
+            <div id="jsonPath" class="json-path hidden">
+                Path: <span class="path-value">root</span>
+            </div>
+
             <!-- Editor Area -->
             <div class="editor-wrapper">
                 <div class="editor-panel">
                     <div class="panel-header">
                         <span class="panel-title">INPUT</span>
                         <div class="panel-actions">
-                            <button id="pasteBtn" class="btn-link">Paste</button>
-                            <button id="loadSampleBtn" class="btn-link">Load Sample</button>
+                            <button type="button" id="uploadBtn" class="btn-link">
+                                <span class="btn-icon">📁</span> Upload
+                            </button>
+                            <button type="button" id="pasteBtn" class="btn-link">Paste</button>
+                            <button type="button" id="loadSampleBtn" class="btn-link">Load Sample</button>
                         </div>
                     </div>
-                    <textarea 
-                        id="inputJson" 
-                        class="json-editor" 
-                        placeholder='Paste your JSON here...
+                    <label for="fileInput" class="sr-only">Upload JSON file</label>
+                    <input type="file" id="fileInput" accept=".json,application/json" class="hidden-file-input" aria-label="Upload JSON file" />
+                    <div class="input-wrapper">
+                        <div id="inputLineNumbers" class="input-line-numbers"></div>
+                        <textarea
+                            id="inputJson"
+                            class="json-editor drag-drop-zone"
+                            placeholder='Paste, drag & drop, or upload your JSON file...
+
+Try formatting, minifying, or exploring with tree view!
+
 Example:
 {
-  "name": "DevToolkit",
-  "version": "1.0.0",
-  "tools": ["JSON", "RegEx", "Basee64", "Colors"]
+  "user": {
+    "name": "Alex Chen",
+    "email": "alex@example.com",
+    "settings": {
+      "theme": "dark",
+      "notifications": true
+    }
+  },
+  "stats": {
+    "posts": 42,
+    "followers": 1337,
+    "verified": true
+  }
 }'
-                        spellcheck="false"
-                    ></textarea>
+                            spellcheck="false"
+                        ></textarea>
+                    </div>
                 </div>
 
                 <div class="editor-panel">
                     <div class="panel-header">
                         <span class="panel-title">OUTPUT</span>
-                        <span id="validBadge" class="valid-badge hidden">VALID ✓</span>
+                        <div class="panel-actions">
+                            <span id="validBadge" class="valid-badge hidden">VALID ✓</span>
+                            <button type="button" id="copyBtn" class="btn-link">
+                                <span class="btn-icon">⎘</span> Copy
+                            </button>
+                            <button type="button" id="downloadBtn" class="btn-link">
+                                <span class="btn-icon">⬇</span> Download
+                            </button>
+                        </div>
                     </div>
                     <div id="outputJson" class="json-output"></div>
                 </div>
