@@ -3,14 +3,21 @@
 // ========================================
 const CONFIG = {
     TOAST_DURATION: 3000,
-    MAX_MATCHES_DISPLAY: 100
+    MAX_MATCHES_DISPLAY: 100,
+    MAX_HISTORY_ITEMS: 10,
+    HISTORY_STORAGE_KEY: 'regexHistory',
+    DEBOUNCE_DELAY: 200
 };
 
 let state = {
     pattern: '',
     flags: '',
     testString: '',
-    matches: []
+    matches: [],
+    replaceString: '',
+    replaceEnabled: false,
+    history: [],
+    debounceTimer: null
 };
 
 // ========================================
@@ -25,21 +32,38 @@ const elements = {
     statusBar: document.getElementById('statusBar'),
     statusText: document.getElementById('statusText'),
     matchCount: document.getElementById('matchCount'),
-    
+
     // Flag checkboxes
     flagG: document.getElementById('flagG'),
     flagI: document.getElementById('flagI'),
     flagM: document.getElementById('flagM'),
     flagS: document.getElementById('flagS'),
     flagU: document.getElementById('flagU'),
-    
+
     // Buttons
     loadSampleBtn: document.getElementById('loadSampleBtn'),
     clearTestBtn: document.getElementById('clearTestBtn'),
     copyMatchesBtn: document.getElementById('copyMatchesBtn'),
+    exportJsonBtn: document.getElementById('exportJsonBtn'),
+    exportCsvBtn: document.getElementById('exportCsvBtn'),
     toggleLibrary: document.getElementById('toggleLibrary'),
     libraryContent: document.getElementById('libraryContent'),
-    
+
+    // Replace/Substitution
+    enableReplace: document.getElementById('enableReplace'),
+    replaceControls: document.getElementById('replaceControls'),
+    replaceString: document.getElementById('replaceString'),
+    replaceOutput: document.getElementById('replaceOutput'),
+    copyReplaceBtn: document.getElementById('copyReplaceBtn'),
+
+    // Pattern History
+    toggleHistory: document.getElementById('toggleHistory'),
+    historyContent: document.getElementById('historyContent'),
+    historyList: document.getElementById('historyList'),
+
+    // Explanation
+    explanationContent: document.getElementById('explanationContent'),
+
     // Toast
     toast: document.getElementById('toast'),
     toastMessage: document.getElementById('toastMessage')
@@ -49,6 +73,7 @@ const elements = {
 // INITIALIZATION
 // ========================================
 function init() {
+    loadHistory();
     attachEventListeners();
     console.log('🚀 DevToolkit RegEx Tester initialized');
 }
@@ -57,24 +82,34 @@ function init() {
 // EVENT LISTENERS
 // ========================================
 function attachEventListeners() {
-    // Real-time testing
-    elements.regexPattern.addEventListener('input', testRegex);
+    // Real-time testing with debounce
+    elements.regexPattern.addEventListener('input', debouncedTestRegex);
     elements.regexFlags.addEventListener('input', handleFlagsInput);
-    elements.testString.addEventListener('input', testRegex);
-    
+    elements.testString.addEventListener('input', debouncedTestRegex);
+
     // Flag checkboxes
     elements.flagG.addEventListener('change', handleFlagCheckbox);
     elements.flagI.addEventListener('change', handleFlagCheckbox);
     elements.flagM.addEventListener('change', handleFlagCheckbox);
     elements.flagS.addEventListener('change', handleFlagCheckbox);
     elements.flagU.addEventListener('change', handleFlagCheckbox);
-    
+
     // Buttons
     elements.loadSampleBtn.addEventListener('click', loadSample);
     elements.clearTestBtn.addEventListener('click', clearTest);
     elements.copyMatchesBtn.addEventListener('click', copyMatches);
+    elements.exportJsonBtn.addEventListener('click', () => exportMatches('json'));
+    elements.exportCsvBtn.addEventListener('click', () => exportMatches('csv'));
     elements.toggleLibrary.addEventListener('click', toggleLibrary);
-    
+
+    // Replace/Substitution
+    elements.enableReplace.addEventListener('change', toggleReplaceMode);
+    elements.replaceString.addEventListener('input', performReplace);
+    elements.copyReplaceBtn.addEventListener('click', copyReplaceResult);
+
+    // History
+    elements.toggleHistory.addEventListener('click', toggleHistory);
+
     // Library items
     document.querySelectorAll('.library-item').forEach(item => {
         item.addEventListener('click', loadPattern);
@@ -84,6 +119,14 @@ function attachEventListeners() {
 // ========================================
 // CORE REGEX TESTING
 // ========================================
+
+/**
+ * Debounced version of testRegex for better performance
+ */
+function debouncedTestRegex() {
+    clearTimeout(state.debounceTimer);
+    state.debounceTimer = setTimeout(testRegex, CONFIG.DEBOUNCE_DELAY);
+}
 
 /**
  * Test the regex pattern against the test string
@@ -120,14 +163,15 @@ function testRegex() {
                     text: match[0],
                     index: match.index,
                     groups: match.slice(1),
+                    namedGroups: match.groups || {},
                     fullMatch: match
                 });
-                
+
                 // Prevent infinite loop on zero-length matches
                 if (match.index === regex.lastIndex) {
                     regex.lastIndex++;
                 }
-                
+
                 // Safety limit
                 if (matches.length >= CONFIG.MAX_MATCHES_DISPLAY) {
                     break;
@@ -141,6 +185,7 @@ function testRegex() {
                     text: match[0],
                     index: match.index,
                     groups: match.slice(1),
+                    namedGroups: match.groups || {},
                     fullMatch: match
                 });
             }
@@ -152,21 +197,37 @@ function testRegex() {
         // Display results
         displayHighlightedText(testString, matches);
         displayMatchDetails(matches);
-        
+        explainPattern(pattern, flags);
+
         // Update status
         if (matches.length > 0) {
             showStatus(`✓ Pattern is valid`, 'success');
             elements.matchCount.textContent = `${matches.length} match${matches.length !== 1 ? 'es' : ''}`;
+
+            // Save to history (only when there are matches)
+            saveToHistory(pattern, flags);
         } else {
             showStatus('Pattern is valid but no matches found', 'ready');
             elements.matchCount.textContent = '0 matches';
         }
-        
+
+        // Perform replace if enabled
+        if (state.replaceEnabled) {
+            performReplace();
+        }
+
     } catch (error) {
-        // Invalid regex
+        // Invalid regex - provide helpful error message
+        const errorHint = getRegexErrorHint(error.message, pattern);
         showStatus(`✗ Invalid pattern: ${error.message}`, 'error');
         elements.matchCount.textContent = '0 matches';
         clearResults();
+        elements.explanationContent.innerHTML = `
+            <div class="explanation-error">
+                <strong>Invalid Pattern:</strong> ${escapeHtml(error.message)}
+                ${errorHint ? `<div class="error-hint">${errorHint}</div>` : ''}
+            </div>
+        `;
     }
 }
 
@@ -215,9 +276,26 @@ function displayMatchDetails(matches) {
     }
     
     const html = matches.map((match, index) => {
-        const groupsHtml = match.groups.length > 0 
+        // Named groups (show first if they exist)
+        const namedGroupsHtml = Object.keys(match.namedGroups).length > 0
             ? `
                 <div class="match-groups">
+                    <div class="group-section-title">Named Groups:</div>
+                    ${Object.entries(match.namedGroups).map(([name, value]) => `
+                        <div class="match-group match-named-group">
+                            <span class="group-label">${escapeHtml(name)}:</span>
+                            <span class="group-value">${value !== undefined ? escapeHtml(value) : '(not captured)'}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `
+            : '';
+
+        // Regular numbered groups
+        const groupsHtml = match.groups.length > 0
+            ? `
+                <div class="match-groups">
+                    ${Object.keys(match.namedGroups).length > 0 ? '<div class="group-section-title">Numbered Groups:</div>' : ''}
                     ${match.groups.map((group, i) => `
                         <div class="match-group">
                             <span class="group-label">Group ${i + 1}:</span>
@@ -227,7 +305,7 @@ function displayMatchDetails(matches) {
                 </div>
             `
             : '';
-        
+
         return `
             <div class="match-item">
                 <div class="match-header">
@@ -235,6 +313,7 @@ function displayMatchDetails(matches) {
                     <span class="match-position">Position: ${match.index} - ${match.index + match.text.length - 1}</span>
                 </div>
                 <div class="match-text">${escapeHtml(match.text)}</div>
+                ${namedGroupsHtml}
                 ${groupsHtml}
             </div>
         `;
@@ -254,6 +333,12 @@ function clearResults() {
         </div>
     `;
     elements.matchCount.textContent = '0 matches';
+    elements.replaceOutput.textContent = '';
+    elements.explanationContent.innerHTML = `
+        <div class="explanation-empty">
+            Enter a pattern above to see an explanation
+        </div>
+    `;
 }
 
 // ========================================
@@ -438,6 +523,529 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+/**
+ * Get helpful hint for common regex errors
+ */
+function getRegexErrorHint(errorMessage, pattern) {
+    const hints = {
+        'Unterminated group': 'Check for unmatched parentheses ( ) in your pattern',
+        'Unmatched': 'Check for unmatched brackets [ ], braces { }, or parentheses ( )',
+        'Nothing to repeat': 'A quantifier (*,+,?,{}) was used without a preceding character or group',
+        'Invalid group': 'Check your group syntax - use () for capture groups, (?:) for non-capturing',
+        'Invalid escape': 'Backslash \\ must be followed by a valid escape character',
+        'Range out of order': 'In character sets like [a-z], the first character must come before the second',
+        'Incomplete quantifier': 'Quantifier {} syntax is incomplete - use {n}, {n,}, or {n,m}'
+    };
+
+    for (const [key, hint] of Object.entries(hints)) {
+        if (errorMessage.includes(key)) {
+            return hint;
+        }
+    }
+
+    // Check for common issues by analyzing the pattern
+    const openParens = (pattern.match(/\(/g) || []).length;
+    const closeParens = (pattern.match(/\)/g) || []).length;
+    if (openParens !== closeParens) {
+        return `Found ${openParens} opening and ${closeParens} closing parentheses - they should match`;
+    }
+
+    const openBrackets = (pattern.match(/\[/g) || []).length;
+    const closeBrackets = (pattern.match(/\]/g) || []).length;
+    if (openBrackets !== closeBrackets) {
+        return `Found ${openBrackets} opening and ${closeBrackets} closing brackets - they should match`;
+    }
+
+    return null;
+}
+
+/**
+ * Export matches in different formats
+ */
+function exportMatches(format) {
+    if (state.matches.length === 0) {
+        showToast('No matches to export');
+        return;
+    }
+
+    let exportData = '';
+    let filename = '';
+    let mimeType = '';
+
+    if (format === 'json') {
+        exportData = JSON.stringify(state.matches.map(m => ({
+            text: m.text,
+            index: m.index,
+            groups: m.groups,
+            namedGroups: m.namedGroups
+        })), null, 2);
+        filename = 'regex-matches.json';
+        mimeType = 'application/json';
+    } else if (format === 'csv') {
+        // CSV header
+        const hasNamedGroups = state.matches.some(m => Object.keys(m.namedGroups).length > 0);
+        const maxGroups = Math.max(...state.matches.map(m => m.groups.length));
+
+        let csv = 'Match,Index,Text';
+        for (let i = 1; i <= maxGroups; i++) {
+            csv += `,Group ${i}`;
+        }
+        if (hasNamedGroups) {
+            const allNamedKeys = new Set();
+            state.matches.forEach(m => Object.keys(m.namedGroups).forEach(k => allNamedKeys.add(k)));
+            allNamedKeys.forEach(key => csv += `,${key}`);
+        }
+        csv += '\n';
+
+        // CSV rows
+        state.matches.forEach((match, idx) => {
+            csv += `${idx + 1},${match.index},"${match.text.replace(/"/g, '""')}"`;
+            for (let i = 0; i < maxGroups; i++) {
+                const group = match.groups[i];
+                csv += `,"${group !== undefined ? String(group).replace(/"/g, '""') : ''}"`;
+            }
+            if (hasNamedGroups) {
+                const allNamedKeys = new Set();
+                state.matches.forEach(m => Object.keys(m.namedGroups).forEach(k => allNamedKeys.add(k)));
+                allNamedKeys.forEach(key => {
+                    const value = match.namedGroups[key];
+                    csv += `,"${value !== undefined ? String(value).replace(/"/g, '""') : ''}"`;
+                });
+            }
+            csv += '\n';
+        });
+
+        exportData = csv;
+        filename = 'regex-matches.csv';
+        mimeType = 'text/csv';
+    }
+
+    // Create download
+    const blob = new Blob([exportData], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast(`Exported ${state.matches.length} matches as ${format.toUpperCase()} ✓`);
+}
+
+// ========================================
+// REPLACE/SUBSTITUTION MODE
+// ========================================
+
+/**
+ * Toggle replace mode on/off
+ */
+function toggleReplaceMode() {
+    state.replaceEnabled = elements.enableReplace.checked;
+
+    if (state.replaceEnabled) {
+        elements.replaceControls.classList.remove('hidden');
+        performReplace();
+    } else {
+        elements.replaceControls.classList.add('hidden');
+    }
+}
+
+/**
+ * Perform the replacement operation
+ */
+function performReplace() {
+    if (!state.replaceEnabled || !state.pattern || !state.testString) {
+        elements.replaceOutput.textContent = '';
+        return;
+    }
+
+    try {
+        const regex = new RegExp(state.pattern, state.flags);
+        const replaceStr = elements.replaceString.value;
+        state.replaceString = replaceStr;
+
+        const result = state.testString.replace(regex, replaceStr);
+        elements.replaceOutput.textContent = result;
+    } catch (error) {
+        elements.replaceOutput.textContent = 'Error performing replacement';
+    }
+}
+
+/**
+ * Copy replace result to clipboard
+ */
+async function copyReplaceResult() {
+    const result = elements.replaceOutput.textContent;
+
+    if (!result) {
+        showToast('No replacement result to copy');
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(result);
+        showToast('Replacement result copied to clipboard! ⎘');
+    } catch (error) {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = result;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Replacement result copied to clipboard! ⎘');
+    }
+}
+
+// ========================================
+// PATTERN HISTORY (localStorage)
+// ========================================
+
+/**
+ * Load history from localStorage
+ */
+function loadHistory() {
+    try {
+        const stored = localStorage.getItem(CONFIG.HISTORY_STORAGE_KEY);
+        if (stored) {
+            state.history = JSON.parse(stored);
+            displayHistory();
+        }
+    } catch (error) {
+        console.error('Failed to load history:', error);
+        state.history = [];
+    }
+}
+
+/**
+ * Save pattern to history
+ */
+function saveToHistory(pattern, flags) {
+    if (!pattern) return;
+
+    // Remove duplicate if exists
+    state.history = state.history.filter(
+        item => !(item.pattern === pattern && item.flags === flags)
+    );
+
+    // Add to front
+    state.history.unshift({
+        pattern,
+        flags,
+        timestamp: Date.now()
+    });
+
+    // Limit size
+    if (state.history.length > CONFIG.MAX_HISTORY_ITEMS) {
+        state.history = state.history.slice(0, CONFIG.MAX_HISTORY_ITEMS);
+    }
+
+    // Save to localStorage
+    try {
+        localStorage.setItem(CONFIG.HISTORY_STORAGE_KEY, JSON.stringify(state.history));
+        displayHistory();
+    } catch (error) {
+        console.error('Failed to save history:', error);
+    }
+}
+
+/**
+ * Display history list
+ */
+function displayHistory() {
+    if (state.history.length === 0) {
+        elements.historyList.innerHTML = '<div class="history-empty">No recent patterns yet</div>';
+        return;
+    }
+
+    const html = state.history.map((item, index) => {
+        const date = new Date(item.timestamp);
+        const timeAgo = formatTimeAgo(date);
+
+        return `
+            <div class="history-item" data-index="${index}">
+                <div class="history-pattern">
+                    <code>/${escapeHtml(item.pattern)}/${item.flags}</code>
+                </div>
+                <div class="history-meta">
+                    <span class="history-time">${timeAgo}</span>
+                    <button class="history-load" data-index="${index}" title="Load this pattern">Load</button>
+                    <button class="history-delete" data-index="${index}" title="Delete from history">×</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    elements.historyList.innerHTML = html;
+
+    // Attach event listeners to history items
+    elements.historyList.querySelectorAll('.history-load').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            loadFromHistory(index);
+        });
+    });
+
+    elements.historyList.querySelectorAll('.history-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            deleteFromHistory(index);
+        });
+    });
+}
+
+/**
+ * Load a pattern from history
+ */
+function loadFromHistory(index) {
+    const item = state.history[index];
+    if (!item) return;
+
+    elements.regexPattern.value = item.pattern;
+    elements.regexFlags.value = item.flags;
+
+    // Update flag checkboxes
+    elements.flagG.checked = item.flags.includes('g');
+    elements.flagI.checked = item.flags.includes('i');
+    elements.flagM.checked = item.flags.includes('m');
+    elements.flagS.checked = item.flags.includes('s');
+    elements.flagU.checked = item.flags.includes('u');
+
+    testRegex();
+    showToast('Pattern loaded from history ✓');
+}
+
+/**
+ * Delete a pattern from history
+ */
+function deleteFromHistory(index) {
+    state.history.splice(index, 1);
+
+    try {
+        localStorage.setItem(CONFIG.HISTORY_STORAGE_KEY, JSON.stringify(state.history));
+        displayHistory();
+        showToast('Pattern deleted from history');
+    } catch (error) {
+        console.error('Failed to delete from history:', error);
+    }
+}
+
+/**
+ * Toggle history visibility
+ */
+function toggleHistory() {
+    elements.historyContent.classList.toggle('hidden');
+    const isOpen = !elements.historyContent.classList.contains('hidden');
+    elements.toggleHistory.textContent = isOpen
+        ? '🕐 Hide Recent Patterns'
+        : '🕐 Recent Patterns';
+}
+
+/**
+ * Format timestamp as "time ago"
+ */
+function formatTimeAgo(date) {
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+
+    return date.toLocaleDateString();
+}
+
+// ========================================
+// REGEX EXPLANATION
+// ========================================
+
+/**
+ * Explain what the regex pattern does
+ */
+function explainPattern(pattern, flags) {
+    if (!pattern) {
+        elements.explanationContent.innerHTML = `
+            <div class="explanation-empty">
+                Enter a pattern above to see an explanation
+            </div>
+        `;
+        return;
+    }
+
+    const explanations = [];
+
+    // Analyze the pattern
+    const parts = analyzePattern(pattern);
+
+    // Build explanation HTML
+    let html = '<div class="explanation-parts">';
+
+    parts.forEach(part => {
+        html += `
+            <div class="explanation-part">
+                <code class="explanation-token">${escapeHtml(part.token)}</code>
+                <span class="explanation-desc">${part.description}</span>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+
+    // Add flags explanation if present
+    if (flags) {
+        html += '<div class="explanation-flags"><strong>Flags:</strong><ul>';
+        if (flags.includes('g')) html += '<li><code>g</code> - Global: Find all matches</li>';
+        if (flags.includes('i')) html += '<li><code>i</code> - Case insensitive</li>';
+        if (flags.includes('m')) html += '<li><code>m</code> - Multiline: ^ and $ match line breaks</li>';
+        if (flags.includes('s')) html += '<li><code>s</code> - Dotall: . matches newlines</li>';
+        if (flags.includes('u')) html += '<li><code>u</code> - Unicode mode</li>';
+        html += '</ul></div>';
+    }
+
+    elements.explanationContent.innerHTML = html;
+}
+
+/**
+ * Analyze pattern and break it into explainable parts
+ */
+function analyzePattern(pattern) {
+    const parts = [];
+    let i = 0;
+
+    while (i < pattern.length) {
+        const char = pattern[i];
+        let token = char;
+        let description = '';
+        let consumed = 1;
+
+        // Character classes
+        if (char === '\\' && i + 1 < pattern.length) {
+            const next = pattern[i + 1];
+            token = char + next;
+            consumed = 2;
+
+            switch (next) {
+                case 'd': description = 'Any digit (0-9)'; break;
+                case 'D': description = 'Any non-digit'; break;
+                case 'w': description = 'Any word character (a-z, A-Z, 0-9, _)'; break;
+                case 'W': description = 'Any non-word character'; break;
+                case 's': description = 'Any whitespace character'; break;
+                case 'S': description = 'Any non-whitespace character'; break;
+                case 'b': description = 'Word boundary'; break;
+                case 'B': description = 'Non-word boundary'; break;
+                case 'n': description = 'Newline'; break;
+                case 't': description = 'Tab'; break;
+                case 'r': description = 'Carriage return'; break;
+                default: description = `Escaped character: ${next}`; break;
+            }
+        }
+        // Anchors
+        else if (char === '^') {
+            description = 'Start of string/line';
+        }
+        else if (char === '$') {
+            description = 'End of string/line';
+        }
+        // Quantifiers
+        else if (char === '*') {
+            description = 'Match 0 or more times';
+        }
+        else if (char === '+') {
+            description = 'Match 1 or more times';
+        }
+        else if (char === '?') {
+            description = 'Match 0 or 1 time (optional)';
+        }
+        else if (char === '{') {
+            // Find closing brace
+            const closeBrace = pattern.indexOf('}', i);
+            if (closeBrace !== -1) {
+                token = pattern.substring(i, closeBrace + 1);
+                consumed = token.length;
+                const content = token.slice(1, -1);
+                if (content.includes(',')) {
+                    const [min, max] = content.split(',');
+                    description = max ? `Match ${min} to ${max} times` : `Match ${min} or more times`;
+                } else {
+                    description = `Match exactly ${content} times`;
+                }
+            }
+        }
+        // Character sets
+        else if (char === '[') {
+            const closeSet = pattern.indexOf(']', i);
+            if (closeSet !== -1) {
+                token = pattern.substring(i, closeSet + 1);
+                consumed = token.length;
+                const isNegated = token[1] === '^';
+                description = isNegated
+                    ? `Match any character NOT in set: ${token.slice(2, -1)}`
+                    : `Match any character in set: ${token.slice(1, -1)}`;
+            }
+        }
+        // Groups
+        else if (char === '(') {
+            const closeGroup = findMatchingParen(pattern, i);
+            if (closeGroup !== -1) {
+                token = pattern.substring(i, closeGroup + 1);
+                consumed = token.length;
+
+                if (token.startsWith('(?:')) {
+                    description = 'Non-capturing group';
+                } else if (token.startsWith('(?=')) {
+                    description = 'Positive lookahead';
+                } else if (token.startsWith('(?!')) {
+                    description = 'Negative lookahead';
+                } else if (token.startsWith('(?<')) {
+                    const nameMatch = token.match(/\(\?<(\w+)>/);
+                    if (nameMatch) {
+                        description = `Named capture group: "${nameMatch[1]}"`;
+                    }
+                } else {
+                    description = 'Capture group';
+                }
+            }
+        }
+        // Alternation
+        else if (char === '|') {
+            description = 'OR (alternation)';
+        }
+        // Wildcard
+        else if (char === '.') {
+            description = 'Match any character (except newline)';
+        }
+        // Literal character
+        else {
+            description = `Literal character: "${char}"`;
+        }
+
+        if (description) {
+            parts.push({ token, description });
+        }
+
+        i += consumed;
+    }
+
+    return parts;
+}
+
+/**
+ * Find matching closing parenthesis
+ */
+function findMatchingParen(str, startPos) {
+    let depth = 0;
+    for (let i = startPos; i < str.length; i++) {
+        if (str[i] === '(' && (i === 0 || str[i - 1] !== '\\')) depth++;
+        if (str[i] === ')' && (i === 0 || str[i - 1] !== '\\')) {
+            depth--;
+            if (depth === 0) return i;
+        }
+    }
+    return -1;
 }
 
 // ========================================
