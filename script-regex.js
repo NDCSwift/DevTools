@@ -425,7 +425,8 @@ function loadPattern(e) {
 function loadSample() {
     const samples = [
         {
-            pattern: '^[\\w\\.-]+@[\\w\\.-]+\\.\\w+$',
+            name: 'Email with Capture Groups',
+            pattern: '^([\\w\\.-]+)@([\\w\\.-]+)\\.(\\w+)$',
             flags: 'gim',
             text: `Contact us:
 support@devtoolkit.io
@@ -433,22 +434,26 @@ john.doe@example.com
 invalid-email@
 jane_smith@company.co.uk
 admin@test.dev
+user+tag@mail-server.com
 
 Phone: 555-123-4567
 Website: https://devtoolkit.io`
         },
         {
-            pattern: '\\b\\d{3}-\\d{3}-\\d{4}\\b',
+            name: 'Phone Numbers with Named Groups',
+            pattern: '\\b(?<area>\\d{3})-(?<exchange>\\d{3})-(?<number>\\d{4})\\b',
             flags: 'g',
             text: `Customer contacts:
-John: 555-123-4567
-Jane: 555-987-6543
-Support: 1-800-DEVTOOL (not a match)
+John Smith: 555-123-4567
+Jane Doe: 555-987-6543
+Support Line: 1-800-DEVTOOL (not a match)
 Emergency: 911 (not a match)
-Office: 555-555-5555`
+Office: 555-555-5555
+Mobile: 555-321-9876`
         },
         {
-            pattern: 'https?:\\/\\/[^\\s]+',
+            name: 'URLs with Protocol Extraction',
+            pattern: '(https?):\\/\\/([^\\s\\/]+)([^\\s]*)',
             flags: 'g',
             text: `Check out these sites:
 https://devtoolkit.io
@@ -456,25 +461,87 @@ http://example.com
 https://github.com/username/repo
 ftp://notamatch.com
 www.alsonomatch.com
-Visit https://regex101.com for more info!`
+Visit https://regex101.com/library for more info!
+https://stackoverflow.com/questions/12345`
+        },
+        {
+            name: 'Date Extraction (YYYY-MM-DD)',
+            pattern: '\\b(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})\\b',
+            flags: 'g',
+            text: `Event Schedule:
+Conference: 2024-03-15
+Workshop: 2024-03-16
+Deadline: 2024-04-01
+Meeting: 2024-12-31
+Invalid: 24-03-15
+Also Invalid: 2024/03/15`
+        },
+        {
+            name: 'HTML Tag Matching',
+            pattern: '<([a-z]+)([^>]*)>(.*?)<\\/\\1>',
+            flags: 'gi',
+            text: `<div class="container">Hello World</div>
+<span>This is text</span>
+<p>Paragraph content</p>
+<a href="#">Link</a>
+<img src="test.jpg"> (self-closing, no match)
+<strong>Bold text</strong>`
+        },
+        {
+            name: 'Password Validation with Lookaheads',
+            pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$',
+            flags: 'gm',
+            text: `Test these passwords:
+Password123!
+weakpass
+ALLCAPS123!
+NoSpecialChar123
+short1!A
+Valid1Pass!
+AnotherGood1@
+missingdigit!A`
+        },
+        {
+            name: 'Log Parser with Named Groups',
+            pattern: '\\[(?<timestamp>[\\d:\\-\\s]+)\\]\\s+(?<level>\\w+):\\s+(?<message>.*)',
+            flags: 'g',
+            text: `[2024-01-15 10:30:45] INFO: Application started
+[2024-01-15 10:30:46] DEBUG: Loading configuration
+[2024-01-15 10:30:47] WARN: Cache miss for key: user_123
+[2024-01-15 10:30:48] ERROR: Failed to connect to database
+[2024-01-15 10:30:49] INFO: Retrying connection
+Not a valid log line
+[2024-01-15 10:30:50] SUCCESS: Connection established`
+        },
+        {
+            name: 'CSS Color Extractor',
+            pattern: '#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\\b',
+            flags: 'g',
+            text: `body { background: #ffffff; }
+.header { color: #333; }
+.button { border: 1px solid #ff5733; }
+.text { color: #abc; }
+Invalid: #gg1234
+Valid: #FfFfFf
+Short form: #f0f`
         }
     ];
-    
+
     const sample = samples[Math.floor(Math.random() * samples.length)];
-    
+
     elements.regexPattern.value = sample.pattern;
     elements.regexFlags.value = sample.flags;
     elements.testString.value = sample.text;
-    
+
     // Update flag checkboxes
     elements.flagG.checked = sample.flags.includes('g');
     elements.flagI.checked = sample.flags.includes('i');
     elements.flagM.checked = sample.flags.includes('m');
     elements.flagS.checked = sample.flags.includes('s');
     elements.flagU.checked = sample.flags.includes('u');
-    
+
     testRegex();
-    showToast('Sample loaded ✓');
+    showToast(`Sample loaded: ${sample.name} ✓`);
 }
 
 // ========================================
