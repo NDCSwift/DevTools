@@ -113,6 +113,26 @@
                 <span id="sizeInfo" class="size-info">0 bytes</span>
             </div>
 
+            <!-- Size Comparison Widget -->
+            <div id="sizeComparison" class="size-comparison hidden">
+                <div class="comparison-item">
+                    <span class="comparison-label">Original:</span>
+                    <span id="originalSize" class="comparison-value">0 bytes</span>
+                </div>
+                <div class="comparison-arrow">→</div>
+                <div class="comparison-item">
+                    <span class="comparison-label">Base64:</span>
+                    <span id="base64Size" class="comparison-value">0 bytes</span>
+                </div>
+                <div class="comparison-item increase">
+                    <span class="comparison-label">Increase:</span>
+                    <span id="sizeIncrease" class="comparison-value increase-value">+0%</span>
+                </div>
+                <div id="compressionSuggestion" class="compression-hint hidden">
+                    💡 <span id="suggestionText"></span>
+                </div>
+            </div>
+
             <!-- Text Input Section -->
             <div id="textInputSection" class="input-section">
                 <div class="section-header">
@@ -122,14 +142,17 @@
                     </h3>
                     <div class="section-controls">
                         <button id="pasteBtn" class="btn-link">Paste</button>
+                        <button id="loadFileBtn" class="btn-link hidden">Load File</button>
                         <button id="loadSampleBtn" class="btn-link">Load Sample</button>
                         <button id="clearInputBtn" class="btn-link">Clear</button>
                     </div>
                 </div>
-                
-                <textarea 
-                    id="textInput" 
-                    class="text-area" 
+
+                <input type="file" id="textFileInput" accept=".txt,.b64,.base64,text/*" hidden>
+
+                <textarea
+                    id="textInput"
+                    class="text-area"
                     placeholder="Enter text to encode/decode...
 
 Examples:
@@ -149,14 +172,14 @@ Examples:
                         File Upload
                     </h3>
                 </div>
-                
+
                 <div class="file-upload-area">
-                    <input type="file" id="fileInput" accept="*/*" hidden>
+                    <input type="file" id="fileInput" accept="*/*" multiple hidden>
                     <div id="fileDropZone" class="drop-zone">
                         <div class="drop-zone-content">
                             <span class="drop-icon">📁</span>
-                            <p class="drop-text">Click to select a file or drag & drop</p>
-                            <p class="drop-hint">Any file type supported (max 10MB for free tier)</p>
+                            <p class="drop-text">Click to select file(s) or drag & drop</p>
+                            <p class="drop-hint">Single or multiple files • Max 10MB each</p>
                         </div>
                     </div>
                     <div id="fileInfo" class="file-info hidden">
@@ -169,6 +192,7 @@ Examples:
                         </div>
                         <button id="removeFileBtn" class="btn-link">Remove</button>
                     </div>
+                    <div id="multiFileList" class="multi-file-list hidden"></div>
                 </div>
             </div>
 
@@ -197,6 +221,18 @@ Examples:
                 </div>
             </div>
 
+            <!-- Options -->
+            <div class="options-section">
+                <label class="option-checkbox">
+                    <input type="checkbox" id="urlSafeToggle">
+                    <span class="checkbox-label">URL-Safe Base64 (use - and _ instead of + and /)</span>
+                </label>
+                <label class="option-checkbox">
+                    <input type="checkbox" id="chunkedOutputToggle">
+                    <span class="checkbox-label">Chunked Output (76 chars per line, MIME standard)</span>
+                </label>
+            </div>
+
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button id="processBtn" class="btn btn-primary">
@@ -221,18 +257,72 @@ Examples:
                         <span id="outputLabel">Base64 Output</span>
                     </h3>
                     <div class="section-controls">
-                        <button id="copyOutputBtn" class="btn-link">Copy</button>
+                        <div class="copy-dropdown">
+                            <button type="button" id="copyOutputBtn" class="btn-link">Copy</button>
+                            <button type="button" id="copyFormatBtn" class="btn-link copy-format-toggle">▾</button>
+                            <div id="copyFormatMenu" class="copy-format-menu hidden">
+                                <button type="button" class="format-option" data-format="raw">Raw Base64</button>
+                                <button type="button" class="format-option" data-format="json">JSON Property</button>
+                                <button type="button" class="format-option" data-format="xml">XML Element</button>
+                                <button type="button" class="format-option" data-format="js">JS String</button>
+                                <button type="button" class="format-option" data-format="python">Python Bytes</button>
+                            </div>
+                        </div>
                         <button id="downloadBtn" class="btn-link">Download</button>
                     </div>
                 </div>
-                
-                <textarea 
-                    id="outputText" 
-                    class="text-area output-area" 
+
+                <textarea
+                    id="outputText"
+                    class="text-area output-area"
                     placeholder="Output will appear here..."
                     spellcheck="false"
                     readonly
                 ></textarea>
+            </div>
+
+            <!-- Data URI Preview Section (for images) -->
+            <div id="dataURIPreview" class="data-uri-preview-section hidden">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Live Data URI Preview
+                    </h3>
+                </div>
+
+                <div class="preview-container">
+                    <div class="preview-image-wrapper">
+                        <img id="dataURIImage" src="" alt="Data URI Preview" />
+                    </div>
+
+                    <div id="dataURISizeWarning" class="size-warning hidden">
+                        ⚠️ Large data URIs may impact page performance
+                    </div>
+
+                    <div class="copy-format-grid">
+                        <button id="copyHTMLBtn" class="format-btn">
+                            <span class="format-icon">🏷️</span>
+                            <div class="format-text">
+                                <strong>Copy as HTML</strong>
+                                <span class="format-hint">&lt;img src="..." /&gt;</span>
+                            </div>
+                        </button>
+                        <button id="copyCSSBtn" class="format-btn">
+                            <span class="format-icon">🎨</span>
+                            <div class="format-text">
+                                <strong>Copy as CSS</strong>
+                                <span class="format-hint">background-image: url(...);</span>
+                            </div>
+                        </button>
+                        <button id="copyDataURIBtn" class="format-btn">
+                            <span class="format-icon">📋</span>
+                            <div class="format-text">
+                                <strong>Copy Data URI</strong>
+                                <span class="format-hint">data:image/png;base64,...</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Quick Actions -->
@@ -492,6 +582,8 @@ Examples:
     </div>
 
     <script src="script-base64.js"></script>
+    <!-- Test suite - uncomment to run tests -->
+    <!-- <script src="test-base64.js"></script> -->
 </body>
 </html>
 
