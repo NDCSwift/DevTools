@@ -235,6 +235,639 @@
         padding: var(--spacing-md);
     }
 }
+
+/* ========================================
+   CONTRAST CHECKER STYLES
+   ======================================== */
+
+.contrast-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.contrast-checker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.contrast-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.contrast-color-group label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.contrast-color-input {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.contrast-color-input input[type="color"] {
+    width: 80px;
+    height: 50px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.contrast-color-input input[type="text"] {
+    flex: 1;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+}
+
+.contrast-preview {
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    text-align: center;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--spacing-md);
+}
+
+.contrast-preview-text {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.contrast-preview-small {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.contrast-results {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--spacing-xl);
+    align-items: center;
+}
+
+.contrast-ratio-display {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.contrast-ratio-label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-xs);
+}
+
+.contrast-ratio-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+}
+
+.contrast-ratio-status {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    display: inline-block;
+}
+
+.contrast-ratio-status.excellent {
+    background: rgba(52, 211, 153, 0.15);
+    color: #34d399;
+}
+
+.contrast-ratio-status.good {
+    background: rgba(52, 211, 153, 0.1);
+    color: #34d399;
+}
+
+.contrast-ratio-status.close {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+}
+
+.contrast-ratio-status.poor {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.wcag-compliance {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.compliance-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.compliance-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.compliance-hint {
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+}
+
+.compliance-badges {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.compliance-badge {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    border: 2px solid;
+    min-width: 65px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+}
+
+.compliance-badge .badge-label {
+    font-size: 0.9rem;
+}
+
+.compliance-badge .badge-status {
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    opacity: 0.9;
+}
+
+.compliance-badge.pass {
+    background: rgba(52, 211, 153, 0.1);
+    border-color: #34d399;
+    color: #34d399;
+}
+
+.compliance-badge.fail {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.compliance-badge.close {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: #fbbf24;
+    color: #fbbf24;
+}
+
+.contrast-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.contrast-actions button {
+    flex: 1;
+}
+
+/* ========================================
+   IMPORT PALETTE STYLES
+   ======================================== */
+
+.import-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.import-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.import-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+    border-bottom: 2px solid var(--color-border);
+}
+
+.import-tab {
+    background: transparent;
+    border: none;
+    padding: var(--spacing-md) var(--spacing-lg);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+    bottom: -2px;
+}
+
+.import-tab:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.import-tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+.import-content {
+    position: relative;
+}
+
+.import-panel {
+    display: none;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.import-panel.active {
+    display: flex;
+}
+
+.import-panel label {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.import-textarea {
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    color: var(--color-text);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.import-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.import-textarea::placeholder {
+    color: var(--color-text-dim);
+}
+
+/* ========================================
+   COLOR BLINDNESS SIMULATOR STYLES
+   ======================================== */
+
+.colorblind-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.colorblind-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.colorblind-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.colorblind-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+}
+
+.colorblind-tab {
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.colorblind-tab:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text);
+}
+
+.colorblind-tab.active {
+    background: linear-gradient(135deg, rgba(0, 255, 159, 0.1), rgba(0, 212, 255, 0.1));
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.colorblind-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    min-height: 150px;
+}
+
+.colorblind-swatch {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--color-border);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--spacing-sm);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.colorblind-swatch:hover {
+    transform: scale(1.05);
+}
+
+.colorblind-swatch-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.colorblind-info {
+    padding: var(--spacing-md);
+    background: rgba(0, 255, 159, 0.05);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+}
+
+.colorblind-info p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ========================================
+   IMAGE COLOR EXTRACTION STYLES
+   ======================================== */
+
+.image-extract-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.image-extract-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.image-upload-area {
+    border: 3px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--color-bg);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-upload-area:hover {
+    border-color: var(--color-primary);
+    background: rgba(0, 255, 159, 0.03);
+}
+
+.image-upload-area.drag-over {
+    border-color: var(--color-primary);
+    background: rgba(0, 255, 159, 0.1);
+}
+
+.upload-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.upload-icon {
+    font-size: 3rem;
+}
+
+.upload-prompt p {
+    margin: 0;
+    color: var(--color-text-muted);
+}
+
+.upload-hint {
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+}
+
+.uploaded-image {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: var(--radius-sm);
+    object-fit: contain;
+}
+
+.extraction-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.control-group label {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.slider-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.slider-control input[type="range"] {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.slider-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    border: 2px solid var(--color-bg);
+}
+
+.slider-control input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    border: 2px solid var(--color-bg);
+}
+
+.slider-control span {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--color-primary);
+    min-width: 30px;
+    text-align: center;
+}
+
+.extracted-colors {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.extracted-color-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.extracted-color-item:hover {
+    transform: translateY(-4px);
+}
+
+.extracted-color-swatch {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--color-border);
+}
+
+.extracted-color-hex {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    font-weight: 600;
+}
+
+/* ========================================
+   RESPONSIVE STYLES FOR NEW SECTIONS
+   ======================================== */
+
+@media (max-width: 768px) {
+    .contrast-inputs {
+        grid-template-columns: 1fr;
+    }
+
+    .contrast-results {
+        grid-template-columns: 1fr;
+    }
+
+    .contrast-actions {
+        flex-direction: column;
+    }
+
+    .import-tabs {
+        overflow-x: auto;
+    }
+
+    .colorblind-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+    }
+
+    .colorblind-preview {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .contrast-section,
+    .import-section,
+    .colorblind-section,
+    .image-extract-section {
+        padding: var(--spacing-md);
+    }
+
+    .colorblind-tab {
+        font-size: 0.8rem;
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+}
     </style>
 </head>
 <body>
@@ -339,6 +972,205 @@
                     <span class="btn-icon">➕</span>
                     Add to Working Palette
                 </button>
+            </div>
+
+            <!-- Contrast Checker Section -->
+            <div class="contrast-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Contrast Checker (WCAG)
+                    </h3>
+                </div>
+
+                <div class="contrast-checker">
+                    <div class="contrast-inputs">
+                        <div class="contrast-color-group">
+                            <label for="contrastForeground">Text Color</label>
+                            <div class="contrast-color-input">
+                                <input type="color" id="contrastForeground" value="#ffffff">
+                                <input type="text" id="contrastForegroundHex" value="#FFFFFF" spellcheck="false">
+                            </div>
+                        </div>
+                        <div class="contrast-color-group">
+                            <label for="contrastBackground">Background Color</label>
+                            <div class="contrast-color-input">
+                                <input type="color" id="contrastBackground" value="#00ff9f">
+                                <input type="text" id="contrastBackgroundHex" value="#00FF9F" spellcheck="false">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contrast-preview" id="contrastPreview">
+                        <div class="contrast-preview-text">The quick brown fox jumps over the lazy dog</div>
+                        <div class="contrast-preview-small">Small text (14px)</div>
+                    </div>
+
+                    <div class="contrast-results">
+                        <div class="contrast-ratio-display">
+                            <div class="contrast-ratio-label">Contrast Ratio</div>
+                            <div class="contrast-ratio-value" id="contrastRatioValue">4.5:1</div>
+                            <div class="contrast-ratio-status" id="contrastRatioStatus">Calculating...</div>
+                        </div>
+
+                        <div class="wcag-compliance">
+                            <div class="compliance-item">
+                                <div class="compliance-header">
+                                    <span>Normal Text</span>
+                                    <span class="compliance-hint">(14-18px)</span>
+                                </div>
+                                <div class="compliance-badges">
+                                    <span class="compliance-badge" id="normalAA" data-ratio="4.5">
+                                        <span class="badge-label">AA</span>
+                                        <span class="badge-status"></span>
+                                    </span>
+                                    <span class="compliance-badge" id="normalAAA" data-ratio="7">
+                                        <span class="badge-label">AAA</span>
+                                        <span class="badge-status"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="compliance-item">
+                                <div class="compliance-header">
+                                    <span>Large Text</span>
+                                    <span class="compliance-hint">(18px+ or 14px+ bold)</span>
+                                </div>
+                                <div class="compliance-badges">
+                                    <span class="compliance-badge" id="largeAA" data-ratio="3">
+                                        <span class="badge-label">AA</span>
+                                        <span class="badge-status"></span>
+                                    </span>
+                                    <span class="compliance-badge" id="largeAAA" data-ratio="4.5">
+                                        <span class="badge-label">AAA</span>
+                                        <span class="badge-status"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="compliance-item">
+                                <div class="compliance-header">
+                                    <span>UI Components</span>
+                                    <span class="compliance-hint">(Graphics & UI)</span>
+                                </div>
+                                <div class="compliance-badges">
+                                    <span class="compliance-badge" id="uiAA" data-ratio="3">
+                                        <span class="badge-label">AA</span>
+                                        <span class="badge-status"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contrast-actions">
+                        <button class="btn btn-secondary" id="swapContrastColors">⇄ Swap Colors</button>
+                        <button class="btn btn-secondary" id="usePickerForContrast">Use Picker Color</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Palette Section -->
+            <div class="import-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Import Palette
+                    </h3>
+                </div>
+
+                <div class="import-container">
+                    <div class="import-tabs">
+                        <button type="button" class="import-tab active" data-import="hex">HEX Codes</button>
+                        <button type="button" class="import-tab" data-import="css">CSS Variables</button>
+                        <button type="button" class="import-tab" data-import="json">JSON</button>
+                    </div>
+
+                    <div class="import-content">
+                        <div class="import-panel active" id="importHexPanel">
+                            <label for="importHexInput">Paste HEX codes (comma or space separated)</label>
+                            <textarea id="importHexInput" class="import-textarea" placeholder="#00ff9f, #00d4ff, #6C5CE7&#10;or&#10;#00ff9f #00d4ff #6C5CE7" spellcheck="false"></textarea>
+                            <button class="btn btn-primary" id="importHexBtn">Import HEX Codes</button>
+                        </div>
+
+                        <div class="import-panel" id="importCssPanel">
+                            <label for="importCssInput">Paste CSS variables</label>
+                            <textarea id="importCssInput" class="import-textarea" placeholder=":root {&#10;  --color-primary: #00ff9f;&#10;  --color-secondary: #00d4ff;&#10;}" spellcheck="false"></textarea>
+                            <button class="btn btn-primary" id="importCssBtn">Import CSS</button>
+                        </div>
+
+                        <div class="import-panel" id="importJsonPanel">
+                            <label for="importJsonInput">Paste JSON palette</label>
+                            <textarea id="importJsonInput" class="import-textarea" placeholder='["#00ff9f", "#00d4ff", "#6C5CE7"]&#10;or&#10;{"colors": ["#00ff9f", "#00d4ff"]}' spellcheck="false"></textarea>
+                            <button class="btn btn-primary" id="importJsonBtn">Import JSON</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Color Blindness Simulation Section -->
+            <div class="colorblind-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Color Blindness Simulator
+                    </h3>
+                </div>
+
+                <div class="colorblind-container">
+                    <div class="colorblind-hint">
+                        <span class="hint-icon">💡</span>
+                        <span>Preview how your working palette appears to users with different types of color vision deficiency</span>
+                    </div>
+
+                    <div class="colorblind-tabs">
+                        <button type="button" class="colorblind-tab active" data-type="normal">Normal Vision</button>
+                        <button type="button" class="colorblind-tab" data-type="protanopia">Protanopia (Red-Blind)</button>
+                        <button type="button" class="colorblind-tab" data-type="deuteranopia">Deuteranopia (Green-Blind)</button>
+                        <button type="button" class="colorblind-tab" data-type="tritanopia">Tritanopia (Blue-Blind)</button>
+                        <button type="button" class="colorblind-tab" data-type="achromatopsia">Achromatopsia (Monochrome)</button>
+                    </div>
+
+                    <div id="colorblindPreview" class="colorblind-preview"></div>
+
+                    <div class="colorblind-info">
+                        <p id="colorblindDescription">Your palette as seen by people with normal color vision.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Color Extraction Section -->
+            <div class="image-extract-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">▸</span>
+                        Extract Colors from Image
+                    </h3>
+                </div>
+
+                <div class="image-extract-container">
+                    <div class="image-upload-area" id="imageUploadArea">
+                        <input type="file" id="imageUploadInput" accept="image/*" hidden>
+                        <div class="upload-prompt">
+                            <span class="upload-icon">📸</span>
+                            <p>Click to upload or drag & drop an image</p>
+                            <p class="upload-hint">JPG, PNG, GIF, WebP (max 10MB)</p>
+                        </div>
+                        <img id="uploadedImage" class="uploaded-image" style="display: none;" alt="Uploaded image">
+                    </div>
+
+                    <div class="extraction-controls" id="extractionControls" style="display: none;">
+                        <div class="control-group">
+                            <label for="colorCount">Number of colors to extract</label>
+                            <div class="slider-control">
+                                <input type="range" id="colorCount" min="3" max="8" value="5">
+                                <span id="colorCountValue">5</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="extractColorsBtn">Extract Colors</button>
+                        <button class="btn btn-ghost" id="clearImageBtn">Clear Image</button>
+                    </div>
+
+                    <div class="extracted-colors" id="extractedColors"></div>
+                </div>
             </div>
 
             <!-- Working Palette Section -->

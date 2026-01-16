@@ -25,21 +25,21 @@ const elements = {
     colorPicker: document.getElementById('colorPicker'),
     colorDisplay: document.getElementById('colorDisplay'),
     colorName: document.getElementById('colorName'),
-    
+
     // Value inputs
     hexInput: document.getElementById('hexInput'),
     rgbInput: document.getElementById('rgbInput'),
     hslInput: document.getElementById('hslInput'),
     cmykInput: document.getElementById('cmykInput'),
-    
+
     // Buttons
     randomColorBtn: document.getElementById('randomColorBtn'),
     savePaletteBtn: document.getElementById('savePaletteBtn'),
     copyGradientBtn: document.getElementById('copyGradientBtn'),
-    
+
     // Harmony
     harmonyPalette: document.getElementById('harmonyPalette'),
-    
+
     // Gradient
     gradientColor1: document.getElementById('gradientColor1'),
     gradientColor2: document.getElementById('gradientColor2'),
@@ -48,25 +48,58 @@ const elements = {
     angleValue: document.getElementById('angleValue'),
     gradientPreview: document.getElementById('gradientPreview'),
     gradientCSS: document.getElementById('gradientCSS'),
-    
+
     // Shades
     tintsGrid: document.getElementById('tintsGrid'),
     shadesGrid: document.getElementById('shadesGrid'),
     tonesGrid: document.getElementById('tonesGrid'),
-    
+
     // Saved
     savedPalettes: document.getElementById('savedPalettes'),
-    
+
     // Toast
     toast: document.getElementById('toast'),
     toastMessage: document.getElementById('toastMessage'),
 
-    // NEW: Undo/Redo & Export buttons
+    // Undo/Redo & Export buttons
     undoBtn: document.getElementById('undoBtn'),
     redoBtn: document.getElementById('redoBtn'),
     eyedropperBtn: document.getElementById('eyedropperBtn'),
     exportPngBtn: document.getElementById('exportPngBtn'),
-    accessibilityToggle: document.getElementById('accessibilityToggle')
+    accessibilityToggle: document.getElementById('accessibilityToggle'),
+
+    // NEW: Contrast Checker
+    contrastForeground: document.getElementById('contrastForeground'),
+    contrastBackground: document.getElementById('contrastBackground'),
+    contrastForegroundHex: document.getElementById('contrastForegroundHex'),
+    contrastBackgroundHex: document.getElementById('contrastBackgroundHex'),
+    contrastPreview: document.getElementById('contrastPreview'),
+    contrastRatioValue: document.getElementById('contrastRatioValue'),
+    swapContrastColors: document.getElementById('swapContrastColors'),
+    usePickerForContrast: document.getElementById('usePickerForContrast'),
+
+    // NEW: Import
+    importHexInput: document.getElementById('importHexInput'),
+    importCssInput: document.getElementById('importCssInput'),
+    importJsonInput: document.getElementById('importJsonInput'),
+    importHexBtn: document.getElementById('importHexBtn'),
+    importCssBtn: document.getElementById('importCssBtn'),
+    importJsonBtn: document.getElementById('importJsonBtn'),
+
+    // NEW: Color Blindness
+    colorblindPreview: document.getElementById('colorblindPreview'),
+    colorblindDescription: document.getElementById('colorblindDescription'),
+
+    // NEW: Image Extraction
+    imageUploadArea: document.getElementById('imageUploadArea'),
+    imageUploadInput: document.getElementById('imageUploadInput'),
+    uploadedImage: document.getElementById('uploadedImage'),
+    extractionControls: document.getElementById('extractionControls'),
+    colorCount: document.getElementById('colorCount'),
+    colorCountValue: document.getElementById('colorCountValue'),
+    extractColorsBtn: document.getElementById('extractColorsBtn'),
+    clearImageBtn: document.getElementById('clearImageBtn'),
+    extractedColors: document.getElementById('extractedColors')
 };
 
 // ========================================
@@ -75,12 +108,31 @@ const elements = {
 function init() {
     loadSavedPalettes();
     loadAccessibilityMode(); // NEW: Load accessibility preference
+    checkEyeDropperSupport(); // Check if EyeDropper is supported
     attachEventListeners();
     initializeWorkingPalette(); // NEW
     renderWorkingPalette(); // NEW
     updateAllFromColor(state.currentColor);
     updateHistoryButtons(); // NEW: Initialize undo/redo buttons
     console.log('🚀 ToolBit Color Tool initialized');
+}
+
+/**
+ * Check if EyeDropper API is supported and update button accordingly
+ */
+function checkEyeDropperSupport() {
+    if (elements.eyedropperBtn && !window.EyeDropper) {
+        elements.eyedropperBtn.disabled = true;
+        elements.eyedropperBtn.title = 'EyeDropper is only supported in Chrome, Edge, and Opera';
+        elements.eyedropperBtn.style.opacity = '0.5';
+        elements.eyedropperBtn.style.cursor = 'not-allowed';
+
+        // Update button text to indicate not available
+        const btnText = elements.eyedropperBtn.querySelector('.btn-icon');
+        if (btnText) {
+            btnText.textContent = '🚫';
+        }
+    }
 }
 
 // ========================================
@@ -200,6 +252,92 @@ function attachEventListeners() {
             }
         });
     });
+
+    // NEW: Contrast Checker event listeners
+    if (elements.contrastForeground) {
+        elements.contrastForeground.addEventListener('input', updateContrastChecker);
+        elements.contrastBackground.addEventListener('input', updateContrastChecker);
+        elements.contrastForegroundHex.addEventListener('change', (e) => {
+            if (isValidHex(e.target.value)) {
+                elements.contrastForeground.value = e.target.value;
+                updateContrastChecker();
+            }
+        });
+        elements.contrastBackgroundHex.addEventListener('change', (e) => {
+            if (isValidHex(e.target.value)) {
+                elements.contrastBackground.value = e.target.value;
+                updateContrastChecker();
+            }
+        });
+        elements.swapContrastColors.addEventListener('click', swapContrastColors);
+        elements.usePickerForContrast.addEventListener('click', () => {
+            elements.contrastForeground.value = state.currentColor;
+            elements.contrastForegroundHex.value = state.currentColor;
+            updateContrastChecker();
+        });
+    }
+
+    // NEW: Import event listeners
+    document.querySelectorAll('.import-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            document.querySelectorAll('.import-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.import-panel').forEach(p => p.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            const type = e.currentTarget.dataset.import;
+            document.getElementById(`import${type.charAt(0).toUpperCase() + type.slice(1)}Panel`).classList.add('active');
+        });
+    });
+
+    if (elements.importHexBtn) {
+        elements.importHexBtn.addEventListener('click', importHexColors);
+        elements.importCssBtn.addEventListener('click', importCssColors);
+        elements.importJsonBtn.addEventListener('click', importJsonColors);
+    }
+
+    // NEW: Color Blindness event listeners
+    document.querySelectorAll('.colorblind-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            document.querySelectorAll('.colorblind-tab').forEach(t => t.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            const type = e.currentTarget.dataset.type;
+            renderColorBlindPreview(type);
+        });
+    });
+
+    // NEW: Image extraction event listeners
+    if (elements.imageUploadArea) {
+        elements.imageUploadArea.addEventListener('click', () => {
+            elements.imageUploadInput.click();
+        });
+
+        elements.imageUploadInput.addEventListener('change', handleImageUpload);
+
+        // Drag and drop
+        elements.imageUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            elements.imageUploadArea.classList.add('drag-over');
+        });
+
+        elements.imageUploadArea.addEventListener('dragleave', () => {
+            elements.imageUploadArea.classList.remove('drag-over');
+        });
+
+        elements.imageUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            elements.imageUploadArea.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleImageFile(file);
+            }
+        });
+
+        elements.colorCount.addEventListener('input', (e) => {
+            elements.colorCountValue.textContent = e.target.value;
+        });
+
+        elements.extractColorsBtn.addEventListener('click', extractColorsFromImage);
+        elements.clearImageBtn.addEventListener('click', clearUploadedImage);
+    }
 }
 
 // ========================================
@@ -400,6 +538,13 @@ function saveWorkingPalette() {
 function renderWorkingPalette() {
     const slots = document.querySelectorAll('.palette-slot');
 
+    // Update color blindness preview if active
+    const activeColorBlindTab = document.querySelector('.colorblind-tab.active');
+    if (activeColorBlindTab) {
+        const type = activeColorBlindTab.dataset.type;
+        renderColorBlindPreview(type);
+    }
+
     slots.forEach((slot, index) => {
         const colorDiv = slot.querySelector('.slot-color');
         const hexDiv = slot.querySelector('.slot-hex');
@@ -526,7 +671,12 @@ window.exportPaletteAs = function(format) {
  */
 async function openEyeDropper() {
     if (!window.EyeDropper) {
-        showToast('EyeDropper not supported in this browser');
+        showToast('⚠️ EyeDropper is only supported in Chrome, Edge, and Opera. Safari support coming soon!');
+
+        // Optionally offer alternative instructions
+        setTimeout(() => {
+            showToast('💡 Tip: Use a browser extension or screenshot tool instead');
+        }, 3500);
         return;
     }
 
@@ -536,10 +686,12 @@ async function openEyeDropper() {
         updateAllFromColor(result.sRGBHex);
         showToast('Color picked! 🎨');
     } catch (error) {
-        if (error.name !== 'AbortError') {
-            showToast('Failed to pick color');
-            console.error('EyeDropper error:', error);
+        if (error.name === 'AbortError') {
+            // User cancelled, don't show error
+            return;
         }
+        showToast('Failed to pick color');
+        console.error('EyeDropper error:', error);
     }
 }
 
@@ -1178,6 +1330,503 @@ elements.randomColorBtn.addEventListener('click', () => trackEvent('Tool', 'Rand
 elements.savePaletteBtn.addEventListener('click', () => trackEvent('Tool', 'Save', 'Palette'));
 
 // ========================================
+// CONTRAST CHECKER FUNCTIONS
+// ========================================
+
+/**
+ * Calculate relative luminance (WCAG formula)
+ */
+function getLuminance(hex) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return 0;
+
+    const rsRGB = rgb.r / 255;
+    const gsRGB = rgb.g / 255;
+    const bsRGB = rgb.b / 255;
+
+    const r = rsRGB <= 0.03928 ? rsRGB / 12.92 : Math.pow((rsRGB + 0.055) / 1.055, 2.4);
+    const g = gsRGB <= 0.03928 ? gsRGB / 12.92 : Math.pow((gsRGB + 0.055) / 1.055, 2.4);
+    const b = bsRGB <= 0.03928 ? bsRGB / 12.92 : Math.pow((bsRGB + 0.055) / 1.055, 2.4);
+
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/**
+ * Calculate contrast ratio between two colors
+ */
+function getContrastRatio(color1, color2) {
+    const lum1 = getLuminance(color1);
+    const lum2 = getLuminance(color2);
+    const lighter = Math.max(lum1, lum2);
+    const darker = Math.min(lum1, lum2);
+    return (lighter + 0.05) / (darker + 0.05);
+}
+
+/**
+ * Update contrast checker display
+ */
+function updateContrastChecker() {
+    const fg = elements.contrastForeground.value;
+    const bg = elements.contrastBackground.value;
+
+    // Update hex inputs
+    elements.contrastForegroundHex.value = fg.toUpperCase();
+    elements.contrastBackgroundHex.value = bg.toUpperCase();
+
+    // Update preview
+    elements.contrastPreview.style.backgroundColor = bg;
+    elements.contrastPreview.style.color = fg;
+
+    // Calculate contrast ratio
+    const ratio = getContrastRatio(fg, bg);
+    elements.contrastRatioValue.textContent = ratio.toFixed(2) + ':1';
+
+    // Update overall status
+    updateContrastStatus(ratio);
+
+    // Update WCAG compliance badges
+    updateComplianceBadge('normalAA', ratio, 4.5);
+    updateComplianceBadge('normalAAA', ratio, 7);
+    updateComplianceBadge('largeAA', ratio, 3);
+    updateComplianceBadge('largeAAA', ratio, 4.5);
+    updateComplianceBadge('uiAA', ratio, 3);
+}
+
+/**
+ * Update overall contrast status message
+ */
+function updateContrastStatus(ratio) {
+    const statusEl = document.getElementById('contrastRatioStatus');
+    if (!statusEl) return;
+
+    // Clear existing classes
+    statusEl.className = 'contrast-ratio-status';
+
+    if (ratio >= 7) {
+        statusEl.classList.add('excellent');
+        statusEl.textContent = '✓ Excellent - Passes AAA for all text';
+    } else if (ratio >= 4.5) {
+        statusEl.classList.add('good');
+        statusEl.textContent = '✓ Good - Passes AA for all text';
+    } else if (ratio >= 3) {
+        statusEl.classList.add('close');
+        statusEl.textContent = '⚠ Fair - Only large text & UI pass AA';
+    } else if (ratio >= 2.5) {
+        statusEl.classList.add('close');
+        statusEl.textContent = `⚠ Close - Need ${(3 - ratio).toFixed(2)} more for AA Large`;
+    } else {
+        statusEl.classList.add('poor');
+        statusEl.textContent = '✗ Poor - Does not meet WCAG standards';
+    }
+}
+
+/**
+ * Update compliance badge status
+ */
+function updateComplianceBadge(id, ratio, threshold) {
+    const badge = document.getElementById(id);
+    if (!badge) return;
+
+    const statusEl = badge.querySelector('.badge-status');
+    const passes = ratio >= threshold;
+    const isClose = !passes && ratio >= threshold - 0.5; // Within 0.5 of passing
+
+    // Clear existing classes
+    badge.classList.remove('pass', 'fail', 'close');
+
+    if (passes) {
+        badge.classList.add('pass');
+        if (statusEl) statusEl.textContent = 'Pass';
+    } else if (isClose) {
+        badge.classList.add('close');
+        if (statusEl) statusEl.textContent = `Need ${(threshold - ratio).toFixed(1)}`;
+    } else {
+        badge.classList.add('fail');
+        if (statusEl) statusEl.textContent = 'Fail';
+    }
+}
+
+/**
+ * Swap foreground and background colors
+ */
+function swapContrastColors() {
+    const fg = elements.contrastForeground.value;
+    const bg = elements.contrastBackground.value;
+    elements.contrastForeground.value = bg;
+    elements.contrastBackground.value = fg;
+    updateContrastChecker();
+    showToast('Colors swapped! ⇄');
+}
+
+// ========================================
+// IMPORT PALETTE FUNCTIONS
+// ========================================
+
+/**
+ * Import HEX colors from text
+ */
+function importHexColors() {
+    const input = elements.importHexInput.value.trim();
+    if (!input) {
+        showToast('Please paste some HEX codes');
+        return;
+    }
+
+    // Extract all valid hex codes
+    const hexPattern = /#[0-9A-Fa-f]{6}\b/g;
+    const matches = input.match(hexPattern);
+
+    if (!matches || matches.length === 0) {
+        showToast('No valid HEX codes found');
+        return;
+    }
+
+    const colors = matches.slice(0, 8).map(c => c.toUpperCase());
+    saveToHistory();
+    state.workingPalette = colors;
+    renderWorkingPalette();
+    showToast(`Imported ${colors.length} colors! 🎨`);
+    elements.importHexInput.value = '';
+}
+
+/**
+ * Import colors from CSS variables
+ */
+function importCssColors() {
+    const input = elements.importCssInput.value.trim();
+    if (!input) {
+        showToast('Please paste some CSS');
+        return;
+    }
+
+    // Extract hex codes from CSS
+    const hexPattern = /#[0-9A-Fa-f]{6}\b/g;
+    const matches = input.match(hexPattern);
+
+    if (!matches || matches.length === 0) {
+        showToast('No valid color values found in CSS');
+        return;
+    }
+
+    const colors = matches.slice(0, 8).map(c => c.toUpperCase());
+    saveToHistory();
+    state.workingPalette = colors;
+    renderWorkingPalette();
+    showToast(`Imported ${colors.length} colors from CSS! 🎨`);
+    elements.importCssInput.value = '';
+}
+
+/**
+ * Import colors from JSON
+ */
+function importJsonColors() {
+    const input = elements.importJsonInput.value.trim();
+    if (!input) {
+        showToast('Please paste some JSON');
+        return;
+    }
+
+    try {
+        const data = JSON.parse(input);
+        let colors = [];
+
+        // Handle different JSON formats
+        if (Array.isArray(data)) {
+            colors = data;
+        } else if (data.colors && Array.isArray(data.colors)) {
+            colors = data.colors;
+        } else if (data.palette && Array.isArray(data.palette)) {
+            colors = data.palette;
+        } else {
+            showToast('Invalid JSON format. Expected array or object with "colors" property');
+            return;
+        }
+
+        // Validate hex codes
+        const validColors = colors
+            .filter(c => typeof c === 'string' && isValidHex(c))
+            .slice(0, 8)
+            .map(c => c.toUpperCase());
+
+        if (validColors.length === 0) {
+            showToast('No valid HEX codes found in JSON');
+            return;
+        }
+
+        saveToHistory();
+        state.workingPalette = validColors;
+        renderWorkingPalette();
+        showToast(`Imported ${validColors.length} colors from JSON! 🎨`);
+        elements.importJsonInput.value = '';
+
+    } catch (error) {
+        showToast('Invalid JSON format');
+        console.error('JSON parse error:', error);
+    }
+}
+
+// ========================================
+// COLOR BLINDNESS SIMULATION FUNCTIONS
+// ========================================
+
+/**
+ * Simulate color blindness for a given color
+ */
+function simulateColorBlindness(hex, type) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return hex;
+
+    let r = rgb.r / 255;
+    let g = rgb.g / 255;
+    let b = rgb.b / 255;
+
+    // Transformation matrices for different types of color blindness
+    const matrices = {
+        normal: [
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, 1]
+        ],
+        protanopia: [ // Red-blind
+            [0.567, 0.433, 0],
+            [0.558, 0.442, 0],
+            [0, 0.242, 0.758]
+        ],
+        deuteranopia: [ // Green-blind
+            [0.625, 0.375, 0],
+            [0.7, 0.3, 0],
+            [0, 0.3, 0.7]
+        ],
+        tritanopia: [ // Blue-blind
+            [0.95, 0.05, 0],
+            [0, 0.433, 0.567],
+            [0, 0.475, 0.525]
+        ],
+        achromatopsia: [ // Monochrome
+            [0.299, 0.587, 0.114],
+            [0.299, 0.587, 0.114],
+            [0.299, 0.587, 0.114]
+        ]
+    };
+
+    const matrix = matrices[type] || matrices.normal;
+
+    const newR = Math.min(255, Math.max(0, Math.round((matrix[0][0] * r + matrix[0][1] * g + matrix[0][2] * b) * 255)));
+    const newG = Math.min(255, Math.max(0, Math.round((matrix[1][0] * r + matrix[1][1] * g + matrix[1][2] * b) * 255)));
+    const newB = Math.min(255, Math.max(0, Math.round((matrix[2][0] * r + matrix[2][1] * g + matrix[2][2] * b) * 255)));
+
+    return rgbToHex(`rgb(${newR}, ${newG}, ${newB})`);
+}
+
+/**
+ * Render color blind preview
+ */
+function renderColorBlindPreview(type) {
+    if (state.workingPalette.length === 0) {
+        elements.colorblindPreview.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--color-text-dim);">Add colors to your working palette to preview</div>';
+        updateColorBlindDescription(type);
+        return;
+    }
+
+    elements.colorblindPreview.innerHTML = state.workingPalette.map(color => {
+        const simulated = simulateColorBlindness(color, type);
+        return `
+            <div class="colorblind-swatch" style="background: ${simulated}" title="Original: ${color}&#10;Simulated: ${simulated}">
+                <div class="colorblind-swatch-label">${simulated}</div>
+            </div>
+        `;
+    }).join('');
+
+    updateColorBlindDescription(type);
+}
+
+/**
+ * Update color blindness description
+ */
+function updateColorBlindDescription(type) {
+    const descriptions = {
+        normal: 'Your palette as seen by people with normal color vision.',
+        protanopia: 'Protanopia (Red-Blind): Affects ~1% of males. Red appears darker and more muted. Red and green may be confused.',
+        deuteranopia: 'Deuteranopia (Green-Blind): Most common, affects ~1% of males. Green appears more red. Red and green may be confused.',
+        tritanopia: 'Tritanopia (Blue-Blind): Rare, affects ~0.001%. Blue appears greener, yellow appears more pink or violet.',
+        achromatopsia: 'Achromatopsia (Total Color Blindness): Very rare. Only brightness differences are visible, no color.'
+    };
+
+    elements.colorblindDescription.textContent = descriptions[type] || descriptions.normal;
+}
+
+// ========================================
+// IMAGE COLOR EXTRACTION FUNCTIONS
+// ========================================
+
+/**
+ * Handle image upload from file input
+ */
+function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (file) {
+        handleImageFile(file);
+    }
+}
+
+/**
+ * Handle image file
+ */
+function handleImageFile(file) {
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+        showToast('Image too large (max 10MB)');
+        return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        showToast('Please upload an image file');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        elements.uploadedImage.src = e.target.result;
+        elements.uploadedImage.style.display = 'block';
+        elements.uploadedImage.parentElement.querySelector('.upload-prompt').style.display = 'none';
+        elements.extractionControls.style.display = 'flex';
+        showToast('Image loaded! Click "Extract Colors" to analyze 📸');
+    };
+    reader.readAsDataURL(file);
+}
+
+/**
+ * Clear uploaded image
+ */
+function clearUploadedImage() {
+    elements.uploadedImage.src = '';
+    elements.uploadedImage.style.display = 'none';
+    elements.uploadedImage.parentElement.querySelector('.upload-prompt').style.display = 'flex';
+    elements.extractionControls.style.display = 'none';
+    elements.extractedColors.innerHTML = '';
+    elements.imageUploadInput.value = '';
+    showToast('Image cleared');
+}
+
+/**
+ * Extract dominant colors from image using k-means clustering
+ */
+function extractColorsFromImage() {
+    if (!elements.uploadedImage.src) {
+        showToast('Please upload an image first');
+        return;
+    }
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = elements.uploadedImage;
+
+    // Resize image for faster processing
+    const maxSize = 200;
+    const scale = Math.min(maxSize / img.naturalWidth, maxSize / img.naturalHeight);
+    canvas.width = img.naturalWidth * scale;
+    canvas.height = img.naturalHeight * scale;
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imageData.data;
+
+    // Sample pixels (every 10th pixel for performance)
+    const samples = [];
+    for (let i = 0; i < pixels.length; i += 40) { // 40 = 10 pixels * 4 (RGBA)
+        samples.push([pixels[i], pixels[i + 1], pixels[i + 2]]);
+    }
+
+    // Simple k-means clustering
+    const k = parseInt(elements.colorCount.value);
+    const colors = kMeansClustering(samples, k);
+
+    // Display extracted colors
+    displayExtractedColors(colors);
+}
+
+/**
+ * K-means clustering for color extraction
+ */
+function kMeansClustering(pixels, k, maxIterations = 10) {
+    // Initialize centroids randomly
+    let centroids = [];
+    for (let i = 0; i < k; i++) {
+        const randomPixel = pixels[Math.floor(Math.random() * pixels.length)];
+        centroids.push([...randomPixel]);
+    }
+
+    for (let iteration = 0; iteration < maxIterations; iteration++) {
+        // Assign pixels to nearest centroid
+        const clusters = Array.from({ length: k }, () => []);
+
+        pixels.forEach(pixel => {
+            let minDist = Infinity;
+            let closestCentroid = 0;
+
+            centroids.forEach((centroid, i) => {
+                const dist = Math.sqrt(
+                    Math.pow(pixel[0] - centroid[0], 2) +
+                    Math.pow(pixel[1] - centroid[1], 2) +
+                    Math.pow(pixel[2] - centroid[2], 2)
+                );
+                if (dist < minDist) {
+                    minDist = dist;
+                    closestCentroid = i;
+                }
+            });
+
+            clusters[closestCentroid].push(pixel);
+        });
+
+        // Recalculate centroids
+        const newCentroids = clusters.map(cluster => {
+            if (cluster.length === 0) return centroids[0]; // Fallback
+
+            const sum = cluster.reduce((acc, pixel) => [
+                acc[0] + pixel[0],
+                acc[1] + pixel[1],
+                acc[2] + pixel[2]
+            ], [0, 0, 0]);
+
+            return [
+                Math.round(sum[0] / cluster.length),
+                Math.round(sum[1] / cluster.length),
+                Math.round(sum[2] / cluster.length)
+            ];
+        });
+
+        // Check for convergence
+        const converged = centroids.every((c, i) =>
+            c[0] === newCentroids[i][0] &&
+            c[1] === newCentroids[i][1] &&
+            c[2] === newCentroids[i][2]
+        );
+
+        centroids = newCentroids;
+        if (converged) break;
+    }
+
+    // Convert RGB to HEX
+    return centroids.map(rgb => rgbToHex(`rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`));
+}
+
+/**
+ * Display extracted colors
+ */
+function displayExtractedColors(colors) {
+    elements.extractedColors.innerHTML = colors.map(color => `
+        <div class="extracted-color-item" onclick="addToWorkingPalette('${color}')" title="Click to add to palette">
+            <div class="extracted-color-swatch" style="background: ${color}"></div>
+            <div class="extracted-color-hex">${color}</div>
+        </div>
+    `).join('');
+
+    showToast(`Extracted ${colors.length} dominant colors! 🎨`);
+}
+
+// ========================================
 // APPLY PALETTE PREVIEW COLORS
 // ========================================
 function applyPalettePreviewColors() {
@@ -1196,3 +1845,11 @@ function applyPalettePreviewColors() {
 init();
 updateGradient();
 applyPalettePreviewColors();
+
+// Initialize new features
+if (elements.contrastForeground) {
+    updateContrastChecker();
+}
+if (elements.colorblindPreview) {
+    renderColorBlindPreview('normal');
+}
