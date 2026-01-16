@@ -3,7 +3,20 @@
 // ========================================
 const CONFIG = {
     TOAST_DURATION: 3000,
-    DEBOUNCE_DELAY: 300
+    DEBOUNCE_DELAY: 300,
+    // Common URI schemes for validation
+    KNOWN_SCHEMES: [
+        'http', 'https', 'ftp', 'ftps', 'mailto', 'tel', 'sms',
+        'file', 'data', 'javascript', 'about', 'blob',
+        // Mobile deep links
+        'fb', 'twitter', 'instagram', 'whatsapp', 'tg', 'slack',
+        'discord', 'spotify', 'youtube', 'snapchat', 'linkedin',
+        // Development
+        'vscode', 'vscode-insiders', 'jetbrains', 'sublime',
+        // Other common
+        'magnet', 'ssh', 'git', 'svn', 'ldap', 'news', 'nntp',
+        'irc', 'ircs', 'xmpp', 'sip', 'sips', 'geo', 'maps'
+    ]
 };
 
 let state = {
@@ -67,6 +80,14 @@ function attachEventListeners() {
     document.getElementById('analyzeBtn').addEventListener('click', analyzeURL);
     document.getElementById('urlInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') analyzeURL();
+    });
+    document.getElementById('urlInput').addEventListener('input', (e) => {
+        updateValidationIndicator('urlInput', 'urlValidation');
+    });
+
+    // Query Parser validation
+    document.getElementById('queryInput').addEventListener('input', (e) => {
+        updateValidationIndicator('queryInput', 'queryValidation');
     });
     
     // Batch mode
@@ -373,16 +394,138 @@ function rebuildURL() {
 }
 
 // ========================================
+// URL VALIDATION
+// ========================================
+function validateURL(urlString) {
+    if (!urlString || !urlString.trim()) {
+        return { valid: false, type: 'empty', message: '' };
+    }
+
+    urlString = urlString.trim();
+
+    // Check for URI scheme pattern
+    const schemeMatch = urlString.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):(.+)$/);
+
+    if (schemeMatch) {
+        const scheme = schemeMatch[1].toLowerCase();
+        const rest = schemeMatch[2];
+
+        // Check if it's a known scheme
+        const isKnownScheme = CONFIG.KNOWN_SCHEMES.includes(scheme);
+
+        // Special validation for different scheme types
+        if (scheme === 'mailto') {
+            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+/.test(rest);
+            return {
+                valid: emailValid,
+                type: 'mailto',
+                scheme: scheme,
+                message: emailValid ? 'Valid mailto link' : 'Invalid email format'
+            };
+        }
+
+        if (scheme === 'tel' || scheme === 'sms') {
+            const phoneValid = /^[+\d\s\-()]+/.test(rest);
+            return {
+                valid: phoneValid,
+                type: scheme,
+                scheme: scheme,
+                message: phoneValid ? `Valid ${scheme} link` : 'Invalid phone format'
+            };
+        }
+
+        if (scheme === 'data') {
+            return {
+                valid: rest.includes(','),
+                type: 'data',
+                scheme: scheme,
+                message: 'Data URI'
+            };
+        }
+
+        // For http/https and other URL-like schemes
+        try {
+            new URL(urlString);
+            return {
+                valid: true,
+                type: isKnownScheme ? 'known' : 'custom',
+                scheme: scheme,
+                message: isKnownScheme ? `Valid ${scheme.toUpperCase()} URL` : `Custom scheme: ${scheme}://`
+            };
+        } catch (e) {
+            // URL parsing failed but has valid scheme structure
+            return {
+                valid: true,
+                type: 'custom',
+                scheme: scheme,
+                message: `${isKnownScheme ? 'Known' : 'Custom'} URI: ${scheme}://`
+            };
+        }
+    }
+
+    // No scheme - check if it looks like a URL
+    if (/^[a-zA-Z0-9][-a-zA-Z0-9]*(\.[a-zA-Z]{2,})+/.test(urlString)) {
+        return {
+            valid: true,
+            type: 'incomplete',
+            scheme: null,
+            message: 'Missing protocol (add https://)'
+        };
+    }
+
+    // Might be a query string or partial URL
+    if (urlString.startsWith('?') || urlString.includes('=')) {
+        return {
+            valid: true,
+            type: 'query',
+            scheme: null,
+            message: 'Query string'
+        };
+    }
+
+    return { valid: false, type: 'invalid', message: 'Not a valid URL' };
+}
+
+function updateValidationIndicator(inputId, indicatorId) {
+    const input = document.getElementById(inputId);
+    const indicator = document.getElementById(indicatorId);
+
+    if (!indicator) return;
+
+    const result = validateURL(input.value);
+
+    if (!input.value.trim()) {
+        indicator.className = 'validation-indicator';
+        indicator.innerHTML = '';
+        return;
+    }
+
+    if (result.valid) {
+        indicator.className = 'validation-indicator valid';
+        indicator.innerHTML = `<span class="validation-icon">✓</span><span class="validation-text">${result.message}</span>`;
+    } else if (result.type === 'incomplete') {
+        indicator.className = 'validation-indicator warning';
+        indicator.innerHTML = `<span class="validation-icon">⚠</span><span class="validation-text">${result.message}</span>`;
+    } else {
+        indicator.className = 'validation-indicator invalid';
+        indicator.innerHTML = `<span class="validation-icon">✗</span><span class="validation-text">${result.message}</span>`;
+    }
+}
+
+// ========================================
 // URL BREAKDOWN MODE
 // ========================================
 function analyzeURL() {
     const input = document.getElementById('urlInput').value.trim();
-    
+
     if (!input) {
         showToast('Please enter a URL');
         return;
     }
-    
+
+    // Try to parse with validation
+    const validation = validateURL(input);
+
     try {
         const components = parseURLComponents(input);
         state.urlComponents = components;
@@ -390,15 +533,93 @@ function analyzeURL() {
         document.getElementById('componentsSection').classList.remove('hidden');
         showToast('URL analyzed! ✓');
     } catch (error) {
-        showToast('Error: Invalid URL format');
+        // For non-standard URIs, show what we can parse
+        if (validation.valid && validation.scheme) {
+            const components = parseCustomURI(input, validation.scheme);
+            state.urlComponents = components;
+            renderComponents(components);
+            document.getElementById('componentsSection').classList.remove('hidden');
+            showToast(`${validation.scheme.toUpperCase()} URI analyzed! ✓`);
+        } else {
+            showToast('Error: Invalid URL format');
+        }
     }
+}
+
+function parseCustomURI(uriString, scheme) {
+    // Parse non-standard URIs that URL() can't handle
+    const withoutScheme = uriString.replace(/^[^:]+:\/?\/?/, '');
+
+    const components = {
+        protocol: {
+            value: scheme + ':',
+            description: getSchemeDescription(scheme)
+        }
+    };
+
+    // Try to extract parts based on scheme type
+    if (scheme === 'mailto') {
+        const parts = withoutScheme.split('?');
+        components.recipient = {
+            value: parts[0],
+            description: 'Email recipient address'
+        };
+        if (parts[1]) {
+            components.search = {
+                value: '?' + parts[1],
+                description: 'Email parameters (subject, body, cc, bcc)'
+            };
+        }
+    } else if (scheme === 'tel' || scheme === 'sms') {
+        components.number = {
+            value: withoutScheme.split('?')[0],
+            description: 'Phone number'
+        };
+    } else {
+        // Generic parsing for other schemes
+        components.path = {
+            value: withoutScheme,
+            description: 'URI path/data'
+        };
+    }
+
+    return components;
+}
+
+function getSchemeDescription(scheme) {
+    const descriptions = {
+        'http': 'Hypertext Transfer Protocol (unencrypted)',
+        'https': 'Hypertext Transfer Protocol Secure (encrypted)',
+        'ftp': 'File Transfer Protocol',
+        'mailto': 'Email address link',
+        'tel': 'Telephone number link',
+        'sms': 'SMS message link',
+        'file': 'Local file system path',
+        'data': 'Inline data URI',
+        'javascript': 'JavaScript code execution',
+        'vscode': 'Visual Studio Code deep link',
+        'spotify': 'Spotify app deep link',
+        'slack': 'Slack app deep link',
+        'discord': 'Discord app deep link',
+        'fb': 'Facebook app deep link',
+        'twitter': 'Twitter/X app deep link',
+        'instagram': 'Instagram app deep link',
+        'whatsapp': 'WhatsApp deep link',
+        'tg': 'Telegram deep link',
+        'youtube': 'YouTube app deep link',
+        'magnet': 'Magnet link (P2P)',
+        'ssh': 'Secure Shell connection',
+        'git': 'Git repository URL'
+    };
+    return descriptions[scheme] || `Custom URI scheme: ${scheme}`;
 }
 
 function parseURLComponents(urlString) {
     const url = new URL(urlString);
-    
+    const scheme = url.protocol.replace(':', '');
+
     return {
-        protocol: { value: url.protocol, description: 'Defines how the browser communicates (HTTP/HTTPS)' },
+        protocol: { value: url.protocol, description: getSchemeDescription(scheme) },
         username: { value: url.username, description: 'Username for authentication (if present)' },
         password: { value: url.password, description: 'Password for authentication (if present)' },
         hostname: { value: url.hostname, description: 'Domain name or IP address' },
@@ -413,7 +634,7 @@ function parseURLComponents(urlString) {
 function renderComponents(components) {
     const grid = document.getElementById('componentsGrid');
     grid.innerHTML = '';
-    
+
     const componentConfig = {
         protocol: { icon: '🔒', name: 'Protocol', class: 'protocol' },
         username: { icon: '👤', name: 'Username', class: 'username' },
@@ -423,13 +644,17 @@ function renderComponents(components) {
         pathname: { icon: '📂', name: 'Path', class: 'pathname' },
         search: { icon: '❓', name: 'Query String', class: 'search' },
         hash: { icon: '#️⃣', name: 'Hash/Fragment', class: 'hash' },
-        origin: { icon: '🏠', name: 'Origin', class: 'origin' }
+        origin: { icon: '🏠', name: 'Origin', class: 'origin' },
+        // Custom URI components
+        recipient: { icon: '📧', name: 'Recipient', class: 'hostname' },
+        number: { icon: '📞', name: 'Number', class: 'hostname' },
+        path: { icon: '📂', name: 'Path/Data', class: 'pathname' }
     };
-    
+
     for (const [key, data] of Object.entries(components)) {
         if (!data.value) continue;
-        
-        const config = componentConfig[key];
+
+        const config = componentConfig[key] || { icon: '📋', name: key, class: 'pathname' };
         const card = createComponentCard(key, data, config);
         grid.appendChild(card);
     }

@@ -173,16 +173,17 @@ Examples:
                     </div>
                     
                     <div class="url-input-group">
-                        <input 
-                            type="text" 
-                            id="queryInput" 
-                            class="text-input" 
+                        <input
+                            type="text"
+                            id="queryInput"
+                            class="text-input"
                             placeholder="https://api.example.com/search?q=hello%20world&page=2&sort=date"
                             spellcheck="false"
                         >
                         <button id="parseBtn" class="btn btn-primary">Parse</button>
                     </div>
-                    
+                    <div id="queryValidation" class="validation-indicator"></div>
+
                     <div id="paramsSection" class="params-section hidden">
                         <div class="section-header">
                             <h3 class="section-title">
@@ -229,16 +230,17 @@ Examples:
                     </div>
                     
                     <div class="url-input-group">
-                        <input 
-                            type="text" 
-                            id="urlInput" 
-                            class="text-input" 
+                        <input
+                            type="text"
+                            id="urlInput"
+                            class="text-input"
                             placeholder="https://user:pass@example.com:8080/path/to/page?q=test#section"
                             spellcheck="false"
                         >
                         <button id="analyzeBtn" class="btn btn-primary">Analyze</button>
                     </div>
-                    
+                    <div id="urlValidation" class="validation-indicator"></div>
+
                     <div id="componentsSection" class="components-section hidden">
                         <div class="section-header">
                             <h3 class="section-title">

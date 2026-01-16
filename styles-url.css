@@ -553,6 +553,53 @@
     color: var(--color-primary);
 }
 
+/* Validation Indicator */
+.validation-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    min-height: 24px;
+    margin-top: var(--spacing-sm);
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.validation-indicator:empty {
+    display: none;
+}
+
+.validation-icon {
+    font-size: 1rem;
+}
+
+.validation-text {
+    color: var(--color-text-muted);
+}
+
+.validation-indicator.valid .validation-icon {
+    color: var(--color-primary);
+}
+
+.validation-indicator.valid .validation-text {
+    color: var(--color-primary);
+}
+
+.validation-indicator.warning .validation-icon {
+    color: #ffcc00;
+}
+
+.validation-indicator.warning .validation-text {
+    color: #ffcc00;
+}
+
+.validation-indicator.invalid .validation-icon {
+    color: #ff3b30;
+}
+
+.validation-indicator.invalid .validation-text {
+    color: #ff3b30;
+}
+
 /* Hidden State */
 .hidden {
     display: none !important;
