@@ -80,6 +80,10 @@
                     <span class="mode-icon">📁</span>
                     File
                 </button>
+                <button class="mode-btn" data-mode="batch">
+                    <span class="mode-icon">📚</span>
+                    Batch
+                </button>
                 <button class="mode-btn" data-mode="hmac">
                     <span class="mode-icon">🔐</span>
                     HMAC
@@ -88,6 +92,15 @@
                     <span class="mode-icon">⚖️</span>
                     Compare
                 </button>
+                <button class="mode-btn" data-mode="verify">
+                    <span class="mode-icon">✓</span>
+                    Verify
+                </button>
+            </div>
+
+            <!-- Global Controls -->
+            <div class="global-controls">
+                <button id="caseToggle" class="case-toggle-btn" title="Switch to uppercase">Aa</button>
             </div>
 
             <!-- Text Mode -->
@@ -217,6 +230,45 @@ Examples:
                 <div id="fileHashOutput" class="hash-output"></div>
             </div>
 
+            <!-- Batch File Mode -->
+            <div id="batchMode" class="mode-content">
+                <div class="batch-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Batch File Hashing
+                        </h3>
+                        <div class="section-controls">
+                            <button id="clearBatchBtn" class="btn-link">Clear All</button>
+                            <span id="batchFileCount" class="char-count">0 files</span>
+                        </div>
+                    </div>
+
+                    <div class="file-upload-area">
+                        <input type="file" id="batchFileInput" multiple hidden>
+                        <div id="batchDropZone" class="drop-zone">
+                            <div class="drop-zone-content">
+                                <span class="drop-icon">📚</span>
+                                <p class="drop-text">Drag & drop multiple files here</p>
+                                <p class="drop-hint">or click to browse</p>
+                                <p class="drop-limit">Select multiple files to hash at once</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="batchFileList" class="batch-file-list">
+                        <p class="empty-list">No files selected</p>
+                    </div>
+                </div>
+
+                <button id="generateBatchHashBtn" class="btn btn-primary">
+                    <span class="btn-icon">🔐</span>
+                    Generate All Hashes
+                </button>
+
+                <div id="batchHashOutput" class="hash-output"></div>
+            </div>
+
             <!-- HMAC Mode -->
             <div id="hmacMode" class="mode-content">
                 <div class="hmac-section">
@@ -335,6 +387,59 @@ Examples:
                             <li>Compare to verify they match</li>
                         </ol>
                         <p><strong>Common use:</strong> Verify downloaded files haven't been corrupted or tampered with.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verify Mode (Checksum File) -->
+            <div id="verifyMode" class="mode-content">
+                <div class="verify-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <span class="section-icon">▸</span>
+                            Checksum File Verification
+                        </h3>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="checksumInput">Paste Checksum File Contents</label>
+                        <textarea
+                            id="checksumInput"
+                            class="text-area"
+                            placeholder="Paste checksum file contents here...
+
+Supported formats:
+• GNU: e3b0c44298fc1c14...  filename.zip
+• BSD: SHA256 (filename.zip) = e3b0c44298fc1c14...
+• Simple: e3b0c44298fc1c14... filename.zip"
+                            rows="6"
+                            spellcheck="false"
+                        ></textarea>
+                    </div>
+
+                    <div id="checksumPreview" class="checksum-preview">
+                        <p class="empty-list">Paste checksum file contents above</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="checksumFileInput">Select Files to Verify</label>
+                        <input type="file" id="checksumFileInput" multiple class="file-input-visible">
+                    </div>
+
+                    <button id="verifyChecksumBtn" class="btn btn-primary">
+                        <span class="btn-icon">✓</span>
+                        Verify Files
+                    </button>
+
+                    <div class="verify-info">
+                        <h4>💡 How to Use</h4>
+                        <ol>
+                            <li>Copy contents from a .sha256, .md5, or checksum file</li>
+                            <li>Paste it in the text area above</li>
+                            <li>Select the files you want to verify</li>
+                            <li>Click "Verify Files" to check integrity</li>
+                        </ol>
+                        <p><strong>Tip:</strong> Download pages often provide checksum files to verify your downloads.</p>
                     </div>
                 </div>
             </div>
