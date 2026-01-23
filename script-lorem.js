@@ -461,6 +461,130 @@ function showToast(message) {
 }
 
 // ========================================
+// TOOL MODE SWITCHING
+// ========================================
+function initModeToggle() {
+    document.querySelectorAll('.mode-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // Toggle buttons
+            document.querySelectorAll('.mode-toggle-btn').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+
+            // Toggle sections
+            const mode = e.currentTarget.dataset.toolMode;
+            if (mode === 'text') {
+                document.getElementById('textToolMode').classList.remove('hidden');
+                document.getElementById('imageToolMode').classList.add('hidden');
+            } else {
+                document.getElementById('textToolMode').classList.add('hidden');
+                document.getElementById('imageToolMode').classList.remove('hidden');
+            }
+        });
+    });
+}
+
+// ========================================
+// IMAGE GENERATOR LOGIC
+// ========================================
+function initImageGenerator() {
+    const imgWidth = document.getElementById('imgWidth');
+    const imgHeight = document.getElementById('imgHeight');
+    const imgText = document.getElementById('imgText');
+    const imgBg = document.getElementById('imgBgColor');
+    const imgTextCol = document.getElementById('imgTextColor');
+    const previewImg = document.getElementById('placeholderPreview');
+    const generateBtn = document.getElementById('generateImageBtn');
+    const copyUrlBtn = document.getElementById('copyImgUrlBtn');
+    const downloadBtn = document.getElementById('downloadImgBtn');
+
+    if (!generateBtn) return;
+
+    function updateImagePreview() {
+        const w = imgWidth.value || 600;
+        const h = imgHeight.value || 400;
+        const bg = imgBg.value.replace('#', '');
+        const fg = imgTextCol.value.replace('#', '');
+        const text = imgText.value ? `?text=${encodeURIComponent(imgText.value)}` : '';
+
+        const url = `https://placehold.co/${w}x${h}/${bg}/${fg}${text}`;
+        previewImg.src = url;
+        return url;
+    }
+
+    generateBtn.addEventListener('click', () => {
+        updateImagePreview();
+        showToast('Image generated! ✨');
+    });
+
+    copyUrlBtn.addEventListener('click', () => {
+        const url = updateImagePreview();
+        copyToClipboard(url);
+        showToast('Image URL copied! 🔗');
+    });
+
+    downloadBtn.addEventListener('click', async () => {
+        const url = updateImagePreview();
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = `placeholder-${imgWidth.value}x${imgHeight.value}.svg`;
+            a.click();
+            URL.revokeObjectURL(blobUrl);
+            showToast('Image downloaded! 📥');
+        } catch (e) {
+            window.open(url, '_blank');
+        }
+    });
+}
+
+// ========================================
+// EDUCATIONAL CONTENT TOGGLE
+// ========================================
+function initEducationalToggle() {
+    const toggleEducationBtn = document.getElementById('toggleEducation');
+    const educationalContent = document.getElementById('educationalContent');
+
+    if (!toggleEducationBtn || !educationalContent) return;
+
+    toggleEducationBtn.addEventListener('click', () => {
+        const isHidden = educationalContent.classList.contains('hidden');
+
+        if (isHidden) {
+            educationalContent.classList.remove('hidden');
+            toggleEducationBtn.classList.add('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Hide Learning Content';
+
+            setTimeout(() => {
+                document.getElementById('educationalSection').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        } else {
+            educationalContent.classList.add('hidden');
+            toggleEducationBtn.classList.remove('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Learn More About Placeholders';
+        }
+
+        // Analytics tracking
+        if (typeof gtag === 'function') {
+            gtag('event', isHidden ? 'expand' : 'collapse', {
+                'event_category': 'Educational',
+                'event_label': 'Lorem'
+            });
+        }
+    });
+}
+
+// ========================================
 // START
 // ========================================
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    initModeToggle();
+    initImageGenerator();
+    initEducationalToggle();
+});

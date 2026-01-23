@@ -497,6 +497,158 @@ Supported formats:
         </div>
     </main>
 
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About Cryptographic Hashing</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is Hashing -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🔐</span>
+                        What is Cryptographic Hashing?
+                    </h2>
+                    <div class="edu-body">
+                        <p><strong>Cryptographic hashing</strong> is a one-way mathematical function that converts any input data into a fixed-size string of characters. Unlike encryption, hashing cannot be reversed—you cannot retrieve the original data from a hash. This makes it perfect for verification without exposing sensitive information.</p>
+
+                        <p>Every hash function has three critical properties: it's <strong>deterministic</strong> (same input always produces the same output), <strong>fast to compute</strong>, and <strong>collision-resistant</strong> (extremely difficult to find two different inputs that produce the same hash).</p>
+
+                        <p><strong>Why developers rely on hashing:</strong></p>
+                        <ul>
+                            <li><strong>Data Integrity:</strong> Verify files haven't been corrupted or tampered with during transfer</li>
+                            <li><strong>Password Security:</strong> Store password hashes instead of plaintext passwords</li>
+                            <li><strong>Digital Signatures:</strong> Create tamper-proof signatures for documents and code</li>
+                            <li><strong>Deduplication:</strong> Identify duplicate files by comparing hashes instead of content</li>
+                            <li><strong>Blockchain:</strong> The foundation of Bitcoin and cryptocurrency security</li>
+                        </ul>
+
+                        <p>The "avalanche effect" is a key property—changing even a single bit in the input completely changes the output hash. This makes hashes excellent for detecting any modification to data.</p>
+                    </div>
+                </div>
+
+                <!-- How to Use This Tool -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🛠️</span>
+                        How to Use This Tool
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Text Mode</h3>
+                        <p>Enter any text to generate its hash. Select one or more algorithms to compare outputs. The crack time estimation shows how long it would take to brute-force your input—useful for understanding password strength.</p>
+
+                        <h3>File Mode</h3>
+                        <p>Upload any file to calculate its hash. Use this to verify downloaded files match the publisher's checksum. Large files (up to 100MB) are processed entirely in your browser.</p>
+
+                        <h3>Batch Mode</h3>
+                        <p>Process multiple files at once. Drag and drop a folder's contents to generate hashes for all files simultaneously. Perfect for creating checksums for software releases.</p>
+
+                        <h3>HMAC Mode</h3>
+                        <p>Generate keyed-hash message authentication codes. HMAC combines a secret key with the message to create a signature that verifies both integrity and authenticity. Essential for API authentication and webhook verification.</p>
+
+                        <h3>Compare Mode</h3>
+                        <p>Paste two hashes to check if they match. The comparison is case-insensitive and handles whitespace automatically. Use this to verify downloaded files against published checksums.</p>
+
+                        <h3>Verify Mode</h3>
+                        <p>Paste the contents of a checksum file (SHA256SUMS, MD5SUMS, etc.), then select files to verify. Supports GNU, BSD, and simple hash formats automatically.</p>
+
+                        <p class="privacy-note"><strong>🔒 Privacy First:</strong> All hashing happens locally in your browser. Your files and text never leave your device—nothing is uploaded to any server.</p>
+                    </div>
+                </div>
+
+                <!-- Common Use Cases -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">💡</span>
+                        Common Use Cases
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Verifying Downloaded Software</h3>
+                        <p>Before installing downloaded software, compare its hash against the publisher's checksum. If they match, the file wasn't corrupted or modified. Major projects like Linux distributions, development tools, and security software always publish checksums.</p>
+
+                        <h3>Secure Password Storage</h3>
+                        <p>Never store passwords in plaintext. Hash them before storage, then hash user input during login to compare. Note: For passwords, use specialized algorithms like bcrypt or Argon2 that include salting and are intentionally slow. SHA-256 alone is too fast for password hashing.</p>
+
+                        <h3>API Request Signing</h3>
+                        <p>Many APIs require HMAC signatures for authentication. Generate the signature using your API secret and the request payload, then include it in your request headers. The server verifies by computing the same HMAC.</p>
+
+                        <h3>Git Commit Identification</h3>
+                        <p>Git uses SHA-1 to create unique identifiers for every commit, file, and tree. When you see a commit hash like <code>a1b2c3d</code>, that's a truncated SHA-1 hash of the commit's contents.</p>
+
+                        <h3>Content-Addressed Storage</h3>
+                        <p>Systems like IPFS and Docker registries use hashes as addresses. The hash of content becomes its identifier—if two files have the same hash, they're identical. This enables efficient deduplication and caching.</p>
+
+                        <h3>Data Integrity in Databases</h3>
+                        <p>Store a hash alongside important records. When retrieving data, recompute the hash to verify nothing was corrupted or tampered with. This is especially important for financial and medical records.</p>
+                    </div>
+                </div>
+
+                <!-- Tips & Best Practices -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">⚡</span>
+                        Tips & Best Practices
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Choose the Right Algorithm</h3>
+                        <p><strong>SHA-256</strong> is the current industry standard—use it by default. <strong>SHA-512</strong> offers more security for high-value applications. Avoid <strong>MD5</strong> and <strong>SHA-1</strong> for security purposes—they're cryptographically broken. <strong>SHA-3</strong> is the newest standard, offering a different internal structure as a backup if SHA-2 is ever compromised.</p>
+
+                        <h3>Understanding the Crack Time Display</h3>
+                        <p>The crack time estimation assumes a modern GPU trying every possible combination of alphanumeric characters. It's educational—real attacks may use dictionaries, rainbow tables, or exploit weak patterns. A "strong" rating here doesn't guarantee security if your input is a common word.</p>
+
+                        <h3>Don't Use Hashes as Encryption</h3>
+                        <p>Hashing is one-way—you cannot decrypt a hash. If you need to recover the original data, use encryption instead. Hashes are for verification, not confidentiality.</p>
+
+                        <h3>Always Compare Full Hashes</h3>
+                        <p>When verifying, compare the entire hash, not just the first few characters. Some attacks exploit partial hash collisions. This tool does full comparison automatically.</p>
+
+                        <h3>Use HMAC for Authentication</h3>
+                        <p>Plain hashing is vulnerable to length extension attacks with some algorithms. HMAC properly combines the key and message to prevent these attacks. Always use HMAC (not hash + concatenation) for authentication.</p>
+
+                        <h3>Case Doesn't Matter</h3>
+                        <p>Hashes are typically displayed in hexadecimal. <code>a1b2c3</code> and <code>A1B2C3</code> represent the same hash. Use the case toggle to switch between uppercase and lowercase based on your preference or project conventions.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Why can't I "decrypt" a hash?</h3>
+                        <p><strong>Hashing is fundamentally one-way.</strong> The mathematical transformation loses information—multiple inputs can theoretically produce the same hash. There's no reverse function. To "crack" a hash, attackers try inputs until one produces a matching hash.</p>
+
+                        <h3>Is MD5 completely useless?</h3>
+                        <p><strong>Not for all purposes.</strong> MD5 is broken for security (attackers can create collisions), but it's still useful for non-security checksums like cache invalidation or detecting accidental corruption. Just don't use it to verify downloads from untrusted sources or for passwords.</p>
+
+                        <h3>Why do file hashes matter?</h3>
+                        <p><strong>They prove integrity.</strong> A file could be corrupted during download, modified by malware, or replaced by an attacker. Comparing the hash to the publisher's checksum proves you have the exact same bytes they intended to distribute.</p>
+
+                        <h3>What's the difference between SHA-256 and SHA-512?</h3>
+                        <p><strong>Output size and internal structure.</strong> SHA-256 produces a 256-bit (64 character) hash; SHA-512 produces 512-bit (128 character). SHA-512 is slightly more secure and can be faster on 64-bit systems, but SHA-256 is sufficient for most applications.</p>
+
+                        <h3>Should I use SHA-3 instead of SHA-256?</h3>
+                        <p><strong>SHA-256 is fine for now.</strong> SHA-3 uses a completely different internal design (Keccak). It exists as a backup if vulnerabilities are found in SHA-2. Unless you have specific requirements, SHA-256 remains the practical choice.</p>
+
+                        <h3>How is the crack time calculated?</h3>
+                        <p><strong>It's an estimate based on brute force.</strong> We calculate possible combinations (62 alphanumeric characters ^ input length) and divide by modern GPU hash rates. Real attacks use smarter methods, so treat this as educational, not a security guarantee.</p>
+
+                        <h3>Why use HMAC instead of just hashing with a key?</h3>
+                        <p><strong>Security against length extension attacks.</strong> Simply prepending or appending a key to data before hashing is vulnerable to attacks with MD5/SHA-1/SHA-256. HMAC's construction prevents these attacks and is the standard for authenticated hashing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container">

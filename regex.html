@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RegEx Tester & Debugger | ToolBit</title>
-    <meta name="description" content="Free online regular expression tester with real-time matching, explanation, and pattern library. Test regex patterns instantly with syntax highlighting.">
+    <meta name="description"
+        content="Free online regular expression tester with real-time matching, explanation, and pattern library. Test regex patterns instantly with syntax highlighting.">
     <link rel="canonical" href="https://toolbit.dev/regex.html">
     <link rel="stylesheet" href="styles-regex.css">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -15,21 +17,24 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap"
+        rel="stylesheet">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-      gtag('config', 'G-L3T8NYVCJ6');
+        gtag('config', 'G-L3T8NYVCJ6');
     </script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
-     crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header class="site-header">
@@ -62,7 +67,8 @@
                 <span class="glitch" data-text="REGEX">REGEX</span>
                 <span class="hero-subtitle">Tester & Debugger</span>
             </h1>
-            <p class="hero-description">Test regular expressions in real-time with match highlighting and explanations.</p>
+            <p class="hero-description">Test regular expressions in real-time with match highlighting and explanations.
+            </p>
         </div>
     </section>
 
@@ -77,25 +83,14 @@
                         Regular Expression Pattern
                     </h3>
                 </div>
-                
+
                 <div class="pattern-input-wrapper">
                     <span class="regex-delimiter">/</span>
-                    <input 
-                        type="text" 
-                        id="regexPattern" 
-                        class="regex-input" 
-                        placeholder="Enter your regex pattern here..."
-                        spellcheck="false"
-                    >
+                    <input type="text" id="regexPattern" class="regex-input"
+                        placeholder="Enter your regex pattern here..." spellcheck="false">
                     <span class="regex-delimiter">/</span>
-                    <input 
-                        type="text" 
-                        id="regexFlags" 
-                        class="flags-input" 
-                        placeholder="gimsuvy"
-                        maxlength="7"
-                        spellcheck="false"
-                    >
+                    <input type="text" id="regexFlags" class="flags-input" placeholder="gimsuvy" maxlength="7"
+                        spellcheck="false">
                 </div>
 
                 <!-- Flags Checkboxes -->
@@ -144,18 +139,13 @@
                     </div>
                 </div>
 
-                <textarea
-                    id="testString"
-                    class="test-input"
-                    placeholder="Enter your test string here...
+                <textarea id="testString" class="test-input" placeholder="Enter your test string here...
 
 Try pasting:
 - Email addresses
 - URLs
 - Phone numbers
-- Any text you want to match against"
-                    spellcheck="false"
-                ></textarea>
+- Any text you want to match against" spellcheck="false"></textarea>
             </div>
 
             <!-- Results Section -->
@@ -223,13 +213,8 @@ Try pasting:
                 <div id="replaceControls" class="replace-controls hidden">
                     <div class="replace-input-wrapper">
                         <label for="replaceString" class="replace-label">Replacement String:</label>
-                        <input
-                            type="text"
-                            id="replaceString"
-                            class="replace-input"
-                            placeholder="$1, $2 for capture groups, $& for full match"
-                            spellcheck="false"
-                        >
+                        <input type="text" id="replaceString" class="replace-input"
+                            placeholder="$1, $2 for capture groups, $& for full match" spellcheck="false">
                     </div>
                     <div class="replace-output-wrapper">
                         <div class="replace-output-header">
@@ -306,7 +291,9 @@ Try pasting:
                 </div>
 
                 <div class="regex-flavor-note">
-                    <strong>⚠ JavaScript RegEx Engine</strong> - This tool uses JavaScript's native regex engine. Some features may differ from PCRE, Python, or other regex flavors (e.g., no lookbehinds in older browsers, different Unicode handling).
+                    <strong>⚠ JavaScript RegEx Engine</strong> - This tool uses JavaScript's native regex engine. Some
+                    features may differ from PCRE, Python, or other regex flavors (e.g., no lookbehinds in older
+                    browsers, different Unicode handling).
                 </div>
 
                 <div class="reference-grid">
@@ -321,7 +308,7 @@ Try pasting:
                             <li><code>[^abc]</code> - Not a, b, or c</li>
                         </ul>
                     </div>
-                    
+
                     <div class="reference-card">
                         <h4>Quantifiers</h4>
                         <ul>
@@ -333,7 +320,7 @@ Try pasting:
                             <li><code>{n,m}</code> - Between n and m times</li>
                         </ul>
                     </div>
-                    
+
                     <div class="reference-card">
                         <h4>Anchors</h4>
                         <ul>
@@ -343,7 +330,7 @@ Try pasting:
                             <li><code>\B</code> - Not word boundary</li>
                         </ul>
                     </div>
-                    
+
                     <div class="reference-card">
                         <h4>Groups</h4>
                         <ul>
@@ -359,6 +346,253 @@ Try pasting:
         </div>
     </main>
 
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About Regular Expressions</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is RegEx -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🔍</span>
+                        What are Regular Expressions?
+                    </h2>
+                    <div class="edu-body">
+                        <p><strong>Regular Expressions (RegEx)</strong> are powerful pattern-matching tools used to
+                            search, validate, and manipulate text. Think of them as a specialized search language that
+                            lets you describe complex text patterns with precision.</p>
+
+                        <p>Instead of searching for exact strings like "hello", regex lets you search for patterns like
+                            "any email address" or "all phone numbers" or "URLs starting with https". This makes regex
+                            indispensable for data validation, text processing, log parsing, and countless other
+                            development tasks.</p>
+
+                        <p><strong>Why developers rely on regex:</strong></p>
+                        <ul>
+                            <li><strong>Powerful:</strong> Match complex patterns that would take hundreds of lines of
+                                code otherwise</li>
+                            <li><strong>Universal:</strong> Supported in virtually every programming language</li>
+                            <li><strong>Concise:</strong> Express complex logic in a compact syntax</li>
+                            <li><strong>Fast:</strong> Highly optimized engines make pattern matching lightning-quick
+                            </li>
+                        </ul>
+
+                        <p>Common use cases include form validation (emails, passwords, phone numbers), log file
+                            parsing, data extraction from text, search and replace operations, and URL routing in web
+                            frameworks.</p>
+                    </div>
+                </div>
+
+                <!-- How to Use This Tool -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🛠️</span>
+                        How to Use This Tool
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Getting Started</h3>
+                        <p>Testing regex patterns is simple:</p>
+                        <ul>
+                            <li><strong>Enter Pattern:</strong> Type your regex pattern in the top input field (between
+                                the slashes)</li>
+                            <li><strong>Set Flags:</strong> Use checkboxes or type flags directly (g, i, m, s, u)</li>
+                            <li><strong>Add Test String:</strong> Paste or type the text you want to test against</li>
+                            <li><strong>See Results:</strong> Matches highlight instantly with detailed information</li>
+                        </ul>
+
+                        <h3>Understanding Flags</h3>
+                        <p><strong>g (Global):</strong> Find all matches, not just the first one. Essential for
+                            search-and-replace operations.</p>
+                        <p><strong>i (Case Insensitive):</strong> Match both uppercase and lowercase letters. "Hello"
+                            matches "hello", "HELLO", etc.</p>
+                        <p><strong>m (Multiline):</strong> Makes ^ and $ match line starts/ends instead of just string
+                            start/end.</p>
+                        <p><strong>s (Dotall):</strong> Makes . match newline characters too (normally it doesn't).</p>
+                        <p><strong>u (Unicode):</strong> Enables full Unicode support for matching international
+                            characters.</p>
+
+                        <h3>Core Features</h3>
+                        <p><strong>Real-Time Highlighting:</strong> See your matches highlighted in the test string as
+                            you type. Different colors show different capture groups.</p>
+
+                        <p><strong>Pattern Explanation:</strong> Get a human-readable breakdown of what your regex
+                            pattern does. Perfect for learning or debugging complex patterns.</p>
+
+                        <p><strong>Match Details:</strong> View all matches with their positions, capture groups, and
+                            values. Click to see exactly what was captured.</p>
+
+                        <p><strong>Replace Mode:</strong> Test substitution patterns with capture group references ($1,
+                            $2, etc.). See the result before using it in your code.</p>
+
+                        <h3>Pattern Library</h3>
+                        <p>Click "Common Patterns Library" to access pre-built regex for emails, URLs, phone numbers,
+                            passwords, and more. Click any pattern to load it instantly.</p>
+
+                        <h3>Export Options</h3>
+                        <ul>
+                            <li><strong>Copy All:</strong> Copy all matches to clipboard</li>
+                            <li><strong>Export JSON:</strong> Download matches as structured JSON data</li>
+                            <li><strong>Export CSV:</strong> Download matches as CSV for spreadsheet analysis</li>
+                        </ul>
+
+                        <p class="privacy-note"><strong>🔒 Privacy First:</strong> All regex testing happens in your
+                            browser. Your patterns and test strings never leave your device.</p>
+                    </div>
+                </div>
+
+                <!-- Common Use Cases -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">💡</span>
+                        Common Use Cases
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Form Validation</h3>
+                        <p>Validate user input before submission. Test email addresses, phone numbers, passwords,
+                            usernames, and more. Use our pattern library for common validation patterns, or build custom
+                            ones for your specific requirements.</p>
+
+                        <h3>Log File Parsing</h3>
+                        <p>Extract specific information from log files—timestamps, error codes, IP addresses, user IDs.
+                            Regex excels at finding structured data within unstructured text. Test your patterns here
+                            before running them on production logs.</p>
+
+                        <h3>Data Extraction</h3>
+                        <p>Pull specific data from HTML, CSV, or text files. Extract URLs from documents, phone numbers
+                            from contact lists, or product codes from invoices. The match details show exactly what was
+                            captured.</p>
+
+                        <h3>Search and Replace</h3>
+                        <p>Transform text with pattern-based replacements. Use capture groups to rearrange data (e.g.,
+                            "LastName, FirstName" → "FirstName LastName"). Test your replacement pattern in Replace Mode
+                            before applying it to real data.</p>
+
+                        <h3>URL Routing</h3>
+                        <p>Design and test URL patterns for web frameworks. Validate route parameters, extract dynamic
+                            segments, and ensure your routing logic works correctly before deploying.</p>
+
+                        <h3>Code Refactoring</h3>
+                        <p>Find and replace code patterns across your codebase. Test complex search patterns here to
+                            ensure they match exactly what you want—nothing more, nothing less.</p>
+
+                        <h3>Data Cleaning</h3>
+                        <p>Normalize inconsistent data formats. Remove unwanted characters, standardize phone number
+                            formats, or clean up messy CSV data. Test your cleaning patterns to avoid unintended
+                            changes.</p>
+                    </div>
+                </div>
+
+                <!-- Tips & Tricks -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">⚡</span>
+                        Tips & Tricks
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Start Simple, Build Up</h3>
+                        <p>Don't try to write the perfect regex in one go. Start with a simple pattern that matches some
+                            cases, then refine it incrementally. Test each change to see how it affects your matches.
+                        </p>
+
+                        <h3>Use the Pattern Library</h3>
+                        <p>Don't reinvent the wheel. Our pattern library includes battle-tested regex for common tasks.
+                            Click a pattern to load it, then modify it for your specific needs.</p>
+
+                        <h3>Understand Greedy vs Lazy</h3>
+                        <p>By default, quantifiers (* + {n,m}) are greedy—they match as much as possible. Add ? to make
+                            them lazy: .*? matches as little as possible. Test both to see the difference.</p>
+
+                        <h3>Use Non-Capturing Groups</h3>
+                        <p>If you need grouping but don't need to capture the value, use (?:...) instead of (...). It's
+                            more efficient and keeps your capture groups numbered correctly.</p>
+
+                        <h3>Test Edge Cases</h3>
+                        <p>Test your regex with empty strings, very long strings, special characters, and Unicode. What
+                            works for "john@example.com" might break on "josé@café.com".</p>
+
+                        <h3>Escape Special Characters</h3>
+                        <p>Characters like . * + ? ^ $ { } [ ] ( ) | \ have special meaning in regex. To match them
+                            literally, escape with backslash: \. matches an actual period.</p>
+
+                        <h3>Use Anchors Wisely</h3>
+                        <p>^ and $ anchor your pattern to the start/end of the string. Without them, your pattern might
+                            match substrings you didn't intend. Test with and without anchors to see the difference.</p>
+
+                        <h3>Check Browser Compatibility</h3>
+                        <p>This tool uses JavaScript's regex engine. Some features (like lookbehinds) may not work in
+                            older browsers. The flavor note at the bottom reminds you of this.</p>
+
+                        <h3>Save Your Patterns</h3>
+                        <p>Use the pattern history feature to save patterns you use frequently. Your recent patterns are
+                            stored locally and persist across sessions.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Is my data safe?</h3>
+                        <p><strong>Absolutely.</strong> This tool runs 100% client-side in your browser. Your regex
+                            patterns and test strings never leave your device. No server processing, no data collection,
+                            no privacy concerns. Perfect for testing patterns against sensitive data.</p>
+
+                        <h3>What regex flavor does this use?</h3>
+                        <p><strong>JavaScript RegEx.</strong> This tool uses JavaScript's native regex engine, which is
+                            similar to but not identical to PCRE, Python, or other flavors. Most common features work
+                            identically, but some advanced features (like lookbehinds in older browsers) may differ.</p>
+
+                        <h3>Why aren't my matches showing up?</h3>
+                        <p>Common issues: (1) Missing the 'g' flag for multiple matches, (2) Pattern is too strict (try
+                            removing anchors ^ $), (3) Case sensitivity (add 'i' flag), (4) Special characters not
+                            escaped. Check the pattern explanation for hints.</p>
+
+                        <h3>What's the difference between () and (?:)?</h3>
+                        <p><strong>Capturing vs non-capturing groups.</strong> (...) captures the matched text for later
+                            use (in replacements or code). (?:...) groups without capturing, which is faster and doesn't
+                            affect capture group numbering.</p>
+
+                        <h3>How do I match a literal dot or asterisk?</h3>
+                        <p><strong>Escape with backslash.</strong> Use \. to match a period, \* to match an asterisk,
+                            etc. Any special regex character can be escaped this way to match it literally.</p>
+
+                        <h3>Can I test multiline text?</h3>
+                        <p><strong>Yes!</strong> Paste multiline text into the test string area. Use the 'm' flag to
+                            make ^ and $ match line boundaries instead of just string boundaries.</p>
+
+                        <h3>How do I use capture groups in replacements?</h3>
+                        <p>Enable Replace Mode and use $1, $2, etc. to reference capture groups. $& references the
+                            entire match. Example: pattern (\\w+) (\\w+) with replacement $2 $1 swaps two words.</p>
+
+                        <h3>Why is my regex so slow?</h3>
+                        <p>Complex patterns with nested quantifiers can cause "catastrophic backtracking." Simplify your
+                            pattern, use non-capturing groups (?:...), or make quantifiers lazy with ?. Test with
+                            shorter strings first.</p>
+
+                        <h3>Can I save my patterns?</h3>
+                        <p><strong>Yes, locally.</strong> Your recent patterns are saved in your browser's local
+                            storage. They persist across sessions but are device-specific. Use the history feature to
+                            access them.</p>
+
+                        <h3>How do I report a bug or request a feature?</h3>
+                        <p>Head over to our <a href="contact.html">Contact page</a> to send feedback. We're always
+                            improving and appreciate hearing from users!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
@@ -366,7 +600,8 @@ Try pasting:
                 <div class="footer-section">
                     <h4>ToolBit</h4>
                     <p>Professional developer tools, zero bloat.</p>
-                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
                 </div>
                 <div class="footer-section">
                     <h4>Tools</h4>
@@ -408,4 +643,5 @@ Try pasting:
 
     <script src="script-regex.js"></script>
 </body>
+
 </html>

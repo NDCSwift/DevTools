@@ -310,62 +310,129 @@ https://test.com?q=hello world"
                 </div>
             </div>
 
-            <!-- Info Section -->
-            <div class="info-section">
-                <div class="section-header">
-                    <h3 class="section-title">
-                        <span class="section-icon">▸</span>
-                        Understanding URL Encoding
-                    </h3>
+        </div>
+    </main>
+
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About URL Encoding</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is URL Encoding -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🔗</span>
+                        What is URL Encoding?
+                    </h2>
+                    <div class="edu-body">
+                        <p><strong>URL Encoding</strong> (also known as percent-encoding) is a mechanism for encoding information in a Uniform Resource Identifier (URI). It converts characters that aren't allowed in URLs into a format that can be safely transmitted over the Internet.</p>
+
+                        <p>The web uses the ASCII character set. Any character that isn't an unreserved ASCII character (A-Z, a-z, 0-9, and - _ . ~) must be encoded. This is done by replacing the character with a <code>%</code> followed by its two-digit hexadecimal value.</p>
+
+                        <p><strong>Why is it necessary?</strong></p>
+                        <ul>
+                            <li><strong>Ambiguity:</strong> Characters like <code>&</code>, <code>=</code>, and <code>?</code> have special meaning in URLs. If you want to use them literally (e.g., in a password), they must be encoded.</li>
+                            <li><strong>Safety:</strong> Spaces and unsafe ASCII characters (like <code><</code>, <code>></code>, <code>"</code>) can break URLs or confuse servers.</li>
+                            <li><strong>Data Integrity:</strong> Ensures that the data you send matches exactly what the server receives, regardless of browser or network interpretations.</li>
+                        </ul>
+                    </div>
                 </div>
-                
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h4>🔗 What is URL Encoding?</h4>
-                        <p>URL encoding (percent-encoding) converts special characters into a format that can be transmitted over the internet. Spaces become <code>%20</code>, <code>@</code> becomes <code>%40</code>, etc.</p>
-                        <p>It's also called "percent encoding" because special characters are represented as <code>%</code> followed by two hexadecimal digits.</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>🎯 When to Use URL Encoding</h4>
+
+                <!-- How to Use This Tool -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🛠️</span>
+                        How to Use This Tool
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Modes</h3>
+                        <p>This tool is split into four specialized modes:</p>
                         <ul>
-                            <li><strong>Query parameters:</strong> <code>q=hello world</code> → <code>q=hello%20world</code></li>
-                            <li><strong>Special characters:</strong> <code>@</code>, <code>#</code>, <code>&</code>, <code>=</code></li>
-                            <li><strong>Form data:</strong> Submitting forms with special characters</li>
-                            <li><strong>API requests:</strong> Passing parameters with spaces or symbols</li>
-                            <li><strong>Passing URLs:</strong> Using URLs as parameter values</li>
+                            <li><strong>Encode/Decode:</strong> The standard tool. Type text on one side, see the result on the other. Use "Auto-detect" to smart-switch based on input.</li>
+                            <li><strong>Query Parser:</strong> Paste a full URL to see a table of all query parameters. Edit values individually without worrying about encoding syntax.</li>
+                            <li><strong>URL Breakdown:</strong> Dissects a URL into its components: Protocol, Host, Port, Path, Query, and Hash. Perfect for debugging complex routing issues.</li>
+                            <li><strong>Batch Mode:</strong> Process lists of URLs (one per line). Great for cleaning up log files or preparing bulk redirect lists.</li>
                         </ul>
+
+                        <h3>Tips for Power Users</h3>
+                        <p><strong>Swap Button (⇄):</strong> Quickly toggle between encoding and decoding. Useful when you accidentally paste into the wrong box.</p>
+                        <p><strong>Smart Paste:</strong> In Query Parser mode, pasting a URL automatically triggers the parser. No need to click "Parse".</p>
                     </div>
-                    
-                    <div class="info-card">
-                        <h4>⚠️ Reserved Characters</h4>
-                        <p>These characters have special meaning in URLs and should be encoded:</p>
-                        <ul>
-                            <li><code>&</code> (separator) → <code>%26</code></li>
-                            <li><code>=</code> (assignment) → <code>%3D</code></li>
-                            <li><code>?</code> (query start) → <code>%3F</code></li>
-                            <li><code>#</code> (fragment) → <code>%23</code></li>
-                            <li><code>/</code> (path separator) → <code>%2F</code></li>
-                            <li><code> </code> (space) → <code>%20</code> or <code>+</code></li>
-                        </ul>
+                </div>
+
+                <!-- Common Use Cases -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">💡</span>
+                        Common Use Cases
+                    </h2>
+                    <div class="edu-body">
+                        <h3>1. API Parameters</h3>
+                        <p>When sending data to REST APIs via query parameters, everything must be encoded. If you search for "C++ & Java", sending it as <code>?q=C++ & Java</code> will break because <code>&</code> starts a new parameter. Encoded, it becomes <code>?q=C%2B%2B%20%26%20Java</code>.</p>
+
+                        <h3>2. Redirect Return URLs</h3>
+                        <p>Authentication flows (OAuth) often need a <code>return_url</code> parameter. Since this is a URL inside a URL, the inner URL must be fully encoded to prevent the browser from misinterpreting where the first URL ends.</p>
+
+                        <h3>3. UTM Tags for Marketing</h3>
+                        <p>Marketers use UTM parameters to track clicks. If a campaign name contains spaces or emojis (e.g., "Summer Sale ☀️"), it must be encoded to ensure analytics tools capture it correctly.</p>
+
+                        <h3>4. Form Data</h3>
+                        <p>When browsers submit HTML forms using <code>application/x-www-form-urlencoded</code>, they automatically apply this encoding. This tool helps you debug raw form data or simulate form submissions.</p>
                     </div>
-                    
-                    <div class="info-card">
-                        <h4>💡 Common Mistakes</h4>
+                </div>
+
+                <!-- Tips & Tricks -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">⚡</span>
+                        Tips & Tricks
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Space Encoding: + vs %20</h3>
+                        <p>Spaces can be encoded as <code>%20</code> (standard) or <code>+</code> (legacy, used in query strings). This tool defaults to <code>%20</code> for maximum compatibility, but handles decoding both correctly.</p>
+
+                        <h3>encodeURI vs encodeURIComponent</h3>
+                        <p>In JavaScript development:</p>
                         <ul>
-                            <li>❌ Encoding the entire URL (breaks structure)</li>
-                            <li>❌ Double-encoding (encoding already encoded text)</li>
-                            <li>❌ Forgetting to encode query parameter values</li>
-                            <li>✅ Encode only the values, not the structure</li>
-                            <li>✅ Use <code>encodeURIComponent()</code> for values</li>
-                            <li>✅ Use <code>encodeURI()</code> for full URLs</li>
+                            <li>Use <strong>encodeURI()</strong> for full URLs. It preserves protocol/host separators like <code>:</code> and <code>/</code>.</li>
+                            <li>Use <strong>encodeURIComponent()</strong> for values <em>within</em> a URL (like query parameters). It encodes everything including <code>/</code> and <code>:</code>.</li>
                         </ul>
+
+                        <h3>Avoid Double Encoding</h3>
+                        <p>A common bug is encoding text that is already encoded, resulting in <code>%2520</code> (encoded %) instead of <code>%20</code>. Use the "Decode" mode first if you're unsure.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Does this tool handle Emoji?</h3>
+                        <p><strong>Yes.</strong> Emojis and unicode characters are first converted to UTF-8 bytes and then percent-encoded. For example, 😊 becomes <code>%F0%9F%98%8A</code>.</p>
+
+                        <h3>Is my data private?</h3>
+                        <p><strong>100% Client-Side.</strong> No data is sent to any server. All processing happens in your browser's memory, making it safe for internal URLs, tokens, or sensitive query strings.</p>
+
+                        <h3>Why does my decoded URL look wrong?</h3>
+                        <p>You might need to decode multiple times. Some systems apply encoding layers (e.g., a URL inside a JSON object inside a URL). Click "Decode" repeatedly until it looks readable.</p>
+
+                        <h3>Can I encode large blocks of text?</h3>
+                        <p>Yes, but keep in mind that URLs generally have a max length limit (often 2048 characters) in many browsers and servers. For larger data, consider using <a href="base64.html">Base64</a> or POST requests instead.</p>
                     </div>
                 </div>
             </div>
-
         </div>
-    </main>
+    </section>
 
     <!-- Footer -->
     <footer class="site-footer">

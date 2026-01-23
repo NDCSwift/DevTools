@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Formatter & Validator | ToolBit</title>
-    <meta name="description" content="Free JSON formatter, validator, and beautifier. Format, validate, and minify JSON instantly with syntax highlighting and error detection.">
+    <meta name="description"
+        content="Free JSON formatter, validator, and beautifier. Format, validate, and minify JSON instantly with syntax highlighting and error detection.">
     <link rel="canonical" href="https://toolbit.dev/json.html">
     <link rel="stylesheet" href="json-styles.css">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -15,21 +17,24 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap"
+        rel="stylesheet">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-      gtag('config', 'G-L3T8NYVCJ6');
+        gtag('config', 'G-L3T8NYVCJ6');
     </script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
-     crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header class="site-header">
@@ -128,12 +133,8 @@
                 </div>
 
                 <div class="search-group">
-                    <input
-                        type="text"
-                        id="searchInput"
-                        class="search-input"
-                        placeholder="🔍 Search keys or values..."
-                    />
+                    <input type="text" id="searchInput" class="search-input"
+                        placeholder="🔍 Search keys or values..." />
                 </div>
             </div>
 
@@ -163,13 +164,11 @@
                         </div>
                     </div>
                     <label for="fileInput" class="sr-only">Upload JSON file</label>
-                    <input type="file" id="fileInput" accept=".json,application/json" class="hidden-file-input" aria-label="Upload JSON file" />
+                    <input type="file" id="fileInput" accept=".json,application/json" class="hidden-file-input"
+                        aria-label="Upload JSON file" />
                     <div class="input-wrapper">
                         <div id="inputLineNumbers" class="input-line-numbers"></div>
-                        <textarea
-                            id="inputJson"
-                            class="json-editor drag-drop-zone"
-                            placeholder='Paste, drag & drop, or upload your JSON file...
+                        <textarea id="inputJson" class="json-editor drag-drop-zone" placeholder='Paste, drag & drop, or upload your JSON file...
 
 Try formatting, minifying, or exploring with tree view!
 
@@ -188,9 +187,7 @@ Example:
     "followers": 1337,
     "verified": true
   }
-}'
-                            spellcheck="false"
-                        ></textarea>
+}' spellcheck="false"></textarea>
                     </div>
                 </div>
 
@@ -214,6 +211,233 @@ Example:
         </div>
     </main>
 
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About JSON</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is JSON -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">📄</span>
+                        What is JSON?
+                    </h2>
+                    <div class="edu-body">
+                        <p><strong>JSON (JavaScript Object Notation)</strong> is a lightweight, text-based data format
+                            that's become the standard for data exchange on the web. It's human-readable, easy to parse,
+                            and supported by virtually every programming language.</p>
+
+                        <p>Originally derived from JavaScript, JSON has evolved into a language-independent format used
+                            everywhere from REST APIs to configuration files. Its simple structure—built on key-value
+                            pairs and arrays—makes it perfect for representing complex data hierarchies without the
+                            verbosity of XML.</p>
+
+                        <p><strong>Why developers love JSON:</strong></p>
+                        <ul>
+                            <li><strong>Lightweight:</strong> Minimal syntax means smaller file sizes and faster parsing
+                            </li>
+                            <li><strong>Universal:</strong> Every modern language has built-in JSON support</li>
+                            <li><strong>Readable:</strong> Unlike binary formats, you can read and debug JSON with your
+                                eyes</li>
+                            <li><strong>Flexible:</strong> Supports nested objects, arrays, and mixed data types</li>
+                        </ul>
+
+                        <p>Common use cases include API responses, application configs, NoSQL databases (MongoDB,
+                            CouchDB), data serialization, and inter-service communication in microservices
+                            architectures.</p>
+                    </div>
+                </div>
+
+                <!-- How to Use This Tool -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🛠️</span>
+                        How to Use This Tool
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Getting Started</h3>
+                        <p>There are three ways to input JSON:</p>
+                        <ul>
+                            <li><strong>Paste:</strong> Copy JSON from anywhere and paste it into the input area</li>
+                            <li><strong>Upload:</strong> Click "Upload" to select a .json file from your computer</li>
+                            <li><strong>Drag & Drop:</strong> Drag a JSON file directly onto the input area</li>
+                        </ul>
+
+                        <h3>Core Features</h3>
+                        <p><strong>Format & Validate:</strong> Click the green "Format & Validate" button to beautify
+                            your JSON and check for syntax errors. Invalid JSON will show clear error messages with line
+                            numbers.</p>
+
+                        <p><strong>Minify:</strong> Remove all whitespace to create the smallest possible JSON
+                            string—perfect for production environments or API payloads where size matters.</p>
+
+                        <p><strong>Tree View:</strong> Visualize complex JSON structures as an interactive tree. Click
+                            to expand/collapse nested objects and arrays. Great for exploring large API responses or
+                            config files.</p>
+
+                        <h3>Advanced Features</h3>
+                        <p><strong>Search:</strong> Use the search box to find specific keys or values instantly.
+                            Results highlight in the output, making it easy to locate data in massive JSON files.</p>
+
+                        <p><strong>Escape/Unescape:</strong> Convert special characters for safe string embedding or
+                            reverse the process to make JSON readable again.</p>
+
+                        <p><strong>Indent Control:</strong> Choose between 2 spaces, 4 spaces, or tabs to match your
+                            project's code style.</p>
+
+                        <p><strong>Line Numbers:</strong> Toggle line numbers on/off for easier debugging and reference.
+                        </p>
+
+                        <h3>Saving Your Work</h3>
+                        <ul>
+                            <li><strong>Copy:</strong> Click "Copy" to copy formatted JSON to your clipboard</li>
+                            <li><strong>Download:</strong> Save the formatted JSON as a .json file</li>
+                        </ul>
+
+                        <p class="privacy-note"><strong>🔒 Privacy First:</strong> All processing happens in your
+                            browser. Your JSON never touches our servers—it stays on your device, always.</p>
+                    </div>
+                </div>
+
+                <!-- Common Use Cases -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">💡</span>
+                        Common Use Cases
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Debugging API Responses</h3>
+                        <p>When working with REST APIs, responses often come back minified or poorly formatted. Paste
+                            the response here to instantly see the structure, validate syntax, and search for specific
+                            fields. The tree view is especially helpful for deeply nested API data.</p>
+
+                        <h3>Validating Configuration Files</h3>
+                        <p>Config files for applications, CI/CD pipelines, or package managers (package.json,
+                            tsconfig.json) must be valid JSON. Upload your config to catch syntax errors before
+                            deployment—missing commas, trailing commas, or unquoted keys will be flagged immediately.
+                        </p>
+
+                        <h3>Formatting Minified Production JSON</h3>
+                        <p>Production environments often serve minified JSON for performance. When debugging issues,
+                            paste that minified mess here to make it human-readable. No more squinting at one-line JSON
+                            blobs in browser DevTools.</p>
+
+                        <h3>Extracting Specific Data</h3>
+                        <p>Need to find a specific value in a 10,000-line JSON file? Use the search feature to locate
+                            keys or values instantly. The JSON path display shows you exactly where you are in the
+                            structure.</p>
+
+                        <h3>Preparing Data for APIs</h3>
+                        <p>Before sending JSON to an API, validate it here to ensure it's properly formatted. Use minify
+                            to reduce payload size for faster transmission. The escape feature helps when embedding JSON
+                            as a string in another format.</p>
+
+                        <h3>Comparing JSON Structures</h3>
+                        <p>Need to compare two JSON files? Format both here, then use our <a href="diff.html">Diff
+                                Checker</a> to see exactly what changed between versions—perfect for reviewing config
+                            updates or API contract changes.</p>
+                    </div>
+                </div>
+
+                <!-- Tips & Tricks -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">⚡</span>
+                        Tips & Tricks
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Handling Large Files</h3>
+                        <p>Unlike many online tools, we have <strong>no file size limits</strong>. Processing happens
+                            entirely in your browser, so you can format multi-megabyte JSON files without uploads or
+                            server timeouts. For massive files, use tree view to navigate without rendering the entire
+                            structure at once.</p>
+
+                        <h3>Search Like a Pro</h3>
+                        <p>The search feature supports partial matches and is case-sensitive. Search for key names to
+                            find all instances, or search for values to locate specific data. Results persist across
+                            format/minify operations.</p>
+
+                        <h3>Tree View Navigation</h3>
+                        <p>In tree view, click any object or array to expand/collapse it. Use "Collapse All" to get a
+                            high-level overview, then expand only the sections you care about. The JSON path display
+                            shows your current location in the hierarchy.</p>
+
+                        <h3>Privacy & Offline Use</h3>
+                        <p>Since everything runs client-side, you can use this tool completely offline after the initial
+                            page load. Perfect for working with sensitive data—API keys, customer information, or
+                            proprietary configs never leave your machine.</p>
+
+                        <h3>Browser Compatibility</h3>
+                        <p>This tool works in all modern browsers (Chrome, Firefox, Safari, Edge). For the best
+                            experience, use the latest version. Local storage is used to remember your preferences
+                            (indent size, line numbers), but your actual JSON data is never stored.</p>
+
+                        <h3>Quick Workflow</h3>
+                        <p>Power user tip: Paste JSON → Press Enter → Click "Format & Validate" → Copy output. The
+                            entire workflow takes seconds. For repeated formatting tasks, keep this tab open and
+                            bookmark it for instant access.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Is my data safe?</h3>
+                        <p><strong>Absolutely.</strong> This tool runs 100% client-side in your browser. Your JSON is
+                            never uploaded to our servers, never transmitted over the network, and never stored anywhere
+                            except your device's memory. When you close the tab, it's gone. This makes it safe for
+                            sensitive data like API keys, customer information, or proprietary configs.</p>
+
+                        <h3>What's the file size limit?</h3>
+                        <p><strong>There isn't one.</strong> Because processing happens in your browser, there are no
+                            server-imposed limits. The only constraint is your device's available memory. We've
+                            successfully formatted JSON files over 50MB without issues on modern computers.</p>
+
+                        <h3>Can I use this offline?</h3>
+                        <p><strong>Yes!</strong> After the initial page load, the tool works completely offline. All
+                            JavaScript and CSS are cached in your browser. Perfect for working on planes, trains, or
+                            anywhere without internet.</p>
+
+                        <h3>What JSON features are supported?</h3>
+                        <p><strong>All standard JSON.</strong> We support objects, arrays, strings, numbers, booleans,
+                            and null. We also handle escaped characters, Unicode, and deeply nested structures. If it's
+                            valid JSON according to the spec, we'll format it.</p>
+
+                        <h3>Can I save my formatted JSON?</h3>
+                        <p><strong>Yes, two ways:</strong> Click "Copy" to copy to your clipboard, or click "Download"
+                            to save as a .json file. The download preserves your chosen formatting (indent size, line
+                            numbers).</p>
+
+                        <h3>How do I report a bug or request a feature?</h3>
+                        <p>Head over to our <a href="contact.html">Contact page</a> to send feedback. We're always
+                            improving and appreciate hearing from users!</p>
+
+                        <h3>Why use this instead of browser DevTools?</h3>
+                        <p>Browser DevTools are great, but they have limitations: no file upload, no minify, no search
+                            across large JSON, and no easy way to copy formatted output. This tool is purpose-built for
+                            JSON workflows with features DevTools don't offer.</p>
+
+                        <h3>Does this work on mobile?</h3>
+                        <p><strong>Yes!</strong> The tool is fully responsive and works on phones and tablets. The
+                            interface adapts to smaller screens, though we recommend desktop for working with very large
+                            JSON files.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
@@ -221,7 +445,8 @@ Example:
                 <div class="footer-section">
                     <h4>ToolBit</h4>
                     <p>Professional developer tools, zero bloat.</p>
-                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
                 </div>
                 <div class="footer-section">
                     <h4>Tools</h4>
@@ -263,4 +488,5 @@ Example:
 
     <script src="json-script.js"></script>
 </body>
+
 </html>

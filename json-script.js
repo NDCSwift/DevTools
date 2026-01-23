@@ -1358,6 +1358,38 @@ elements.minifyBtn.addEventListener('click', () => trackEvent('Tool', 'Minify', 
 elements.copyBtn.addEventListener('click', () => trackEvent('Tool', 'Copy', 'JSON'));
 
 // ========================================
+// EDUCATIONAL CONTENT TOGGLE
+// ========================================
+const toggleEducationBtn = document.getElementById('toggleEducation');
+const educationalContent = document.getElementById('educationalContent');
+
+if (toggleEducationBtn && educationalContent) {
+    toggleEducationBtn.addEventListener('click', () => {
+        const isHidden = educationalContent.classList.contains('hidden');
+        
+        if (isHidden) {
+            educationalContent.classList.remove('hidden');
+            toggleEducationBtn.classList.add('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Hide Learning Content';
+            
+            // Smooth scroll to educational section
+            setTimeout(() => {
+                document.getElementById('educationalSection').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 100);
+        } else {
+            educationalContent.classList.add('hidden');
+            toggleEducationBtn.classList.remove('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Learn More About JSON';
+        }
+        
+        trackEvent('Educational', isHidden ? 'Expand' : 'Collapse', 'JSON');
+    });
+}
+
+// ========================================
 // START APP
 // ========================================
 init();

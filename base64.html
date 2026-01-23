@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Base64 Encoder & Decoder | ToolBit</title>
-    <meta name="description" content="Free Base64 encoder and decoder. Encode and decode text, files, and images to Base64 format instantly. Fast, secure, browser-based tool.">
+    <meta name="description"
+        content="Free Base64 encoder and decoder. Encode and decode text, files, and images to Base64 format instantly. Fast, secure, browser-based tool.">
     <link rel="canonical" href="https://toolbit.dev/base64.html">
     <link rel="stylesheet" href="styles-base64.css">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -15,21 +17,24 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap"
+        rel="stylesheet">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-      gtag('config', 'G-L3T8NYVCJ6');
+        gtag('config', 'G-L3T8NYVCJ6');
     </script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
-     crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header class="site-header">
@@ -62,7 +67,8 @@
                 <span class="glitch" data-text="BASE64">BASE64</span>
                 <span class="hero-subtitle">Encoder & Decoder</span>
             </h1>
-            <p class="hero-description">Encode and decode text, files, and images to Base64 format. All processing happens locally in your browser.</p>
+            <p class="hero-description">Encode and decode text, files, and images to Base64 format. All processing
+                happens locally in your browser.</p>
         </div>
     </section>
 
@@ -89,7 +95,7 @@
                         Input Type
                     </h3>
                 </div>
-                
+
                 <div class="input-type-buttons">
                     <button id="textInputBtn" class="type-btn active">
                         <span class="type-icon">📝</span>
@@ -150,18 +156,13 @@
 
                 <input type="file" id="textFileInput" accept=".txt,.b64,.base64,text/*" hidden>
 
-                <textarea
-                    id="textInput"
-                    class="text-area"
-                    placeholder="Enter text to encode/decode...
+                <textarea id="textInput" class="text-area" placeholder="Enter text to encode/decode...
 
 Examples:
 - Plain text messages
 - JSON data
 - HTML/CSS/JS code
-- Any string data"
-                    spellcheck="false"
-                ></textarea>
+- Any string data" spellcheck="false"></textarea>
             </div>
 
             <!-- File Input Section -->
@@ -204,7 +205,7 @@ Examples:
                         Image Upload
                     </h3>
                 </div>
-                
+
                 <div class="file-upload-area">
                     <input type="file" id="imageInput" accept="image/*" hidden>
                     <div id="imageDropZone" class="drop-zone">
@@ -272,13 +273,8 @@ Examples:
                     </div>
                 </div>
 
-                <textarea
-                    id="outputText"
-                    class="text-area output-area"
-                    placeholder="Output will appear here..."
-                    spellcheck="false"
-                    readonly
-                ></textarea>
+                <textarea id="outputText" class="text-area output-area" placeholder="Output will appear here..."
+                    spellcheck="false" readonly></textarea>
             </div>
 
             <!-- Data URI Preview Section (for images) -->
@@ -333,7 +329,7 @@ Examples:
                         Quick Actions
                     </h3>
                 </div>
-                
+
                 <div class="quick-actions-grid">
                     <button class="quick-action-card" data-action="encode-url">
                         <span class="action-icon">🔗</span>
@@ -398,7 +394,8 @@ Examples:
                             <p class="step-example">(e.g., rename "decoded.txt" to "myfile.html")</p>
                         </div>
 
-                        <p class="usage-note"><strong>💡 Tip:</strong> The download gives you a text file - just rename it with the correct extension (.html, .json, .xml, etc.)</p>
+                        <p class="usage-note"><strong>💡 Tip:</strong> The download gives you a text file - just rename
+                            it with the correct extension (.html, .json, .xml, etc.)</p>
                     </div>
 
                     <div class="usage-card">
@@ -426,7 +423,9 @@ Examples:
                             <code>&lt;img src="data:image/png;base64,iVBORw0KG..."&gt;</code>
                         </div>
 
-                        <p class="usage-note"><strong>⚠️ Note:</strong> For images, you typically don't decode back to a file. Instead, use the Base64 string directly in your HTML/CSS as a data URI. To get the image back, paste the data URI into a browser address bar or use an online converter.</p>
+                        <p class="usage-note"><strong>⚠️ Note:</strong> For images, you typically don't decode back to a
+                            file. Instead, use the Base64 string directly in your HTML/CSS as a data URI. To get the
+                            image back, paste the data URI into a browser address bar or use an online converter.</p>
                     </div>
 
                     <div class="usage-card">
@@ -476,7 +475,7 @@ Examples:
                         </div>
 
                         <div class="limitation">
-                            <strong>Images as data URIs work best for small files (<100KB)</strong>
+                            <strong>Images as data URIs work best for small files (<100KB)< /strong>
                         </div>
                     </div>
                 </div>
@@ -490,13 +489,14 @@ Examples:
                         What is Base64?
                     </h3>
                 </div>
-                
+
                 <div class="info-grid">
                     <div class="info-card">
                         <h4>📖 Definition</h4>
-                        <p>Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format. It uses 64 characters (A-Z, a-z, 0-9, +, /) to encode data.</p>
+                        <p>Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string
+                            format. It uses 64 characters (A-Z, a-z, 0-9, +, /) to encode data.</p>
                     </div>
-                    
+
                     <div class="info-card">
                         <h4>🎯 Common Uses</h4>
                         <ul>
@@ -507,7 +507,7 @@ Examples:
                             <li>Storing binary data in text fields</li>
                         </ul>
                     </div>
-                    
+
                     <div class="info-card">
                         <h4>⚡ Features</h4>
                         <ul>
@@ -518,7 +518,7 @@ Examples:
                             <li>Works completely offline</li>
                         </ul>
                     </div>
-                    
+
                     <div class="info-card">
                         <h4>💡 Tips</h4>
                         <ul>
@@ -534,6 +534,279 @@ Examples:
         </div>
     </main>
 
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About Base64 Encoding</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is Base64 -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🔤</span>
+                        What is Base64?
+                    </h2>
+                    <div class="edu-body">
+                        <p><strong>Base64</strong> is a binary-to-text encoding scheme that converts binary data (like
+                            images, files, or any non-text data) into a text format using only 64 ASCII characters.
+                            These characters are: A-Z, a-z, 0-9, +, and /.</p>
+
+                        <p>Think of Base64 as a translator that converts data that computers understand (binary) into a
+                            format that text-based systems can safely handle. It's not encryption—anyone can decode
+                            it—but it's essential for transmitting binary data through systems designed for text.</p>
+
+                        <p><strong>Why Base64 exists:</strong></p>
+                        <ul>
+                            <li><strong>Text-Safe:</strong> Converts binary data to plain text that won't break email,
+                                JSON, or XML</li>
+                            <li><strong>Universal:</strong> Works across all platforms and programming languages</li>
+                            <li><strong>Reliable:</strong> Prevents data corruption when sending files through text-only
+                                channels</li>
+                            <li><strong>Embeddable:</strong> Allows images and files to be embedded directly in HTML,
+                                CSS, or JSON</li>
+                        </ul>
+
+                        <p>Common applications include embedding images in HTML (data URIs), sending file attachments in
+                            JSON APIs, encoding email attachments (MIME), and storing binary data in text-based
+                            databases.</p>
+
+                        <p><strong>Important:</strong> Base64 increases file size by approximately 33%. A 100KB file
+                            becomes ~133KB when Base64-encoded. This is the trade-off for text compatibility.</p>
+                    </div>
+                </div>
+
+                <!-- How to Use This Tool -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🛠️</span>
+                        How to Use This Tool
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Getting Started</h3>
+                        <p>Choose your mode and input type:</p>
+                        <ul>
+                            <li><strong>Encode Mode:</strong> Convert text, files, or images to Base64</li>
+                            <li><strong>Decode Mode:</strong> Convert Base64 back to original format</li>
+                            <li><strong>Text Input:</strong> For plain text, JSON, code, or any string data</li>
+                            <li><strong>File Input:</strong> For documents, HTML, XML, or any file type</li>
+                            <li><strong>Image Input:</strong> For PNG, JPG, GIF, SVG, or WebP images</li>
+                        </ul>
+
+                        <h3>Encoding Text</h3>
+                        <p><strong>Step 1:</strong> Select "Encode" mode and "Text" input type</p>
+                        <p><strong>Step 2:</strong> Type or paste your text into the input area</p>
+                        <p><strong>Step 3:</strong> Click "Encode" button</p>
+                        <p><strong>Step 4:</strong> Copy the Base64 output or download it as a file</p>
+
+                        <h3>Encoding Files</h3>
+                        <p><strong>Step 1:</strong> Select "Encode" mode and "File" input type</p>
+                        <p><strong>Step 2:</strong> Click the upload area or drag & drop your file</p>
+                        <p><strong>Step 3:</strong> Click "Encode" button</p>
+                        <p><strong>Step 4:</strong> The Base64 text appears in the output—copy or download it</p>
+
+                        <h3>Encoding Images (Data URIs)</h3>
+                        <p><strong>Step 1:</strong> Select "Encode" mode and "Image" input type</p>
+                        <p><strong>Step 2:</strong> Upload your image file</p>
+                        <p><strong>Step 3:</strong> Click "Encode" button</p>
+                        <p><strong>Step 4:</strong> The output includes the complete data URI
+                            (data:image/png;base64,...)</p>
+                        <p><strong>Bonus:</strong> Use the quick copy buttons to get HTML, CSS, or raw data URI format
+                        </p>
+
+                        <h3>Decoding Base64</h3>
+                        <p><strong>Step 1:</strong> Switch to "Decode" mode</p>
+                        <p><strong>Step 2:</strong> Paste your Base64 string into the text input</p>
+                        <p><strong>Step 3:</strong> Click "Decode" button</p>
+                        <p><strong>Step 4:</strong> Download the result and rename with the correct file extension</p>
+                        <p><strong>Example:</strong> Rename "decoded.txt" to "document.pdf" or "image.png"</p>
+
+                        <h3>Advanced Options</h3>
+                        <p><strong>URL-Safe Base64:</strong> Replaces + and / with - and _ for use in URLs and
+                            filenames. Essential for query parameters and file paths.</p>
+                        <p><strong>Chunked Output:</strong> Adds line breaks every 76 characters (MIME standard).
+                            Required for email attachments and some legacy systems.</p>
+
+                        <h3>Copy Format Options</h3>
+                        <p>Click the dropdown next to "Copy" to get Base64 in different formats:</p>
+                        <ul>
+                            <li><strong>Raw Base64:</strong> Just the encoded string</li>
+                            <li><strong>JSON Property:</strong> "data": "base64string" format</li>
+                            <li><strong>XML Element:</strong> &lt;data&gt;base64string&lt;/data&gt; format</li>
+                            <li><strong>JS String:</strong> const data = "base64string";</li>
+                            <li><strong>Python Bytes:</strong> data = b"base64string"</li>
+                        </ul>
+
+                        <p class="privacy-note"><strong>🔒 Privacy First:</strong> All encoding and decoding happens in
+                            your browser. Your files never leave your device—no uploads, no servers, no tracking.</p>
+                    </div>
+                </div>
+
+                <!-- Common Use Cases -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">💡</span>
+                        Common Use Cases
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Embedding Images in HTML/CSS</h3>
+                        <p>Convert images to data URIs to embed them directly in your HTML or CSS. This eliminates
+                            separate HTTP requests and creates self-contained files. Perfect for email templates,
+                            single-page apps, or offline HTML documents.</p>
+
+                        <h3>API Data Transfer</h3>
+                        <p>Send files through REST APIs that only accept JSON or XML. Encode your PDF, image, or
+                            document to Base64, include it in your JSON payload, and the receiving server can decode it
+                            back to the original file.</p>
+
+                        <h3>Email Attachments (MIME)</h3>
+                        <p>Email systems use Base64 to encode attachments. When you attach a file to an email, it's
+                            converted to Base64 text before transmission. Use chunked output (76 chars/line) for MIME
+                            compliance.</p>
+
+                        <h3>Storing Binary Data in Databases</h3>
+                        <p>Some databases or text fields can't handle binary data directly. Base64 lets you store
+                            images, PDFs, or any file as text in VARCHAR or TEXT columns. Useful for simple storage
+                            without blob fields.</p>
+
+                        <h3>Configuration Files</h3>
+                        <p>Embed small images, certificates, or keys directly in config files (JSON, YAML, XML). This
+                            keeps everything in one file and simplifies deployment—no separate asset management needed.
+                        </p>
+
+                        <h3>Data URLs for CSS</h3>
+                        <p>Inline small images (icons, backgrounds) in CSS using data URIs. This reduces HTTP requests
+                            and speeds up page load. Best for images under 10KB to avoid bloating your stylesheet.</p>
+
+                        <h3>JWT Tokens</h3>
+                        <p>JSON Web Tokens use Base64 URL-safe encoding for their payload and signature. Decode JWT
+                            tokens to inspect claims and user data without special tools.</p>
+
+                        <h3>Obfuscating Text (Not Security!)</h3>
+                        <p>Hide email addresses or text from casual viewing and web scrapers. Remember: Base64 is NOT
+                            encryption—anyone can decode it easily. Use only for light obfuscation, never for security.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tips & Tricks -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">⚡</span>
+                        Tips & Tricks
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Size Matters</h3>
+                        <p>Base64 increases file size by ~33%. A 100KB image becomes 133KB. For large files, consider
+                            compression before encoding, or use direct file transfer instead of Base64 if possible.</p>
+
+                        <h3>When to Use URL-Safe Encoding</h3>
+                        <p>Always use URL-safe Base64 for query parameters, filenames, or anywhere the string might
+                            appear in a URL. Standard Base64 uses + and / which have special meaning in URLs.</p>
+
+                        <h3>Data URI Best Practices</h3>
+                        <p>Keep data URIs under 100KB for best performance. Browsers can handle larger, but page load
+                            and rendering slow down significantly. Use external files for large images.</p>
+
+                        <h3>Decoding Files: Remember Extensions</h3>
+                        <p>When decoding Base64 back to a file, the download gives you a .txt file. Rename it with the
+                            correct extension (.pdf, .png, .docx, etc.) to open it properly.</p>
+
+                        <h3>Combine with Compression</h3>
+                        <p>For large text or JSON data, compress with gzip before Base64 encoding. This can dramatically
+                            reduce the final size. Decompress after decoding.</p>
+
+                        <h3>Testing and Validation</h3>
+                        <p>After encoding important files, decode them immediately to verify the process worked
+                            correctly. This catches any issues before you use the encoded data in production.</p>
+
+                        <h3>Base64 is NOT Encryption</h3>
+                        <p>Never use Base64 for security. It's trivially reversible—anyone can decode it in seconds. Use
+                            proper encryption (AES, RSA) for sensitive data, then Base64-encode if needed for transport.
+                        </p>
+
+                        <h3>Browser Limits</h3>
+                        <p>While this tool supports files up to 10MB, very large files (>5MB) may slow down your
+                            browser. For production use, consider server-side encoding for large files.</p>
+
+                        <h3>Quick Copy Formats</h3>
+                        <p>Use the copy format dropdown to get Base64 in the exact format you need. This saves time
+                            reformatting for JSON APIs, XML documents, or code snippets.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Is my data safe?</h3>
+                        <p><strong>Absolutely.</strong> This tool runs 100% in your browser. Your files, images, and
+                            text never leave your device. No uploads, no servers, no data collection. Perfect for
+                            sensitive documents.</p>
+
+                        <h3>Why does Base64 make files bigger?</h3>
+                        <p><strong>Encoding overhead.</strong> Base64 uses 6 bits per character but stores 8 bits per
+                            byte. This 6:8 ratio creates a ~33% size increase. It's the price for text compatibility.
+                        </p>
+
+                        <h3>Can I decode a Base64 image back to a file?</h3>
+                        <p><strong>Yes, but...</strong> For images, you typically don't decode back to a file. Instead,
+                            use the Base64 data URI directly in HTML/CSS. If you need the file, paste the data URI into
+                            a browser address bar and save the image.</p>
+
+                        <h3>What's the difference between standard and URL-safe Base64?</h3>
+                        <p><strong>Characters used.</strong> Standard uses + and / which break URLs. URL-safe replaces
+                            them with - and _ so the string works in URLs, filenames, and query parameters without
+                            escaping.</p>
+
+                        <h3>Why use chunked output?</h3>
+                        <p><strong>MIME compliance.</strong> Email systems and some legacy software expect Base64 in
+                            76-character lines. Chunked output adds line breaks for compatibility. Modern web apps
+                            usually don't need this.</p>
+
+                        <h3>Can I encode multiple files at once?</h3>
+                        <p><strong>Yes!</strong> In File mode, you can select or drag multiple files. Each file gets
+                            encoded separately with its own output section.</p>
+
+                        <h3>How do I use Base64 images in HTML?</h3>
+                        <p>Use the data URI in an img tag:
+                            <code>&lt;img src="data:image/png;base64,iVBORw0KG..." /&gt;</code>. Or in CSS:
+                            <code>background-image: url(data:image/png;base64,...);</code></p>
+
+                        <h3>Is Base64 encryption?</h3>
+                        <p><strong>No.</strong> Base64 is encoding, not encryption. Anyone can decode it instantly. It's
+                            for data format conversion, not security. Use AES or RSA for actual encryption.</p>
+
+                        <h3>What's the file size limit?</h3>
+                        <p><strong>10MB per file.</strong> This is a browser memory limit. Larger files may crash the
+                            tab. For files over 10MB, use server-side encoding or split into chunks.</p>
+
+                        <h3>Why does my decoded file have the wrong extension?</h3>
+                        <p><strong>Manual rename needed.</strong> The tool downloads as .txt because it doesn't know the
+                            original file type. Rename it with the correct extension (.pdf, .png, .html, etc.) to open
+                            it properly.</p>
+
+                        <h3>Can I use this offline?</h3>
+                        <p><strong>Yes!</strong> Once the page loads, everything works offline. No internet connection
+                            needed. Perfect for air-gapped systems or working on planes.</p>
+
+                        <h3>How do I report bugs or request features?</h3>
+                        <p>Visit our <a href="contact.html">Contact page</a> to send feedback. We're constantly
+                            improving based on user input!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
@@ -541,7 +814,8 @@ Examples:
                 <div class="footer-section">
                     <h4>ToolBit</h4>
                     <p>Professional developer tools, zero bloat.</p>
-                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
                 </div>
                 <div class="footer-section">
                     <h4>Tools</h4>
@@ -585,136 +859,137 @@ Examples:
     <!-- Test suite - uncomment to run tests -->
     <!-- <script src="test-base64.js"></script> -->
 </body>
+
 </html>
 
-    <style>
-        /* Usage Guide Styles */
+<style>
+    /* Usage Guide Styles */
+    .usage-guide {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-lg);
+    }
+
+    .usage-card {
+        background: var(--color-surface);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-lg);
+    }
+
+    .usage-card.warning {
+        border-color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.05);
+    }
+
+    .usage-card h4 {
+        color: var(--color-primary);
+        font-family: var(--font-display);
+        margin-bottom: var(--spacing-xs);
+        font-size: 1.25rem;
+    }
+
+    .usage-card.warning h4 {
+        color: #ff6b6b;
+    }
+
+    .card-subtitle {
+        color: var(--color-text-dim);
+        font-size: 0.9rem;
+        margin-bottom: var(--spacing-lg);
+        margin-top: 0;
+    }
+
+    .step-group {
+        margin-bottom: var(--spacing-md);
+        padding-left: var(--spacing-sm);
+    }
+
+    .step-title {
+        color: var(--color-primary);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: var(--spacing-xs);
+        margin-top: 0;
+    }
+
+    .step-group>p {
+        color: var(--color-text-muted);
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .step-example {
+        color: var(--color-text-dim) !important;
+        font-size: 0.85rem;
+        font-style: italic;
+        margin-top: var(--spacing-xs) !important;
+    }
+
+    .use-case {
+        margin-bottom: var(--spacing-md);
+        padding: var(--spacing-sm) 0;
+    }
+
+    .use-case strong {
+        color: var(--color-text);
+        display: block;
+        margin-bottom: var(--spacing-xs);
+        font-size: 0.95rem;
+    }
+
+    .use-case p {
+        color: var(--color-text-muted);
+        margin: 0;
+        line-height: 1.6;
+        font-size: 0.9rem;
+    }
+
+    .limitation {
+        margin-bottom: var(--spacing-md);
+        padding: var(--spacing-sm);
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: var(--radius-sm);
+    }
+
+    .limitation strong {
+        color: var(--color-text);
+        display: block;
+        font-size: 0.95rem;
+    }
+
+    .limitation p {
+        color: var(--color-text-dim);
+        margin: var(--spacing-xs) 0 0 0;
+        font-size: 0.85rem;
+    }
+
+    .usage-card code {
+        background: var(--color-bg);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+        color: var(--color-primary);
+        font-family: var(--font-mono);
+        display: block;
+        margin-top: var(--spacing-xs);
+        word-break: break-all;
+    }
+
+    .usage-note {
+        background: var(--color-bg);
+        border-left: 3px solid var(--color-primary);
+        padding: var(--spacing-sm) var(--spacing-md);
+        margin-top: var(--spacing-lg);
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+        line-height: 1.6;
+    }
+
+    @media (max-width: 968px) {
         .usage-guide {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-lg);
-            margin-top: var(--spacing-lg);
+            grid-template-columns: 1fr;
         }
-
-        .usage-card {
-            background: var(--color-surface);
-            border: 2px solid var(--color-border);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-lg);
-        }
-
-        .usage-card.warning {
-            border-color: #ff6b6b;
-            background: rgba(255, 107, 107, 0.05);
-        }
-
-        .usage-card h4 {
-            color: var(--color-primary);
-            font-family: var(--font-display);
-            margin-bottom: var(--spacing-xs);
-            font-size: 1.25rem;
-        }
-
-        .usage-card.warning h4 {
-            color: #ff6b6b;
-        }
-
-        .card-subtitle {
-            color: var(--color-text-dim);
-            font-size: 0.9rem;
-            margin-bottom: var(--spacing-lg);
-            margin-top: 0;
-        }
-
-        .step-group {
-            margin-bottom: var(--spacing-md);
-            padding-left: var(--spacing-sm);
-        }
-
-        .step-title {
-            color: var(--color-primary);
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: var(--spacing-xs);
-            margin-top: 0;
-        }
-
-        .step-group > p {
-            color: var(--color-text-muted);
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        .step-example {
-            color: var(--color-text-dim) !important;
-            font-size: 0.85rem;
-            font-style: italic;
-            margin-top: var(--spacing-xs) !important;
-        }
-
-        .use-case {
-            margin-bottom: var(--spacing-md);
-            padding: var(--spacing-sm) 0;
-        }
-
-        .use-case strong {
-            color: var(--color-text);
-            display: block;
-            margin-bottom: var(--spacing-xs);
-            font-size: 0.95rem;
-        }
-
-        .use-case p {
-            color: var(--color-text-muted);
-            margin: 0;
-            line-height: 1.6;
-            font-size: 0.9rem;
-        }
-
-        .limitation {
-            margin-bottom: var(--spacing-md);
-            padding: var(--spacing-sm);
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: var(--radius-sm);
-        }
-
-        .limitation strong {
-            color: var(--color-text);
-            display: block;
-            font-size: 0.95rem;
-        }
-
-        .limitation p {
-            color: var(--color-text-dim);
-            margin: var(--spacing-xs) 0 0 0;
-            font-size: 0.85rem;
-        }
-
-        .usage-card code {
-            background: var(--color-bg);
-            padding: var(--spacing-xs) var(--spacing-sm);
-            border-radius: var(--radius-sm);
-            font-size: 0.8rem;
-            color: var(--color-primary);
-            font-family: var(--font-mono);
-            display: block;
-            margin-top: var(--spacing-xs);
-            word-break: break-all;
-        }
-
-        .usage-note {
-            background: var(--color-bg);
-            border-left: 3px solid var(--color-primary);
-            padding: var(--spacing-sm) var(--spacing-md);
-            margin-top: var(--spacing-lg);
-            font-size: 0.9rem;
-            color: var(--color-text-muted);
-            line-height: 1.6;
-        }
-
-        @media (max-width: 968px) {
-            .usage-guide {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    }
+</style>

@@ -1456,6 +1456,168 @@
         </div>
     </main>
 
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About Color Theory</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is Color Theory -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🎨</span>
+                        What is Color Theory?
+                    </h2>
+                    <div class="edu-body">
+                        <p><strong>Color theory</strong> is the art and science of using color effectively. It encompasses the color wheel, color harmonies, and the context in which colors are used. Understanding color theory is essential for designers, developers, and anyone creating visual content.</p>
+
+                        <p>At its core, color theory explains how humans perceive color and the visual effects of color combinations. The color wheel, developed by Sir Isaac Newton in 1666, organizes colors in a circle showing relationships between primary colors (red, yellow, blue), secondary colors (green, orange, purple), and tertiary colors.</p>
+
+                        <p><strong>Why color theory matters for developers:</strong></p>
+                        <ul>
+                            <li><strong>User Experience:</strong> Colors influence emotions, readability, and user actions</li>
+                            <li><strong>Accessibility:</strong> Proper contrast ratios ensure content is readable for all users</li>
+                            <li><strong>Brand Consistency:</strong> Systematic color usage strengthens brand identity</li>
+                            <li><strong>Visual Hierarchy:</strong> Strategic color use guides users through interfaces</li>
+                        </ul>
+
+                        <p>Modern digital design uses color models like RGB (for screens), HSL (for intuitive color selection), and HEX (for web development). Each serves different purposes in the design workflow.</p>
+                    </div>
+                </div>
+
+                <!-- How to Use This Tool -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🛠️</span>
+                        How to Use This Tool
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Getting Started</h3>
+                        <p>There are multiple ways to select colors:</p>
+                        <ul>
+                            <li><strong>Color Picker:</strong> Click the color picker to choose any color visually</li>
+                            <li><strong>Direct Input:</strong> Enter HEX, RGB, HSL, or CMYK values directly</li>
+                            <li><strong>Eyedropper:</strong> Pick any color from your screen (Chrome/Edge)</li>
+                            <li><strong>Random:</strong> Generate random colors for inspiration</li>
+                            <li><strong>Image Extraction:</strong> Upload an image to extract its dominant colors</li>
+                        </ul>
+
+                        <h3>Building Palettes</h3>
+                        <p><strong>Working Palette:</strong> Add colors to your working palette (up to 8 colors). Drag to reorder, click to edit, right-click to copy. Use undo/redo for mistakes.</p>
+
+                        <p><strong>Color Harmonies:</strong> Select a base color and explore complementary, analogous, triadic, tetradic, and monochromatic schemes. Click "Load All to Palette" to add an entire harmony.</p>
+
+                        <p><strong>Shades & Tints:</strong> Explore lighter (tints) and darker (shades) variations of your selected color automatically.</p>
+
+                        <h3>Accessibility Features</h3>
+                        <p><strong>Contrast Checker:</strong> Test text and background color combinations against WCAG 2.1 guidelines. See AA and AAA compliance for normal text, large text, and UI components.</p>
+
+                        <p><strong>Color Blindness Simulator:</strong> Preview how your palette appears to users with different types of color vision deficiency.</p>
+
+                        <h3>Export Options</h3>
+                        <ul>
+                            <li><strong>CSS Variables:</strong> Export as ready-to-use CSS custom properties</li>
+                            <li><strong>JSON:</strong> Export as a JSON array for programmatic use</li>
+                            <li><strong>PNG:</strong> Download your palette as an image swatch</li>
+                        </ul>
+
+                        <p class="privacy-note"><strong>🔒 Privacy First:</strong> All processing happens in your browser. Your colors and images never leave your device.</p>
+                    </div>
+                </div>
+
+                <!-- Common Use Cases -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">💡</span>
+                        Common Use Cases
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Website & App Design</h3>
+                        <p>Create cohesive color schemes for web applications. Start with your brand's primary color, then use harmonies to find complementary accent colors. Export as CSS variables for direct use in your stylesheets.</p>
+
+                        <h3>Ensuring Accessibility Compliance</h3>
+                        <p>Use the contrast checker before finalizing color choices. WCAG 2.1 requires a minimum 4.5:1 contrast ratio for normal text and 3:1 for large text. This tool shows compliance for AA and AAA standards instantly.</p>
+
+                        <h3>Brand Color Development</h3>
+                        <p>Develop complete brand color systems. Start with a primary brand color, use monochromatic harmony for variations, and complementary harmony for accent colors. Save palettes locally for future reference.</p>
+
+                        <h3>Color Format Conversion</h3>
+                        <p>Convert between HEX, RGB, HSL, and CMYK instantly. Designers often receive colors in one format but need another—this tool handles conversions automatically as you work.</p>
+
+                        <h3>Extracting Colors from Inspiration</h3>
+                        <p>Upload photos, screenshots, or design inspiration to extract dominant colors. The k-means algorithm identifies the most prominent colors, which you can add directly to your working palette.</p>
+
+                        <h3>Testing for Color Blindness</h3>
+                        <p>Approximately 8% of men and 0.5% of women have some form of color vision deficiency. Use the simulator to ensure your palette remains distinguishable for users with protanopia, deuteranopia, or tritanopia.</p>
+                    </div>
+                </div>
+
+                <!-- Tips & Best Practices -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">⚡</span>
+                        Tips & Best Practices
+                    </h2>
+                    <div class="edu-body">
+                        <h3>The 60-30-10 Rule</h3>
+                        <p>A classic interior design principle that works for UI: use your dominant color for 60% of the design, secondary color for 30%, and accent color for 10%. This creates visual balance and hierarchy.</p>
+
+                        <h3>Start with HSL, Not HEX</h3>
+                        <p>HSL (Hue, Saturation, Lightness) is more intuitive for creating color variations. Keep the hue constant and adjust saturation/lightness to create consistent shades. This tool shows all formats simultaneously.</p>
+
+                        <h3>Test on Multiple Screens</h3>
+                        <p>Colors appear differently on various displays. What looks perfect on your calibrated monitor may appear washed out on a phone. Always test your palette on multiple devices before finalizing.</p>
+
+                        <h3>Use Contrast for Emphasis</h3>
+                        <p>High contrast draws attention; low contrast recedes. Use the contrast checker not just for accessibility, but to ensure important UI elements stand out appropriately.</p>
+
+                        <h3>Limit Your Palette</h3>
+                        <p>Most successful designs use 3-5 colors maximum. This tool's 8-slot working palette encourages restraint. If you need more colors, consider whether you're over-complicating your design.</p>
+
+                        <h3>Save Palettes for Consistency</h3>
+                        <p>Use the save feature to store palettes locally. This ensures consistency across design sessions and makes it easy to share exact colors with team members via export.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>What's the difference between RGB and HEX?</h3>
+                        <p><strong>They represent the same colors differently.</strong> HEX (#FF5733) is a compact hexadecimal format popular in CSS. RGB (255, 87, 51) uses decimal values 0-255 for red, green, and blue channels. Both produce identical colors—it's just notation preference.</p>
+
+                        <h3>When should I use HSL vs RGB?</h3>
+                        <p><strong>HSL for design, RGB for code.</strong> HSL is more intuitive—you can create lighter/darker versions by adjusting lightness, or muted versions by reducing saturation. RGB is better when you need precise channel control or are working with existing RGB values.</p>
+
+                        <h3>What WCAG contrast ratio should I target?</h3>
+                        <p><strong>4.5:1 minimum for body text, 7:1 for AAA compliance.</strong> Large text (18px+ or 14px+ bold) can use 3:1 minimum. For maximum accessibility, aim for AAA compliance (7:1) when possible.</p>
+
+                        <h3>Why does the eyedropper only work in some browsers?</h3>
+                        <p><strong>It's a newer browser API.</strong> The EyeDropper API is currently supported in Chrome, Edge, and Opera. Firefox and Safari don't support it yet. The tool gracefully hides the button in unsupported browsers.</p>
+
+                        <h3>How does image color extraction work?</h3>
+                        <p><strong>K-means clustering algorithm.</strong> The tool samples pixels from your image and groups similar colors together, then returns the center of each cluster as a dominant color. Adjust the slider to extract more or fewer colors.</p>
+
+                        <h3>Are my saved palettes stored in the cloud?</h3>
+                        <p><strong>No, they're stored locally.</strong> Palettes are saved in your browser's localStorage. They persist across sessions but are specific to your device and browser. Clear browser data and they're gone—consider exporting important palettes.</p>
+
+                        <h3>Can I use these colors commercially?</h3>
+                        <p><strong>Absolutely.</strong> Colors themselves cannot be copyrighted. Any palette you create here is yours to use for any purpose—personal, commercial, or client work.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container">

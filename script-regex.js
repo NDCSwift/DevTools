@@ -135,27 +135,27 @@ function testRegex() {
     const pattern = elements.regexPattern.value;
     const flags = elements.regexFlags.value;
     const testString = elements.testString.value;
-    
+
     // Update state
     state.pattern = pattern;
     state.flags = flags;
     state.testString = testString;
-    
+
     // Clear if no pattern or test string
     if (!pattern || !testString) {
         clearResults();
         showStatus('Enter a pattern and test string to begin', 'ready');
         return;
     }
-    
+
     try {
         // Create regex
         const regex = new RegExp(pattern, flags);
-        
+
         // Find all matches
         const matches = [];
         let match;
-        
+
         if (flags.includes('g')) {
             // Global flag: find all matches
             while ((match = regex.exec(testString)) !== null) {
@@ -190,10 +190,10 @@ function testRegex() {
                 });
             }
         }
-        
+
         // Update state
         state.matches = matches;
-        
+
         // Display results
         displayHighlightedText(testString, matches);
         displayMatchDetails(matches);
@@ -239,26 +239,26 @@ function displayHighlightedText(text, matches) {
         elements.highlightedOutput.textContent = text;
         return;
     }
-    
+
     // Sort matches by index (in case they're not in order)
     const sortedMatches = [...matches].sort((a, b) => a.index - b.index);
-    
+
     let result = '';
     let lastIndex = 0;
-    
+
     sortedMatches.forEach((match, i) => {
         // Add text before match
         result += escapeHtml(text.substring(lastIndex, match.index));
-        
+
         // Add highlighted match
         result += `<mark class="match-highlight" data-index="${i + 1}">${escapeHtml(match.text)}</mark>`;
-        
+
         lastIndex = match.index + match.text.length;
     });
-    
+
     // Add remaining text
     result += escapeHtml(text.substring(lastIndex));
-    
+
     elements.highlightedOutput.innerHTML = result;
 }
 
@@ -274,7 +274,7 @@ function displayMatchDetails(matches) {
         `;
         return;
     }
-    
+
     const html = matches.map((match, index) => {
         // Named groups (show first if they exist)
         const namedGroupsHtml = Object.keys(match.namedGroups).length > 0
@@ -318,7 +318,7 @@ function displayMatchDetails(matches) {
             </div>
         `;
     }).join('');
-    
+
     elements.matchesList.innerHTML = html;
 }
 
@@ -350,14 +350,14 @@ function clearResults() {
  */
 function handleFlagsInput(e) {
     const flags = e.target.value;
-    
+
     // Update checkboxes to match
     elements.flagG.checked = flags.includes('g');
     elements.flagI.checked = flags.includes('i');
     elements.flagM.checked = flags.includes('m');
     elements.flagS.checked = flags.includes('s');
     elements.flagU.checked = flags.includes('u');
-    
+
     // Test regex
     testRegex();
 }
@@ -367,13 +367,13 @@ function handleFlagsInput(e) {
  */
 function handleFlagCheckbox() {
     let flags = '';
-    
+
     if (elements.flagG.checked) flags += 'g';
     if (elements.flagI.checked) flags += 'i';
     if (elements.flagM.checked) flags += 'm';
     if (elements.flagS.checked) flags += 's';
     if (elements.flagU.checked) flags += 'u';
-    
+
     elements.regexFlags.value = flags;
     testRegex();
 }
@@ -388,8 +388,8 @@ function handleFlagCheckbox() {
 function toggleLibrary() {
     elements.libraryContent.classList.toggle('hidden');
     const isOpen = !elements.libraryContent.classList.contains('hidden');
-    elements.toggleLibrary.textContent = isOpen 
-        ? '📚 Hide Pattern Library' 
+    elements.toggleLibrary.textContent = isOpen
+        ? '📚 Hide Pattern Library'
         : '📚 Common Patterns Library';
 }
 
@@ -400,17 +400,17 @@ function loadPattern(e) {
     const button = e.currentTarget;
     const pattern = button.dataset.pattern;
     const flags = button.dataset.flags;
-    
+
     elements.regexPattern.value = pattern;
     elements.regexFlags.value = flags;
-    
+
     // Update flag checkboxes
     elements.flagG.checked = flags.includes('g');
     elements.flagI.checked = flags.includes('i');
     elements.flagM.checked = flags.includes('m');
     elements.flagS.checked = flags.includes('s');
     elements.flagU.checked = flags.includes('u');
-    
+
     testRegex();
     showToast('Pattern loaded from library ✓');
 }
@@ -565,9 +565,9 @@ async function copyMatches() {
         showToast('No matches to copy');
         return;
     }
-    
+
     const matchesText = state.matches.map(m => m.text).join('\n');
-    
+
     try {
         await navigator.clipboard.writeText(matchesText);
         showToast(`Copied ${state.matches.length} match${state.matches.length !== 1 ? 'es' : ''} to clipboard! ⎘`);
@@ -1125,7 +1125,7 @@ function findMatchingParen(str, startPos) {
 function showStatus(message, type = 'ready') {
     elements.statusText.textContent = message;
     elements.statusBar.className = 'status-bar';
-    
+
     if (type === 'success') {
         elements.statusBar.classList.add('success');
     } else if (type === 'error') {
@@ -1139,7 +1139,7 @@ function showStatus(message, type = 'ready') {
 function showToast(message) {
     elements.toastMessage.textContent = message;
     elements.toast.classList.remove('hidden');
-    
+
     setTimeout(() => {
         elements.toast.classList.add('hidden');
     }, CONFIG.TOAST_DURATION);
@@ -1154,7 +1154,7 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault();
         testRegex();
     }
-    
+
     // Ctrl/Cmd + K = Clear
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -1173,6 +1173,38 @@ function trackEvent(category, action, label) {
 elements.regexPattern.addEventListener('input', () => trackEvent('Tool', 'Test', 'RegEx'));
 elements.loadSampleBtn.addEventListener('click', () => trackEvent('Tool', 'LoadSample', 'RegEx'));
 elements.copyMatchesBtn.addEventListener('click', () => trackEvent('Tool', 'CopyMatches', 'RegEx'));
+
+// ========================================
+// EDUCATIONAL CONTENT TOGGLE
+// ========================================
+const toggleEducationBtn = document.getElementById('toggleEducation');
+const educationalContent = document.getElementById('educationalContent');
+
+if (toggleEducationBtn && educationalContent) {
+    toggleEducationBtn.addEventListener('click', () => {
+        const isHidden = educationalContent.classList.contains('hidden');
+
+        if (isHidden) {
+            educationalContent.classList.remove('hidden');
+            toggleEducationBtn.classList.add('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Hide Learning Content';
+
+            // Smooth scroll to educational section
+            setTimeout(() => {
+                document.getElementById('educationalSection').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        } else {
+            educationalContent.classList.add('hidden');
+            toggleEducationBtn.classList.remove('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Learn More About Regular Expressions';
+        }
+
+        trackEvent('Educational', isHidden ? 'Expand' : 'Collapse', 'RegEx');
+    });
+}
 
 // ========================================
 // START APP

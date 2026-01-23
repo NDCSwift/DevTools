@@ -9,7 +9,7 @@ const CONFIG = {
 let state = {
     currentMode: 'text',
     textInput: '',
-    selectedAlgorithms: ['MD5', 'SHA-1', 'SHA-256', 'SHA-512'],
+    selectedAlgorithms: ['SHA-256', 'SHA-512'], // Match HTML defaults
     currentFile: null,
     currentFiles: [], // For batch file hashing
     hmac: {
@@ -177,12 +177,12 @@ async function generateTextHashes() {
             hashes[algo] = 'Error generating hash';
         }
     }
-    
-    displayHashes(hashes);
-    
+
+    displayHashes(hashes, 'hashOutput', text.length);
+
     btn.classList.remove('generating');
     btn.disabled = false;
-    
+
     showToast('Hashes generated! 🔐');
 }
 
@@ -223,12 +223,12 @@ async function subtleDigest(algorithm, data) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-function displayHashes(hashes, outputId = 'hashOutput') {
+function displayHashes(hashes, outputId = 'hashOutput', inputLength = null) {
     const output = document.getElementById(outputId);
     output.innerHTML = '';
 
     for (const [algo, hash] of Object.entries(hashes)) {
-        const hashBox = createHashBox(algo, hash);
+        const hashBox = createHashBox(algo, hash, inputLength);
         output.appendChild(hashBox);
     }
 }
@@ -258,10 +258,23 @@ function toggleHashCase() {
     showToast(state.uppercaseHashes ? 'Uppercase hashes' : 'Lowercase hashes');
 }
 
-function createHashBox(algorithm, hash) {
+function createHashBox(algorithm, hash, inputLength = null) {
     const box = document.createElement('div');
     box.className = `hash-box ${algorithm.toLowerCase().replace(/[-_]/g, '')}`;
     const displayHash = formatHash(hash);
+
+    // Calculate crack time if input length is available
+    let crackTimeHTML = '';
+    if (inputLength !== null && inputLength > 0) {
+        const crackInfo = estimateCrackTime(algorithm, inputLength);
+        crackTimeHTML = `
+            <div class="crack-time-info">
+                <span class="crack-time-icon">${crackInfo.icon}</span>
+                <span class="crack-time-text">${crackInfo.text}</span>
+                <span class="crack-time-detail" title="${crackInfo.detail}">${crackInfo.time}</span>
+            </div>
+        `;
+    }
 
     box.innerHTML = `
         <div class="hash-header">
@@ -273,9 +286,97 @@ function createHashBox(algorithm, hash) {
         <div class="hash-value" data-hash="${hash}" onclick="copyHash('${hash}', '${algorithm}')" title="Click to copy">
             ${displayHash}
         </div>
+        ${crackTimeHTML}
     `;
 
     return box;
+}
+
+// ========================================
+// CRACK TIME ESTIMATION (Educational)
+// ========================================
+function estimateCrackTime(algorithm, inputLength) {
+    // Assumed character set: lowercase + uppercase + digits + common symbols = ~95 chars
+    // More conservative estimate: assume mixed alphanumeric = 62 chars
+    const charsetSize = 62;
+    const combinations = Math.pow(charsetSize, inputLength);
+
+    // Estimated hashes per second by algorithm (modern GPU like RTX 4090)
+    // These are rough educational estimates
+    const hashRates = {
+        'MD5': 164e9,        // ~164 billion/sec (very fast, broken)
+        'SHA-1': 24e9,       // ~24 billion/sec
+        'SHA-256': 22e9,     // ~22 billion/sec
+        'SHA-512': 5e9,      // ~5 billion/sec
+        'SHA3-256': 4e9,     // ~4 billion/sec
+        'SHA3-512': 2e9      // ~2 billion/sec
+    };
+
+    const rate = hashRates[algorithm] || 10e9;
+    const secondsToCrack = combinations / rate / 2; // Average case is half
+
+    return formatCrackTime(secondsToCrack, inputLength);
+}
+
+function formatCrackTime(seconds, inputLength) {
+    // Time thresholds
+    const minute = 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+    const year = day * 365;
+    const century = year * 100;
+    const millennium = year * 1000;
+
+    let time, icon, text, detail;
+
+    if (inputLength <= 4) {
+        icon = '⚡';
+        text = 'Instant crack';
+        time = '< 1 second';
+        detail = 'Too short! Would be cracked instantly by any attacker.';
+    } else if (seconds < 1) {
+        icon = '⚡';
+        text = 'Instant crack';
+        time = '< 1 second';
+        detail = 'Would be cracked almost instantly with modern hardware.';
+    } else if (seconds < minute) {
+        icon = '⚠️';
+        text = 'Very weak';
+        time = `~${Math.ceil(seconds)} seconds`;
+        detail = 'Could be cracked in seconds. Not secure for any purpose.';
+    } else if (seconds < hour) {
+        icon = '⚠️';
+        text = 'Weak';
+        time = `~${Math.ceil(seconds / minute)} minutes`;
+        detail = 'Could be cracked in minutes. Add more characters.';
+    } else if (seconds < day) {
+        icon = '🟡';
+        text = 'Moderate';
+        time = `~${Math.ceil(seconds / hour)} hours`;
+        detail = 'Could be cracked in hours with dedicated hardware.';
+    } else if (seconds < year) {
+        icon = '🟢';
+        text = 'Decent';
+        time = `~${Math.ceil(seconds / day)} days`;
+        detail = 'Would take days to crack. Acceptable for low-value targets.';
+    } else if (seconds < century) {
+        icon = '🔒';
+        text = 'Strong';
+        time = `~${Math.ceil(seconds / year)} years`;
+        detail = 'Would take years to crack. Good for most purposes.';
+    } else if (seconds < millennium * 1000) {
+        icon = '🔐';
+        text = 'Very strong';
+        time = `~${Math.ceil(seconds / century)} centuries`;
+        detail = 'Would take centuries to crack. Excellent security.';
+    } else {
+        icon = '🛡️';
+        text = 'Uncrackable';
+        time = 'Heat death of universe';
+        detail = 'Computationally infeasible to crack with current technology.';
+    }
+
+    return { time, icon, text, detail };
 }
 
 window.copyHash = function(hash, algorithm) {
@@ -834,6 +935,49 @@ function showToast(message) {
 }
 
 // ========================================
+// EDUCATIONAL CONTENT TOGGLE
+// ========================================
+function initEducationalToggle() {
+    const toggleEducationBtn = document.getElementById('toggleEducation');
+    const educationalContent = document.getElementById('educationalContent');
+
+    if (!toggleEducationBtn || !educationalContent) return;
+
+    toggleEducationBtn.addEventListener('click', () => {
+        const isHidden = educationalContent.classList.contains('hidden');
+
+        if (isHidden) {
+            educationalContent.classList.remove('hidden');
+            toggleEducationBtn.classList.add('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Hide Learning Content';
+
+            // Smooth scroll to section
+            setTimeout(() => {
+                document.getElementById('educationalSection').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        } else {
+            educationalContent.classList.add('hidden');
+            toggleEducationBtn.classList.remove('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Learn More About Cryptographic Hashing';
+        }
+
+        // Analytics tracking
+        if (typeof gtag === 'function') {
+            gtag('event', isHidden ? 'expand' : 'collapse', {
+                'event_category': 'Educational',
+                'event_label': 'Hash'
+            });
+        }
+    });
+}
+
+// ========================================
 // START
 // ========================================
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    initEducationalToggle();
+});

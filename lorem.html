@@ -69,7 +69,20 @@
     <!-- Main Tool Area -->
     <main class="tool-container">
         <div class="container">
-            
+
+            <!-- Tool Mode Selector -->
+            <div class="mode-toggle">
+                <button class="mode-toggle-btn active" data-tool-mode="text">
+                    <span class="btn-icon">📝</span> Text Generator
+                </button>
+                <button class="mode-toggle-btn" data-tool-mode="image">
+                    <span class="btn-icon">🖼️</span> Image Placeholders
+                </button>
+            </div>
+
+            <!-- TEXT MODE CONTENT -->
+            <div id="textToolMode" class="tool-mode-content">
+
             <!-- Content Type Selector -->
             <div class="content-type-selector">
                 <button class="type-pill active" data-type="classic">
@@ -264,64 +277,185 @@
                 </div>
             </div>
 
-            <!-- Info Section -->
-            <div class="info-section">
-                <div class="section-header">
-                    <h3 class="section-title">
-                        <span class="section-icon">▸</span>
-                        About Lorem Ipsum
-                    </h3>
-                </div>
-                
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h4>📜 What is Lorem Ipsum?</h4>
-                        <p>Lorem Ipsum is placeholder text used in design and publishing since the 1500s. It's derived from Cicero's "De Finibus Bonorum et Malorum" and scrambled to create meaningless Latin-like text that focuses attention on layout, not content.</p>
-                        <p>The standard "Lorem ipsum dolor sit amet..." passage has been used for over 500 years!</p>
+            </div>
+
+            <!-- IMAGE MODE CONTENT -->
+            <div id="imageToolMode" class="tool-mode-content hidden">
+                <div class="main-content">
+                    <div class="controls-panel">
+                        <div class="control-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">▸</span>
+                                Image Options
+                            </h3>
+
+                            <div class="image-controls">
+                                <div class="dimension-inputs">
+                                    <div class="dimension-group">
+                                        <label>Width</label>
+                                        <input type="number" id="imgWidth" class="number-input full-width" value="600" min="10" max="4000">
+                                    </div>
+                                    <span class="dimension-separator">×</span>
+                                    <div class="dimension-group">
+                                        <label>Height</label>
+                                        <input type="number" id="imgHeight" class="number-input full-width" value="400" min="10" max="4000">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Text Label (Optional)</label>
+                                    <input type="text" id="imgText" class="text-input" placeholder="e.g. Hero Image">
+                                </div>
+
+                                <div class="color-picker-group">
+                                    <div class="dimension-group">
+                                        <label>Background</label>
+                                        <input type="color" id="imgBgColor" value="#cccccc" class="color-input">
+                                    </div>
+                                    <div class="dimension-group">
+                                        <label>Text Color</label>
+                                        <input type="color" id="imgTextColor" value="#333333" class="color-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="generateImageBtn" class="btn btn-primary">
+                            <span class="btn-icon">✨</span> Generate Image
+                        </button>
                     </div>
-                    
-                    <div class="info-card">
-                        <h4>🎯 When to Use Placeholder Text</h4>
-                        <ul>
-                            <li><strong>Wireframes & Mockups:</strong> Show text layout without real content</li>
-                            <li><strong>Component Testing:</strong> Test how UI handles different text lengths</li>
-                            <li><strong>Client Presentations:</strong> Show design without distracting copy</li>
-                            <li><strong>Development:</strong> Build features before content is ready</li>
-                            <li><strong>Typography Testing:</strong> See how fonts look at various sizes</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>🎨 Choose Your Content Style</h4>
-                        <ul>
-                            <li><strong>Classic:</strong> Traditional Lorem Ipsum for professional projects</li>
-                            <li><strong>Hipster:</strong> Trendy, creative text for modern designs</li>
-                            <li><strong>Corporate:</strong> Business jargon for enterprise sites</li>
-                            <li><strong>Tech:</strong> Developer-focused text for SaaS products</li>
-                            <li><strong>Bacon:</strong> Meat-themed fun for casual projects</li>
-                            <li><strong>Cupcake:</strong> Sweet-themed text for playful designs</li>
-                            <li><strong>Pirate:</strong> Nautical nonsense for adventure themes</li>
-                            <li><strong>Zombie:</strong> Spooky text for horror projects</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>💡 Best Practices</h4>
-                        <ul>
-                            <li>✅ Use realistic text lengths for your use case</li>
-                            <li>✅ Test with different content types to see layout flexibility</li>
-                            <li>✅ Try sentence variety to test line wrapping</li>
-                            <li>✅ Use templates for common scenarios (emails, profiles, etc.)</li>
-                            <li>❌ Don't use for SEO or accessibility testing</li>
-                            <li>❌ Never ship Lorem Ipsum to production!</li>
-                            <li>❌ Don't rely solely on placeholder text - test with real content too</li>
-                        </ul>
+
+                    <div class="preview-panel">
+                        <div class="preview-header">
+                            <h3 class="preview-title">Preview</h3>
+                        </div>
+
+                        <div class="image-preview" id="imagePreviewContainer">
+                            <img id="placeholderPreview" src="https://placehold.co/600x400/cccccc/333333?text=Preview" alt="Placeholder">
+                        </div>
+
+                        <div class="preview-actions">
+                            <button id="copyImgUrlBtn" class="btn-secondary">
+                                <span class="btn-icon">🔗</span> Copy URL
+                            </button>
+                            <button id="downloadImgBtn" class="btn-secondary">
+                                <span class="btn-icon">📥</span> Download
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </div>
     </main>
+
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About Placeholders</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is Lorem Ipsum -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">📜</span>
+                        What is Lorem Ipsum?
+                    </h2>
+                    <div class="edu-body">
+                        <p><strong>Lorem Ipsum</strong> is standard placeholder text used in the graphic, print, and publishing industries for previewing layouts and visual mockups. It's derived from a work by Cicero from 45 BC, "De Finibus Bonorum et Malorum" (The Extremes of Good and Evil).</p>
+
+                        <p>The text has been used since the 1500s when an unknown printer scrambled it to make a type specimen book. Today, it remains the industry standard because its pseudo-Latin appearance resembles real text without distracting readers with readable content.</p>
+
+                        <p><strong>Why use placeholder text?</strong></p>
+                        <ul>
+                            <li><strong>Focus on Design:</strong> Clients and stakeholders review layout without getting caught up in copy</li>
+                            <li><strong>Realistic Proportions:</strong> More accurate than "text here" or repeating characters</li>
+                            <li><strong>Industry Standard:</strong> Designers and developers immediately recognize it as placeholder</li>
+                            <li><strong>Variable Length:</strong> Easy to generate any amount needed for testing</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use This Tool -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🛠️</span>
+                        How to Use This Tool
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Text Generator Mode</h3>
+                        <p>Generate placeholder text in multiple styles:</p>
+                        <ul>
+                            <li><strong>Classic:</strong> Traditional Lorem Ipsum for professional contexts</li>
+                            <li><strong>Hipster:</strong> Trendy artisanal vocabulary for modern designs</li>
+                            <li><strong>Corporate:</strong> Business buzzwords for enterprise mockups</li>
+                            <li><strong>Tech:</strong> Developer and startup jargon for SaaS products</li>
+                            <li><strong>Fun Themes:</strong> Bacon, Cupcake, Pirate, and Zombie for playful projects</li>
+                        </ul>
+
+                        <p>Choose your output unit (paragraphs, sentences, or words) and format (plain text, HTML, Markdown, or JSON). Use templates for quick generation of common content types like emails, blog posts, and testimonials.</p>
+
+                        <h3>Image Placeholder Mode</h3>
+                        <p>Generate placeholder images for your layouts. Specify exact dimensions, custom text labels, and colors. Images are generated via the placehold.co service—no signup required.</p>
+
+                        <h3>Tips</h3>
+                        <p><strong>Start with Lorem:</strong> Check this option to begin with the classic "Lorem ipsum dolor sit amet..." for instant recognition.</p>
+                        <p><strong>Sentence Variety:</strong> Enable this for more realistic text flow with varying sentence lengths.</p>
+                    </div>
+                </div>
+
+                <!-- Why use Image Placeholders -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🖼️</span>
+                        Why Use Image Placeholders?
+                    </h2>
+                    <div class="edu-body">
+                        <p>When prototyping websites, you often don't have final photography ready. Image placeholders serve several purposes:</p>
+                        <ul>
+                            <li><strong>Reserve Exact Space:</strong> Show clients exactly how much area images will occupy</li>
+                            <li><strong>Test Responsive Layouts:</strong> Verify how your design handles different image sizes</li>
+                            <li><strong>Maintain Focus:</strong> Keep attention on layout structure, not image content</li>
+                            <li><strong>Speed Up Development:</strong> Build UI before assets are ready</li>
+                            <li><strong>Document Requirements:</strong> Specify exact dimensions needed from photographers/designers</li>
+                        </ul>
+
+                        <p>The generated images include dimension text by default, making it easy to communicate size requirements to content teams.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Why does Lorem Ipsum look like Latin but isn't readable?</h3>
+                        <p><strong>It's scrambled Latin.</strong> The original text from Cicero was altered—words were added, removed, and randomized. This creates text with realistic letter distribution and word lengths while remaining meaningless.</p>
+
+                        <h3>Is the image generation free?</h3>
+                        <p><strong>Yes.</strong> We use the public placehold.co service which generates images on the fly. No API key or signup required. Images can be used in development and production.</p>
+
+                        <h3>Can I use Lorem Ipsum in production?</h3>
+                        <p><strong>Never.</strong> Lorem Ipsum is strictly for mockups and development. Shipping placeholder text to production is unprofessional and confusing for users. Always replace with real content before launch.</p>
+
+                        <h3>Which content style should I use?</h3>
+                        <p><strong>Match your audience.</strong> Use Classic for formal clients, Corporate for business applications, Tech for developer tools. Fun themes work well for internal demos or creative projects where levity is appropriate.</p>
+
+                        <h3>Why offer different formats (HTML, Markdown, JSON)?</h3>
+                        <p><strong>Different workflows need different formats.</strong> HTML works for direct pasting into prototypes, Markdown for documentation, JSON for seeding databases or APIs during development.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="site-footer">

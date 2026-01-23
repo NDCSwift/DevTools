@@ -1840,11 +1840,46 @@ function applyPalettePreviewColors() {
 }
 
 // ========================================
+// EDUCATIONAL TOGGLE
+// ========================================
+function initEducationalToggle() {
+    const toggleEducationBtn = document.getElementById('toggleEducation');
+    const educationalContent = document.getElementById('educationalContent');
+
+    if (!toggleEducationBtn || !educationalContent) return;
+
+    toggleEducationBtn.addEventListener('click', () => {
+        const isHidden = educationalContent.classList.contains('hidden');
+
+        if (isHidden) {
+            educationalContent.classList.remove('hidden');
+            toggleEducationBtn.classList.add('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Hide Color Theory Guide';
+
+            // Smooth scroll to section
+            setTimeout(() => {
+                document.getElementById('educationalSection').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        } else {
+            educationalContent.classList.add('hidden');
+            toggleEducationBtn.classList.remove('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Learn More About Color Theory';
+        }
+
+        trackEvent('Educational', isHidden ? 'Expand' : 'Collapse', 'Colors');
+    });
+}
+
+// ========================================
 // START APP
 // ========================================
 init();
 updateGradient();
 applyPalettePreviewColors();
+initEducationalToggle();
 
 // Initialize new features
 if (elements.contrastForeground) {
