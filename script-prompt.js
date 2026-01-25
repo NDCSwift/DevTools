@@ -19,16 +19,19 @@ const EXAMPLES = {
 // ========================================
 let state = {
     promptType: 'general',
+    isAdvanced: false, // Tracks "Wizard Mode" status
+
+    // UI Options
     addStructure: true,
     addContext: true,
     requestExamples: false,
     stepByStep: false,
     professionalTone: true,
-    isAdvanced: false,
 
     inputText: '',
     outputText: '',
-    improvements: []
+    improvements: [],
+    history: JSON.parse(localStorage.getItem('promptHistory') || '[]')
 };
 
 // ========================================
@@ -36,469 +39,371 @@ let state = {
 // ========================================
 function init() {
     attachEventListeners();
-    console.log('✨ ToolBit AI Prompt Optimizer initialized');
+    attachLogicListeners(); // New listener group for Logic Engine
+    setupEducationalToggle(); // Standard educational content toggle
+    renderHistoryDropdown(); // Initialize history UI
+    console.log('✨ ToolBit Prompt Optimizer (Beast Mode) initialized');
 }
 
 // ========================================
 // EVENT LISTENERS
 // ========================================
 function attachEventListeners() {
-    // Settings
-    document.getElementById('promptType').addEventListener('change', (e) => {
-        state.promptType = e.target.value;
+    // Mode Toggle (Quick vs Advanced)
+    document.querySelectorAll('.mode-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const mode = e.currentTarget.dataset.mode;
+            switchMode(mode);
+        });
     });
-    
-    document.getElementById('addStructure').addEventListener('change', (e) => {
-        state.addStructure = e.target.checked;
-    });
-    
-    document.getElementById('addContext').addEventListener('change', (e) => {
-        state.addContext = e.target.checked;
-    });
-    
-    document.getElementById('requestExamples').addEventListener('change', (e) => {
-        state.requestExamples = e.target.checked;
-    });
-    
-    document.getElementById('stepByStep').addEventListener('change', (e) => {
-        state.stepByStep = e.target.checked;
-    });
-    
-    document.getElementById('professionalTone').addEventListener('change', (e) => {
-        state.professionalTone = e.target.checked;
-    });
-    
-    // Input actions
+
+    // Settings Inputs
+    document.getElementById('promptType').addEventListener('change', (e) => state.promptType = e.target.value);
+    document.getElementById('addStructure').addEventListener('change', (e) => state.addStructure = e.target.checked);
+    document.getElementById('addContext').addEventListener('change', (e) => state.addContext = e.target.checked);
+    document.getElementById('requestExamples').addEventListener('change', (e) => state.requestExamples = e.target.checked);
+    document.getElementById('stepByStep').addEventListener('change', (e) => state.stepByStep = e.target.checked);
+    document.getElementById('professionalTone').addEventListener('change', (e) => state.professionalTone = e.target.checked);
+
+    // Main Actions
     document.getElementById('pasteBtn').addEventListener('click', pasteText);
     document.getElementById('clearBtn').addEventListener('click', clearInput);
-    document.getElementById('inputPrompt').addEventListener('input', updateInputWordCount);
-    
-    // Optimize button
     document.getElementById('optimizeBtn').addEventListener('click', optimizePrompt);
-    
-    // Output actions
     document.getElementById('copyBtn').addEventListener('click', copyOutput);
     document.getElementById('downloadBtn').addEventListener('click', downloadOutput);
-    
-    // Quick examples
+
+    // Quick Examples
     document.querySelectorAll('.example-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const example = e.currentTarget.dataset.example;
-            loadExample(example);
+            loadExample(e.currentTarget.dataset.example);
         });
     });
 }
 
+function attachLogicListeners() {
+    // Real-time Analysis on Input
+    const inputArea = document.getElementById('inputPrompt');
+    if (inputArea) {
+        inputArea.addEventListener('input', () => {
+            updateInputWordCount();
+            analyzeRealTime();
+        });
+    }
+
+    // Wizard Fields Analysis (optional, updates score based on combined length)
+    ['wizRole', 'wizTask', 'wizContext'].forEach(id => {
+        document.getElementById(id).addEventListener('input', analyzeRealTime);
+    });
+}
+
+function setupEducationalToggle() {
+    const toggleBtn = document.getElementById('toggleEducation');
+    const content = document.getElementById('educationalContent');
+
+    if (toggleBtn && content) {
+        toggleBtn.addEventListener('click', () => {
+            const isHidden = content.classList.contains('hidden');
+            if (isHidden) {
+                content.classList.remove('hidden');
+                toggleBtn.classList.add('active');
+                toggleBtn.querySelector('.toggle-text').textContent = 'Hide Learning Content';
+                setTimeout(() => {
+                    document.getElementById('educationalSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            } else {
+                content.classList.add('hidden');
+                toggleBtn.classList.remove('active');
+                toggleBtn.querySelector('.toggle-text').textContent = 'Learn More About Prompt Engineering';
+            }
+        });
+    }
+}
+
 // ========================================
-// INPUT FUNCTIONS
+// CORE LOGIC (INTEGRATION WITH ENGINE)
 // ========================================
-async function pasteText() {
-    try {
-        const text = await navigator.clipboard.readText();
+
+function analyzeRealTime() {
+    // Gather text from either main input or wizard fields
+    let textToAnalyze = "";
+    if (state.isAdvanced) {
+        textToAnalyze += document.getElementById('wizRole').value + " ";
+        textToAnalyze += document.getElementById('wizTask').value + " ";
+        textToAnalyze += document.getElementById('wizContext').value;
+    } else {
+        textToAnalyze = document.getElementById('inputPrompt').value;
+    }
+
+    // Call the Logic Engine
+    if (typeof PROMPT_LOGIC !== 'undefined') {
+        const result = PROMPT_LOGIC.analyze(textToAnalyze);
+        updateScoreBar(result);
+    }
+}
+
+function updateScoreBar(result) {
+    if (!result) {
+        // Reset if empty
+        document.getElementById('scoreBarContainer').classList.add('hidden');
+        return;
+    }
+
+    const container = document.getElementById('scoreBarContainer');
+    const fill = document.getElementById('scoreFill');
+    const val = document.getElementById('scoreValue');
+    const feedback = document.getElementById('scoreFeedback');
+
+    container.classList.remove('hidden');
+    fill.style.width = `${result.quality}%`;
+    val.textContent = `${result.quality}%`;
+
+    // Color coding
+    if (result.quality < 40) fill.style.backgroundColor = '#ff4757'; // Red
+    else if (result.quality < 70) fill.style.backgroundColor = '#ffa502'; // Orange
+    else fill.style.backgroundColor = '#2ed573'; // Green
+
+    // Feedback text
+    if (result.suggestions && result.suggestions.length > 0) {
+        feedback.textContent = "💡 Tip: " + result.suggestions[0];
+    } else {
+        feedback.textContent = `Detected Intent: ${result.intent.toUpperCase()}`;
+    }
+}
+
+function optimizePrompt() {
+    let finalPrompt = "";
+    state.improvements = [];
+
+    if (typeof PROMPT_LOGIC === 'undefined') {
+        showToast("Error: Logic Engine not loaded.");
+        return;
+    }
+
+    if (state.isAdvanced) {
+        // WIZARD COMPILATION
+        const role = document.getElementById('wizRole').value.trim();
+        const task = document.getElementById('wizTask').value.trim();
+        const context = document.getElementById('wizContext').value.trim();
+        const format = document.getElementById('wizFormat').value.trim();
+
+        if (!task) {
+            showToast("Please enter at least a Task.");
+            return;
+        }
+
+        // Detect intent from the task to choose template
+        const analysis = PROMPT_LOGIC.analyze(task);
+
+        const data = {
+            intent: analysis.intent,
+            fields: {
+                role: role || "Helpful Assistant",
+                task: task,
+                context: context,
+                format: format || "Clear and concise text",
+                // Specifics for certain templates
+                language: "programming language",
+                topic: task,
+                audience: "general audience",
+                tone: "professional",
+                length: "appropriate length"
+            }
+        };
+
+        finalPrompt = PROMPT_LOGIC.compile(data);
+        state.improvements.push("Constructed via Advanced Builder");
+
+    } else {
+        // QUICK COMPILATION (Legacy + Logic)
+        const input = document.getElementById('inputPrompt').value.trim();
+        if (!input) {
+            showToast("Please enter a prompt first.");
+            return;
+        }
+
+        // Analyze to find best template
+        const analysis = PROMPT_LOGIC.analyze(input);
+
+        // Map raw input to fields based on intent
+        let fields = {
+            task: input,
+            role: "AI Assistant",
+            context: "Standard context",
+            format: "Markdown",
+            // defaults
+            language: "Code",
+            topic: input,
+            audience: "Reader",
+            tone: "Professional",
+            length: "Short"
+        };
+
+        const data = {
+            intent: analysis.intent,
+            fields: fields
+        };
+
+        finalPrompt = PROMPT_LOGIC.compile(data);
+
+        // Apply legacy checkboxes if needed (post-processing)
+        if (state.addStructure) finalPrompt += "\n\nOrganize the response with clear headings and sections.";
+        if (state.addContext) finalPrompt += "\nEnsure the output is accurate and relevant.";
+        if (state.requestExamples) finalPrompt += "\nInclude 2-3 concrete examples to illustrate.";
+        if (state.stepByStep) finalPrompt += "\nPlease think step-by-step.";
+        if (state.professionalTone) finalPrompt += "\nUse formal, professional language.";
+
+        state.improvements.push(`Optimized for detected intent: ${analysis.intent.toUpperCase()}`);
+    }
+
+    state.outputText = finalPrompt;
+    renderOutput();
+    showToast("Prompt Optimized! 🚀");
+}
+
+// ========================================
+// UI HELPERS
+// ========================================
+
+function switchMode(mode) {
+    // Toggle Buttons
+    document.querySelectorAll('.mode-toggle-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+
+    state.isAdvanced = (mode === 'advanced');
+
+    const basicInput = document.getElementById('inputPrompt');
+    const wizardFields = document.getElementById('wizardFields');
+    const pasteBtn = document.getElementById('pasteBtn');
+
+    if (state.isAdvanced) {
+        basicInput.classList.add('hidden');
+        pasteBtn.classList.add('hidden'); // Hide paste in wizard mode for simplicity
+        wizardFields.classList.remove('hidden');
+        showToast("Switched to Advanced Builder");
+    } else {
+        basicInput.classList.remove('hidden');
+        pasteBtn.classList.remove('hidden');
+        wizardFields.classList.add('hidden');
+        showToast("Switched to Quick Optimize");
+    }
+}
+
+function pasteText() {
+    navigator.clipboard.readText().then(text => {
         document.getElementById('inputPrompt').value = text;
         updateInputWordCount();
-        showToast('Text pasted from clipboard! 📋');
-    } catch (error) {
-        showToast('Failed to paste from clipboard');
-    }
+        analyzeRealTime();
+        showToast("Pasted! 📋");
+    }).catch(err => {
+        showToast("Failed to paste");
+    });
 }
 
 function clearInput() {
     document.getElementById('inputPrompt').value = '';
+    // Clear wizard inputs too
+    ['wizRole', 'wizTask', 'wizContext', 'wizFormat'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
     updateInputWordCount();
+    document.getElementById('scoreBarContainer').classList.add('hidden');
 }
 
 function updateInputWordCount() {
     const text = document.getElementById('inputPrompt').value;
-    const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
-    document.getElementById('inputWordCount').textContent = `${wordCount} word${wordCount !== 1 ? 's' : ''}`;
+    const count = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+    document.getElementById('inputWordCount').textContent = `${count} words`;
 }
 
-function loadExample(exampleKey) {
-    const text = EXAMPLES[exampleKey];
-    document.getElementById('inputPrompt').value = text;
-    updateInputWordCount();
-    showToast('Example loaded! ✨');
+function calculateRealStats(inputText, outputText) {
+    const inputWords = inputText.trim().split(/\s+/).filter(w => w.length > 0).length;
+    const outputWords = outputText.trim().split(/\s+/).filter(w => w.length > 0).length;
+    const wordDiff = outputWords - inputWords;
+
+    // Clarity: Based on sentence structure and formatting
+    const sentences = outputText.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const avgSentenceLength = outputWords / Math.max(sentences.length, 1);
+    const hasStructure = /\*\*|##|[-*]\s|:/.test(outputText);
+    let clarity = 70;
+    if (avgSentenceLength < 25) clarity += 15;
+    if (hasStructure) clarity += 15;
+    clarity = Math.min(100, clarity);
+
+    // Specificity: Concrete nouns, numbers, quoted strings
+    const hasNumbers = /\d+/.test(outputText);
+    const hasQuotes = /"[^"]+"/.test(outputText);
+    const hasRoleTask = /role|task|context|format/i.test(outputText);
+    let specificity = "Medium";
+    const specificityScore = (hasNumbers ? 1 : 0) + (hasQuotes ? 1 : 0) + (hasRoleTask ? 1 : 0);
+    if (specificityScore >= 2) specificity = "High";
+    else if (specificityScore === 0) specificity = "Low";
+
+    return { wordDiff, clarity, specificity };
 }
 
-// ========================================
-// OPTIMIZATION LOGIC
-// ========================================
-function optimizePrompt() {
-    state.inputText = document.getElementById('inputPrompt').value.trim();
-    
-    if (!state.inputText) {
-        showToast('Please enter a prompt to optimize');
-        return;
-    }
-    
-    state.improvements = [];
-    let optimized = state.inputText;
-    
-    // Apply optimizations based on settings
-    if (state.professionalTone) {
-        optimized = makeProfessional(optimized);
-    }
-    
-    if (state.addStructure) {
-        optimized = addStructure(optimized, state.promptType);
-    }
-    
-    if (state.addContext) {
-        optimized = addContext(optimized, state.promptType);
-    }
-    
-    if (state.requestExamples) {
-        optimized = addExampleRequest(optimized);
-    }
-    
-    if (state.stepByStep) {
-        optimized = addStepByStep(optimized);
-    }
-    
-    state.outputText = optimized;
-    
-    // Render output
-    renderOutput();
-    renderImprovements();
-    
-    // Show improvements panel
-    document.getElementById('improvementsPanel').classList.remove('hidden');
-    
-    showToast('Prompt optimized! ✨');
-}
-
-function makeProfessional(text) {
-    let result = text;
-    
-    // Capitalize first letter
-    result = result.charAt(0).toUpperCase() + result.slice(1);
-    
-    // Add period if missing
-    if (!result.endsWith('.') && !result.endsWith('?') && !result.endsWith('!')) {
-        result += '.';
-    }
-    
-    // Replace casual words
-    const replacements = {
-        "make me": "Create",
-        "write me": "Write",
-        "give me": "Provide",
-        "do": "Create",
-        "gonna": "going to",
-        "wanna": "want to",
-        "kinda": "kind of"
-    };
-    
-    Object.keys(replacements).forEach(casual => {
-        const regex = new RegExp('\\b' + casual + '\\b', 'gi');
-        result = result.replace(regex, replacements[casual]);
-    });
-    
-    if (result !== text) {
-        state.improvements.push('Professional tone and grammar');
-    }
-    
-    return result;
-}
-
-function addStructure(text, type) {
-    let structured = '';
-    
-    // Extract key elements from the prompt
-    const topic = extractTopic(text);
-    
-    switch (type) {
-        case 'code':
-            structured = `${text}\n\n**Requirements:**\n`;
-            structured += `- Implement ${topic}\n`;
-            structured += `- Include proper error handling\n`;
-            structured += `- Add inline comments explaining the code\n`;
-            structured += `- Follow best practices and conventions\n\n`;
-            structured += `**Technical Details:**\n`;
-            structured += `- Write clean, readable code\n`;
-            structured += `- Consider edge cases\n`;
-            structured += `- Optimize for performance where applicable`;
-            state.improvements.push('Added code structure with requirements');
-            break;
-            
-        case 'writing':
-            structured = `${text}\n\n**Content Requirements:**\n`;
-            structured += `- Topic: ${topic}\n`;
-            structured += `- Tone: [Specify: Professional/Casual/Technical]\n`;
-            structured += `- Length: [Specify word count]\n`;
-            structured += `- Target Audience: [Specify audience]\n\n`;
-            structured += `**Structure:**\n`;
-            structured += `- Engaging introduction with hook\n`;
-            structured += `- Well-organized body with clear sections\n`;
-            structured += `- Strong conclusion with takeaways`;
-            state.improvements.push('Added writing structure with content requirements');
-            break;
-            
-        case 'analysis':
-            structured = `${text}\n\n**Analysis Requirements:**\n`;
-            structured += `- Objective: Analyze ${topic}\n`;
-            structured += `- Methodology: [Specify analytical approach]\n`;
-            structured += `- Key metrics to examine\n`;
-            structured += `- Identify patterns and trends\n\n`;
-            structured += `**Deliverables:**\n`;
-            structured += `- Summary of findings\n`;
-            structured += `- Data-driven insights\n`;
-            structured += `- Actionable recommendations`;
-            state.improvements.push('Added analysis structure with methodology');
-            break;
-            
-        case 'creative':
-            structured = `${text}\n\n**Creative Brief:**\n`;
-            structured += `- Project: ${topic}\n`;
-            structured += `- Style: [Specify aesthetic preferences]\n`;
-            structured += `- Target Audience: [Specify demographics]\n`;
-            structured += `- Constraints: [Specify any limitations]\n\n`;
-            structured += `**Design Elements:**\n`;
-            structured += `- Color palette considerations\n`;
-            structured += `- Typography preferences\n`;
-            structured += `- Overall mood and feel`;
-            state.improvements.push('Added creative brief structure');
-            break;
-            
-        case 'business':
-            structured = `${text}\n\n**Business Context:**\n`;
-            structured += `- Objective: ${topic}\n`;
-            structured += `- Target Audience: [Specify stakeholders]\n`;
-            structured += `- Key Messages: [Main points to convey]\n\n`;
-            structured += `**Requirements:**\n`;
-            structured += `- Professional tone and formatting\n`;
-            structured += `- Clear call-to-action\n`;
-            structured += `- Appropriate length and structure`;
-            state.improvements.push('Added business context and requirements');
-            break;
-            
-        default:
-            structured = `${text}\n\n**Details:**\n`;
-            structured += `- Please provide ${topic}\n`;
-            structured += `- Be specific and comprehensive\n`;
-            structured += `- Include relevant context`;
-            state.improvements.push('Added basic structure');
-    }
-    
-    return structured;
-}
-
-function addContext(text, type) {
-    let contextual = text;
-    
-    // Add context section if not already very detailed
-    if (text.length < 100) {
-        contextual += `\n\n**Additional Context:**\n`;
-        contextual += `- Specify any constraints or requirements\n`;
-        contextual += `- Mention relevant background information\n`;
-        contextual += `- Define success criteria`;
-        
-        state.improvements.push('Added context and constraints section');
-    }
-    
-    return contextual;
-}
-
-function addExampleRequest(text) {
-    let withExamples = text;
-    
-    withExamples += `\n\n**Please include:**\n`;
-    withExamples += `- Concrete examples to illustrate key points\n`;
-    withExamples += `- Sample output or demonstration`;
-    
-    state.improvements.push('Requested examples and demonstrations');
-    
-    return withExamples;
-}
-
-function addStepByStep(text) {
-    let withSteps = text;
-    
-    withSteps += `\n\n**Process:**\n`;
-    withSteps += `Please explain step-by-step, breaking down the process into clear, sequential stages.`;
-    
-    state.improvements.push('Requested step-by-step explanation');
-    
-    return withSteps;
-}
-
-function extractTopic(text) {
-    // Simple topic extraction - get the main subject
-    const words = text.toLowerCase().split(/\s+/);
-    
-    // Remove common starting words
-    const filtered = words.filter(w => 
-        !['make', 'create', 'write', 'build', 'design', 'develop', 'give', 'me', 'a', 'an', 'the'].includes(w)
-    );
-    
-    // Return first few meaningful words
-    return filtered.slice(0, 5).join(' ') || 'the requested item';
-}
-
-// ========================================
-// OUTPUT FUNCTIONS
-// ========================================
 function renderOutput() {
     const outputDiv = document.getElementById('outputPrompt');
-    
-    // Format the output with proper HTML
-    let formatted = state.outputText;
-    
-    // Convert **text** to <strong>text</strong>
-    formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    
-    // Convert bullet points to list items
-    formatted = formatted.replace(/^- (.+)$/gm, '<li>$1</li>');
-    
-    // Wrap consecutive list items in <ul>
-    formatted = formatted.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
-    
-    // Convert section headings (text ending with :)
-    formatted = formatted.replace(/^([A-Z][^:\n]+):$/gm, '<h4>$1:</h4>');
-    
-    // Convert line breaks to paragraphs
-    const paragraphs = formatted.split('\n\n');
-    formatted = paragraphs.map(p => {
-        if (p.startsWith('<h4>') || p.startsWith('<ul>')) {
-            return p;
-        }
-        return `<p>${p}</p>`;
-    }).join('');
-    
-    outputDiv.innerHTML = formatted;
-    
-    // Update word count
-    const wordCount = state.outputText.split(/\s+/).filter(w => w.length > 0).length;
-    document.getElementById('outputWordCount').textContent = `${wordCount} word${wordCount !== 1 ? 's' : ''}`;
-}
+    // Simple rendering for now, preserving whitespace
+    outputDiv.textContent = state.outputText;
 
-function renderImprovements() {
+    const count = state.outputText.trim().split(/\s+/).filter(w => w.length > 0).length;
+    document.getElementById('outputWordCount').textContent = `${count} words`;
+
+    // Show Improvements Panel
+    const panel = document.getElementById('improvementsPanel');
     const list = document.getElementById('improvementsList');
-    list.innerHTML = '';
-    
-    state.improvements.forEach(improvement => {
-        const item = document.createElement('div');
-        item.className = 'improvement-item';
-        item.innerHTML = `
-            <span class="improvement-check">✓</span>
-            <span>${improvement}</span>
-        `;
-        list.appendChild(item);
-    });
-    
-    // Calculate stats
-    const inputWords = state.inputText.split(/\s+/).filter(w => w.length > 0).length;
-    const outputWords = state.outputText.split(/\s+/).filter(w => w.length > 0).length;
-    const wordDiff = outputWords - inputWords;
-    
-    document.getElementById('wordDiff').textContent = `+${wordDiff} words`;
-    
-    // Simple clarity score (based on improvements)
-    const clarityScore = Math.min(100, 60 + (state.improvements.length * 8));
-    document.getElementById('clarityScore').textContent = `${clarityScore}%`;
-    
-    // Specificity score (based on length and structure)
-    const specificityScore = Math.min(100, 50 + Math.floor(outputWords / 10));
-    document.getElementById('specificityScore').textContent = `${specificityScore}%`;
+    panel.classList.remove('hidden');
+
+    list.innerHTML = state.improvements.map(imp => `
+        <div class="improvement-item">
+            <span class="improvement-check">✓</span> ${imp}
+        </div>
+    `).join('');
+
+    // Calculate real stats
+    const inputText = state.isAdvanced
+        ? document.getElementById('wizTask').value
+        : document.getElementById('inputPrompt').value;
+    const stats = calculateRealStats(inputText, state.outputText);
+
+    document.getElementById('wordDiff').textContent = `${stats.wordDiff >= 0 ? '+' : ''}${stats.wordDiff} words`;
+    document.getElementById('clarityScore').textContent = `${stats.clarity}%`;
+    document.getElementById('specificityScore').textContent = stats.specificity;
 }
 
-async function copyOutput() {
-    if (!state.outputText) {
-        showToast('Nothing to copy yet');
-        return;
-    }
-    
-    try {
-        await navigator.clipboard.writeText(state.outputText);
-        showToast('Optimized prompt copied! ⎘');
-    } catch (error) {
-        const textarea = document.createElement('textarea');
-        textarea.value = state.outputText;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        showToast('Optimized prompt copied! ⎘');
-    }
+function copyOutput() {
+    if (!state.outputText) return;
+    navigator.clipboard.writeText(state.outputText);
+    showToast("Copied to clipboard! ⎘");
 }
 
 function downloadOutput() {
-    if (!state.outputText) {
-        showToast('Nothing to download yet');
-        return;
-    }
-    
+    if (!state.outputText) return;
     const blob = new Blob([state.outputText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'optimized-prompt.txt';
     a.click();
-    URL.revokeObjectURL(url);
-    
-    showToast('Prompt downloaded! 📥');
+    showToast("Downloaded! 📥");
 }
 
-// ========================================
-// UTILITY FUNCTIONS
-// ========================================
-function showToast(message) {
+function loadExample(key) {
+    if (state.isAdvanced) return; // Only works in quick mode
+    document.getElementById('inputPrompt').value = EXAMPLES[key];
+    updateInputWordCount();
+    analyzeRealTime();
+    showToast("Example loaded");
+}
+
+function showToast(msg) {
     const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
-    
-    toastMessage.textContent = message;
+    const text = document.getElementById('toastMessage');
+    text.textContent = msg;
     toast.classList.remove('hidden');
-    
-    setTimeout(() => {
-        toast.classList.add('hidden');
-    }, CONFIG.TOAST_DURATION);
+    setTimeout(() => toast.classList.add('hidden'), 3000);
 }
 
-// ========================================
-// MODE SWITCHING
-// ========================================
-document.querySelectorAll('.mode-toggle-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        // Toggle active class
-        document.querySelectorAll('.mode-toggle-btn').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-
-        const mode = e.currentTarget.dataset.mode;
-
-        // In a full implementation, you might show/hide different input fields here
-        // For now, we'll just toggle a "Advanced" flag in state
-        state.isAdvanced = (mode === 'advanced');
-
-        showToast(`Switched to ${mode === 'advanced' ? 'Advanced' : 'Quick'} Mode`);
-    });
-});
-
-// ========================================
-// EDUCATIONAL TOGGLE
-// ========================================
-const toggleEducationBtn = document.getElementById('toggleEducation');
-const educationalContent = document.getElementById('educationalContent');
-
-if (toggleEducationBtn && educationalContent) {
-    toggleEducationBtn.addEventListener('click', () => {
-        const isHidden = educationalContent.classList.contains('hidden');
-        if (isHidden) {
-            educationalContent.classList.remove('hidden');
-            toggleEducationBtn.classList.add('active');
-            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Hide Learning Content';
-            setTimeout(() => {
-                document.getElementById('educationalSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        } else {
-            educationalContent.classList.add('hidden');
-            toggleEducationBtn.classList.remove('active');
-            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Learn More About Prompt Engineering';
-        }
-    });
-}
-
-// ========================================
-// START
-// ========================================
+// Start
 document.addEventListener('DOMContentLoaded', init);

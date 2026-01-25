@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Prompt Optimizer - Improve Your ChatGPT & Claude Prompts | ToolBit</title>
-    <meta name="description" content="Free AI prompt optimizer. Transform casual prompts into professional AI instructions. Optimize for ChatGPT, Claude, and other AI tools. Better prompts = better results.">
+    <meta name="description"
+        content="Free AI prompt optimizer. Transform casual prompts into professional AI instructions. Optimize for ChatGPT, Claude, and other AI tools. Better prompts = better results.">
     <link rel="canonical" href="https://toolbit.dev/prompt.html">
     <link rel="stylesheet" href="styles-prompt.css">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -15,21 +17,24 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap"
+        rel="stylesheet">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-      gtag('config', 'G-L3T8NYVCJ6');
+        gtag('config', 'G-L3T8NYVCJ6');
     </script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
-     crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header class="site-header">
@@ -40,20 +45,61 @@
                 <span class="logo-bracket">}</span>
             </a>
             <nav class="main-nav">
-                <a href="json.html" class="nav-link">JSON</a>
-                <a href="regex.html" class="nav-link">RegEx</a>
-                <a href="base64.html" class="nav-link">Base64</a>
-                <a href="colors.html" class="nav-link">Colors</a>
-                <a href="hash.html" class="nav-link">Hash</a>
-                <a href="url.html" class="nav-link">URL</a>
-                <a href="lorem.html" class="nav-link">Lorem</a>
-                <a href="timestamp.html" class="nav-link">Time</a>
-                <a href="diff.html" class="nav-link">Diff</a>
-                <a href="prompt.html" class="nav-link active">Prompt</a>
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="json.html" class="nav-link">JSON</a>
+                        <a href="regex.html" class="nav-link">RegEx</a>
+                        <a href="base64.html" class="nav-link">Base64</a>
+                        <a href="colors.html" class="nav-link">Colors</a>
+                        <a href="hash.html" class="nav-link">Hash</a>
+                        <a href="url.html" class="nav-link">URL</a>
+                        <a href="lorem.html" class="nav-link">Lorem</a>
+                        <a href="timestamp.html" class="nav-link">Time</a>
+                        <a href="diff.html" class="nav-link">Diff</a>
+                        <a href="prompt.html" class="nav-link active">Prompt</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-link about-link">About</a>
                 <a href="support.html" class="nav-link support-link">☕ Support</a>
             </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="json.html" class="nav-link">JSON Formatter</a>
+            <a href="regex.html" class="nav-link">RegEx Tester</a>
+            <a href="base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="colors.html" class="nav-link">Color Palette</a>
+            <a href="hash.html" class="nav-link">Hash Generator</a>
+            <a href="url.html" class="nav-link">URL Encoder</a>
+            <a href="lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="timestamp.html" class="nav-link">Timestamp</a>
+            <a href="diff.html" class="nav-link">Diff Checker</a>
+            <a href="prompt.html" class="nav-link active">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="about.html" class="nav-link about-link">About</a>
+            <a href="support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -62,7 +108,8 @@
                 <span class="glitch" data-text="PROMPT">PROMPT</span>
                 <span class="hero-subtitle">Optimizer</span>
             </h1>
-            <p class="hero-description">Transform casual prompts into professional AI instructions. Get better results from ChatGPT, Claude, and other AI tools. Simple English in, optimized prompts out.</p>
+            <p class="hero-description">Transform casual prompts into professional AI instructions. Get better results
+                from ChatGPT, Claude, and other AI tools. Simple English in, optimized prompts out.</p>
         </div>
     </section>
 
@@ -92,9 +139,10 @@
                             <option value="analysis">Analysis/Research</option>
                             <option value="creative">Creative/Design</option>
                             <option value="business">Business/Marketing</option>
+                            <option value="image">Image Generation</option>
                         </select>
                     </div>
-                    
+
                     <div class="setting-group">
                         <label class="setting-label">Enhancement Options</label>
                         <div class="checkbox-group">
@@ -121,6 +169,18 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- ADDED: REAL-TIME SCORE BAR -->
+            <div id="scoreBarContainer" class="score-container hidden">
+                <div class="score-header">
+                    <span class="score-label">Prompt Strength</span>
+                    <span id="scoreValue" class="score-value">0%</span>
+                </div>
+                <div class="score-track">
+                    <div id="scoreFill" class="score-fill" style="width: 0%;"></div>
+                </div>
+                <div id="scoreFeedback" class="score-feedback">Start typing to see feedback...</div>
             </div>
 
             <!-- Quick Examples -->
@@ -176,17 +236,40 @@
                             </button>
                         </div>
                     </div>
-                    <textarea 
-                        id="inputPrompt" 
-                        class="prompt-textarea" 
-                        placeholder="Enter your prompt in plain English...
+                    <textarea id="inputPrompt" class="prompt-textarea" placeholder="Enter your prompt in plain English...
 
 Example:
 make me a login page
 
-We'll transform it into a detailed, structured prompt that gets better AI results!"
-                        spellcheck="true"
-                    ></textarea>
+We'll transform it into a detailed, structured prompt that gets better AI results!" spellcheck="true"></textarea>
+
+                    <!-- ADDED: WIZARD MODE FIELDS (Hidden by default) -->
+                    <div id="wizardFields" class="wizard-fields hidden">
+                        <div class="wizard-help-text">Fill in the fields below to construct a detailed prompt
+                            automatically.</div>
+
+                        <div class="input-group">
+                            <label>Role / Persona</label>
+                            <input type="text" id="wizRole" class="text-input"
+                                placeholder="e.g. Senior Java Developer, Marketing Expert">
+                        </div>
+                        <div class="input-group">
+                            <label>Task / Objective</label>
+                            <input type="text" id="wizTask" class="text-input"
+                                placeholder="e.g. Create a secure login system, Write a blog post">
+                        </div>
+                        <div class="input-group">
+                            <label>Context / Constraints</label>
+                            <input type="text" id="wizContext" class="text-input"
+                                placeholder="e.g. Must use Spring Boot, target audience is CTOs">
+                        </div>
+                        <div class="input-group">
+                            <label>Desired Format</label>
+                            <input type="text" id="wizFormat" class="text-input"
+                                placeholder="e.g. Markdown table, JSON response only">
+                        </div>
+                    </div>
+
                     <div class="panel-footer">
                         <span id="inputWordCount" class="word-count">0 words</span>
                         <button id="optimizeBtn" class="btn btn-primary">
@@ -195,7 +278,7 @@ We'll transform it into a detailed, structured prompt that gets better AI result
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="prompt-panel output-panel">
                     <div class="panel-header">
                         <h3 class="panel-title">
@@ -255,141 +338,76 @@ We'll transform it into a detailed, structured prompt that gets better AI result
                 </div>
             </div>
 
-            <!-- Before/After Examples -->
-            <div class="examples-section">
-                <div class="section-header">
-                    <h3 class="section-title">
-                        <span class="section-icon">▸</span>
-                        Before & After Examples
-                    </h3>
-                </div>
-                
-                <div class="comparison-grid">
-                    <div class="comparison-card">
-                        <div class="comparison-before">
-                            <h4>❌ Before (Vague)</h4>
-                            <p class="comparison-text">"make me a website"</p>
-                        </div>
-                        <div class="comparison-after">
-                            <h4>✅ After (Optimized)</h4>
-                            <p class="comparison-text">Create a professional website with the following specifications:
-
-**Purpose:** Portfolio website for a freelance photographer
-
-**Required Pages:**
-- Homepage with hero image and introduction
-- Portfolio gallery with categories
-- About page with bio and experience
-- Contact page with form
-
-**Design Requirements:**
-- Modern, minimalist aesthetic
-- Mobile-responsive layout
-- Fast loading times
-- Accessibility compliance
-
-**Technical Stack:**
-- HTML5, CSS3, JavaScript
-- No frameworks (vanilla code)
-
-Please include semantic HTML and commented code.</p>
-                        </div>
+            <!-- Educational Content Section -->
+            <section class="educational-section" id="educationalSection">
+                <div class="container">
+                    <div class="educational-toggle">
+                        <button id="toggleEducation" class="btn-education">
+                            <span class="btn-icon">📚</span>
+                            <span class="toggle-text">Learn More About Prompt Engineering</span>
+                            <span class="toggle-arrow">▼</span>
+                        </button>
                     </div>
-                    
-                    <div class="comparison-card">
-                        <div class="comparison-before">
-                            <h4>❌ Before (Vague)</h4>
-                            <p class="comparison-text">"write about ai"</p>
+
+                    <div id="educationalContent" class="educational-content hidden">
+                        <!-- What is Prompt Engineering -->
+                        <div class="edu-card">
+                            <h2 class="edu-title">
+                                <span class="edu-icon">🎨</span>
+                                The Art of Prompting
+                            </h2>
+                            <div class="edu-body">
+                                <p>Prompt engineering is the practice of designing inputs for AI models to produce
+                                    optimal outputs. It's like learning to speak the AI's language effectively.</p>
+                                <p>Key principles include:</p>
+                                <ul>
+                                    <li><strong>Clarity:</strong> Be explicit about what you want.</li>
+                                    <li><strong>Constraint:</strong> Tell the AI what *not* to do.</li>
+                                    <li><strong>Context:</strong> Provide the "who, what, where, why".</li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="comparison-after">
-                            <h4>✅ After (Optimized)</h4>
-                            <p class="comparison-text">Write a blog post about artificial intelligence with the following parameters:
 
-**Topic:** The impact of AI on creative industries in 2024
+                        <!-- Techniques -->
+                        <div class="edu-card">
+                            <h2 class="edu-title">
+                                <span class="edu-icon">🛠️</span>
+                                Advanced Techniques
+                            </h2>
+                            <div class="edu-body">
+                                <h3>Few-Shot Prompting</h3>
+                                <p>Giving the model a few examples of input-output pairs before asking it to do the
+                                    task. "Here are three examples of good headlines. Now write five more."</p>
+                                <h3>Chain-of-Thought</h3>
+                                <p>Asking the AI to "think, step-by-step" encourages it to break down complex problems,
+                                    reducing logic errors.</p>
+                                <h3>Role Prompting</h3>
+                                <p>Assigning a persona ("Act as a Senior React Developer") sets the tone, vocabulary,
+                                    and expertise level of the response.</p>
+                            </div>
+                        </div>
 
-**Target Audience:** Creative professionals (designers, writers, artists)
-
-**Tone:** Informative but approachable, balanced perspective
-
-**Length:** 800-1000 words
-
-**Structure:**
-- Engaging introduction with hook
-- 3-4 main sections covering different creative fields
-- Real-world examples and case studies
-- Balanced view of opportunities and challenges
-- Conclusion with actionable takeaways
-
-**Style:** Use subheadings, include statistics where relevant, avoid technical jargon.</p>
+                        <!-- FAQ -->
+                        <div class="edu-card">
+                            <h2 class="edu-title">
+                                <span class="edu-icon">❓</span>
+                                Frequently Asked Questions
+                            </h2>
+                            <div class="edu-body">
+                                <h3>Does the length of the prompt matter?</h3>
+                                <p>Yes, but relevance matters more than length. A long, rambling prompt can confuse the
+                                    AI. A structured, detailed prompt is ideal.</p>
+                                <h3>Why does "Act as..." work?</h3>
+                                <p>It primes the model's neural network to access patterns associated with that specific
+                                    role or domain knowledge.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
         </div>
     </main>
-
-    <!-- Educational Content Section -->
-    <section class="educational-section" id="educationalSection">
-        <div class="container">
-            <div class="educational-toggle">
-                <button id="toggleEducation" class="btn-education">
-                    <span class="btn-icon">📚</span>
-                    <span class="toggle-text">Learn More About Prompt Engineering</span>
-                    <span class="toggle-arrow">▼</span>
-                </button>
-            </div>
-
-            <div id="educationalContent" class="educational-content hidden">
-                <!-- What is Prompt Engineering -->
-                <div class="edu-card">
-                    <h2 class="edu-title">
-                        <span class="edu-icon">🎨</span>
-                        The Art of Prompting
-                    </h2>
-                    <div class="edu-body">
-                        <p>Prompt engineering is the practice of designing inputs for AI models to produce optimal outputs. It's like learning to speak the AI's language effectively.</p>
-                        <p>Key principles include:</p>
-                        <ul>
-                            <li><strong>Clarity:</strong> Be explicit about what you want.</li>
-                            <li><strong>Constraint:</strong> Tell the AI what *not* to do.</li>
-                            <li><strong>Context:</strong> Provide the "who, what, where, why".</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Techniques -->
-                <div class="edu-card">
-                    <h2 class="edu-title">
-                        <span class="edu-icon">🛠️</span>
-                        Advanced Techniques
-                    </h2>
-                    <div class="edu-body">
-                        <h3>Few-Shot Prompting</h3>
-                        <p>Giving the model a few examples of input-output pairs before asking it to do the task. "Here are three examples of good headlines. Now write five more."</p>
-                        <h3>Chain-of-Thought</h3>
-                        <p>Asking the AI to "think, step-by-step" encourages it to break down complex problems, reducing logic errors.</p>
-                        <h3>Role Prompting</h3>
-                        <p>Assigning a persona ("Act as a Senior React Developer") sets the tone, vocabulary, and expertise level of the response.</p>
-                    </div>
-                </div>
-
-                <!-- FAQ -->
-                <div class="edu-card">
-                    <h2 class="edu-title">
-                        <span class="edu-icon">❓</span>
-                        Frequently Asked Questions
-                    </h2>
-                    <div class="edu-body">
-                        <h3>Does the length of the prompt matter?</h3>
-                        <p>Yes, but relevance matters more than length. A long, rambling prompt can confuse the AI. A structured, detailed prompt is ideal.</p>
-                        <h3>Why does "Act as..." work?</h3>
-                        <p>It primes the model's neural network to access patterns associated with that specific role or domain knowledge.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="site-footer">
@@ -398,8 +416,10 @@ Please include semantic HTML and commented code.</p>
                 <div class="footer-section">
                     <h4>ToolBit</h4>
                     <p>Professional developer tools, zero bloat.</p>
-                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
                 </div>
+                <!-- ... tools list ... -->
                 <div class="footer-section">
                     <h4>Tools</h4>
                     <a href="json.html">JSON Formatter</a>
@@ -438,6 +458,10 @@ Please include semantic HTML and commented code.</p>
         <span id="toastMessage"></span>
     </div>
 
+    <!-- MAIN LOGIC ENGINE -->
+    <script src="script-prompt-logic.js"></script>
+    <!-- UI INTERACTION -->
     <script src="script-prompt.js"></script>
 </body>
+
 </html>

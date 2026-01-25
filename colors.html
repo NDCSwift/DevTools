@@ -880,20 +880,61 @@
                 <span class="logo-bracket">}</span>
             </a>
             <nav class="main-nav">
-                <a href="json.html" class="nav-link">JSON</a>
-                <a href="regex.html" class="nav-link">RegEx</a>
-                <a href="base64.html" class="nav-link">Base64</a>
-                <a href="colors.html" class="nav-link active">Colors</a>
-                <a href="hash.html" class="nav-link">Hash</a>
-                <a href="url.html" class="nav-link">URL</a>
-                <a href="lorem.html" class="nav-link">Lorem</a>
-                <a href="timestamp.html" class="nav-link">Time</a>
-                <a href="diff.html" class="nav-link">Diff</a>
-                <a href="prompt.html" class="nav-link">Prompt</a>
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="json.html" class="nav-link">JSON</a>
+                        <a href="regex.html" class="nav-link">RegEx</a>
+                        <a href="base64.html" class="nav-link">Base64</a>
+                        <a href="colors.html" class="nav-link active">Colors</a>
+                        <a href="hash.html" class="nav-link">Hash</a>
+                        <a href="url.html" class="nav-link">URL</a>
+                        <a href="lorem.html" class="nav-link">Lorem</a>
+                        <a href="timestamp.html" class="nav-link">Time</a>
+                        <a href="diff.html" class="nav-link">Diff</a>
+                        <a href="prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-link about-link">About</a>
                 <a href="support.html" class="nav-link support-link">☕ Support</a>
             </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="json.html" class="nav-link">JSON Formatter</a>
+            <a href="regex.html" class="nav-link">RegEx Tester</a>
+            <a href="base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="colors.html" class="nav-link active">Color Palette</a>
+            <a href="hash.html" class="nav-link">Hash Generator</a>
+            <a href="url.html" class="nav-link">URL Encoder</a>
+            <a href="lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="timestamp.html" class="nav-link">Timestamp</a>
+            <a href="diff.html" class="nav-link">Diff Checker</a>
+            <a href="prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="about.html" class="nav-link about-link">About</a>
+            <a href="support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
 
     <!-- Hero Section -->
     <section class="hero">
