@@ -484,13 +484,181 @@
     .examples-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .panel-actions {
         flex-direction: column;
     }
-    
+
     .action-btn {
         width: 100%;
         justify-content: center;
     }
+}
+
+/* ========================================
+   ADVANCED MODE STYLES
+   ======================================== */
+.mode-toggle {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.mode-toggle-btn {
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.mode-toggle-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.mode-toggle-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-bg);
+}
+
+.variable-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.variable-item {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.variable-label {
+    font-weight: 600;
+    color: var(--color-secondary);
+}
+
+/* ========================================
+   EDUCATIONAL CONTENT SECTION (Standard)
+   ======================================== */
+.educational-section {
+    padding: var(--spacing-2xl) 0;
+    background: var(--color-bg);
+    border-top: 2px solid var(--color-border);
+    margin-top: var(--spacing-xxl);
+}
+
+.educational-toggle {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.btn-education {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md) var(--spacing-2xl);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.btn-education:hover {
+    background: rgba(0, 255, 159, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 255, 159, 0.3);
+}
+
+.educational-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    opacity: 1;
+    max-height: none;
+    transition: 0.3s ease;
+}
+
+.educational-content.hidden {
+    display: none;
+    opacity: 0;
+    max-height: 0;
+}
+
+.edu-card {
+    background: var(--color-bg-elevated);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    transition: all 0.3s ease;
+}
+
+.edu-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.edu-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--color-border);
+}
+
+.edu-body {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+}
+
+.edu-body h3 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+}
+
+.edu-body ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: var(--spacing-md);
+}
+
+.edu-body li {
+    padding: var(--spacing-sm) 0;
+    padding-left: var(--spacing-lg);
+    position: relative;
+}
+
+.edu-body li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+    font-weight: 700;
 }

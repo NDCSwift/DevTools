@@ -69,7 +69,17 @@
     <!-- Main Tool Area -->
     <main class="tool-container">
         <div class="container">
-            
+
+            <!-- Mode Toggle -->
+            <div class="mode-toggle">
+                <button class="mode-toggle-btn active" data-mode="simple">
+                    <span class="btn-icon">⚡</span> Quick Optimize
+                </button>
+                <button class="mode-toggle-btn" data-mode="advanced">
+                    <span class="btn-icon">🧠</span> Advanced Builder
+                </button>
+            </div>
+
             <!-- Settings Panel -->
             <div class="settings-panel">
                 <div class="settings-grid">
@@ -245,63 +255,6 @@ We'll transform it into a detailed, structured prompt that gets better AI result
                 </div>
             </div>
 
-            <!-- Info Section -->
-            <div class="info-section">
-                <div class="section-header">
-                    <h3 class="section-title">
-                        <span class="section-icon">▸</span>
-                        Prompt Engineering Tips
-                    </h3>
-                </div>
-                
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h4>🎯 Why Optimize Prompts?</h4>
-                        <p>AI models respond better to clear, structured prompts. A well-crafted prompt can mean the difference between a vague response and exactly what you need.</p>
-                        <p>Better prompts = Better results = Less time wasted on back-and-forth.</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>✨ What We Improve</h4>
-                        <ul>
-                            <li><strong>Structure:</strong> Break vague requests into clear sections with bullet points</li>
-                            <li><strong>Context:</strong> Add relevant background and constraints</li>
-                            <li><strong>Specificity:</strong> Replace vague words with concrete requirements</li>
-                            <li><strong>Tone:</strong> Professional phrasing that AI models understand better</li>
-                            <li><strong>Examples:</strong> Request sample outputs when helpful</li>
-                            <li><strong>Format:</strong> Specify desired output format and structure</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>💡 Prompt Engineering Best Practices</h4>
-                        <ul>
-                            <li>✅ Be specific about what you want</li>
-                            <li>✅ Break complex requests into sections</li>
-                            <li>✅ Provide context and constraints</li>
-                            <li>✅ Specify format (bullet points, code, essay, etc.)</li>
-                            <li>✅ Request examples when helpful</li>
-                            <li>✅ Use "Please explain" for learning</li>
-                            <li>✅ Iterate and refine based on results</li>
-                            <li>❌ Avoid vague language like "good" or "nice"</li>
-                            <li>❌ Don't assume the AI knows your context</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>🚀 Use Cases</h4>
-                        <ul>
-                            <li><strong>Coding:</strong> Get better code with proper comments and error handling</li>
-                            <li><strong>Writing:</strong> Specify tone, length, and audience for better content</li>
-                            <li><strong>Analysis:</strong> Get structured insights with clear methodology</li>
-                            <li><strong>Creative Work:</strong> Add constraints to guide AI creativity</li>
-                            <li><strong>Learning:</strong> Request explanations with examples and analogies</li>
-                            <li><strong>Business:</strong> Professional communications with proper formatting</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
             <!-- Before/After Examples -->
             <div class="examples-section">
                 <div class="section-header">
@@ -375,6 +328,68 @@ Please include semantic HTML and commented code.</p>
 
         </div>
     </main>
+
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About Prompt Engineering</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is Prompt Engineering -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🎨</span>
+                        The Art of Prompting
+                    </h2>
+                    <div class="edu-body">
+                        <p>Prompt engineering is the practice of designing inputs for AI models to produce optimal outputs. It's like learning to speak the AI's language effectively.</p>
+                        <p>Key principles include:</p>
+                        <ul>
+                            <li><strong>Clarity:</strong> Be explicit about what you want.</li>
+                            <li><strong>Constraint:</strong> Tell the AI what *not* to do.</li>
+                            <li><strong>Context:</strong> Provide the "who, what, where, why".</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Techniques -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🛠️</span>
+                        Advanced Techniques
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Few-Shot Prompting</h3>
+                        <p>Giving the model a few examples of input-output pairs before asking it to do the task. "Here are three examples of good headlines. Now write five more."</p>
+                        <h3>Chain-of-Thought</h3>
+                        <p>Asking the AI to "think, step-by-step" encourages it to break down complex problems, reducing logic errors.</p>
+                        <h3>Role Prompting</h3>
+                        <p>Assigning a persona ("Act as a Senior React Developer") sets the tone, vocabulary, and expertise level of the response.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Does the length of the prompt matter?</h3>
+                        <p>Yes, but relevance matters more than length. A long, rambling prompt can confuse the AI. A structured, detailed prompt is ideal.</p>
+                        <h3>Why does "Act as..." work?</h3>
+                        <p>It primes the model's neural network to access patterns associated with that specific role or domain knowledge.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="site-footer">

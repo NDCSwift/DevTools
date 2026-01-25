@@ -26,14 +26,15 @@ let state = {
     ignoreWhitespace: true,
     ignoreCase: false,
     showLineNumbers: true,
-    
+    collapseUnchanged: false,
+
     originalText: '',
     modifiedText: '',
-    
+
     diff: null,
     diffLines: null,
     stats: null,
-    
+
     currentChange: -1,
     changePositions: []
 };
@@ -188,6 +189,15 @@ function attachEventListeners() {
     // Export
     document.getElementById('exportUnified').addEventListener('click', exportUnifiedDiff);
     document.getElementById('exportHTML').addEventListener('click', exportHTML);
+
+    // Swap Inputs
+    document.getElementById('swapBtn').addEventListener('click', swapInputs);
+
+    // Collapse Unchanged
+    document.getElementById('collapseUnchanged').addEventListener('change', (e) => {
+        state.collapseUnchanged = e.target.checked;
+        if (state.diffLines) renderDiff(); // Re-render if diff exists
+    });
 }
 
 // ========================================
@@ -214,12 +224,27 @@ function clearText(side) {
 }
 
 function loadSample(side) {
-    const textarea = side === 'left' ? 
-        document.getElementById('originalText') : 
+    const textarea = side === 'left' ?
+        document.getElementById('originalText') :
         document.getElementById('modifiedText');
     const sample = side === 'left' ? CONFIG.SAMPLE_ORIGINAL : CONFIG.SAMPLE_MODIFIED;
     textarea.value = sample;
     showToast('Sample code loaded! 📝');
+}
+
+function swapInputs() {
+    const leftText = document.getElementById('originalText');
+    const rightText = document.getElementById('modifiedText');
+
+    const temp = leftText.value;
+    leftText.value = rightText.value;
+    rightText.value = temp;
+
+    // Trigger input events to update line numbers
+    leftText.dispatchEvent(new Event('input'));
+    rightText.dispatchEvent(new Event('input'));
+
+    showToast('Inputs swapped! ⇄');
 }
 
 // ========================================
@@ -436,16 +461,67 @@ function renderDiff() {
 function renderSideBySide() {
     const leftPanel = document.getElementById('leftDiff');
     const rightPanel = document.getElementById('rightDiff');
-    
+
     leftPanel.innerHTML = '';
     rightPanel.innerHTML = '';
-    
+
+    const contextLines = 3; // Lines to show around changes
+    let collapseStart = -1;
+
     state.diffLines.left.forEach((leftLine, index) => {
         const rightLine = state.diffLines.right[index];
-        
-        leftPanel.appendChild(createDiffLine(leftLine));
-        rightPanel.appendChild(createDiffLine(rightLine));
+        const isChange = leftLine.type !== 'unchanged' || rightLine.type !== 'unchanged';
+        const isVisible = !state.collapseUnchanged || isChange || isContextLine(index, contextLines);
+
+        if (isVisible) {
+            // Render any pending expansion banner
+            if (collapseStart !== -1) {
+                const count = index - collapseStart;
+                if (count > 0) {
+                    leftPanel.appendChild(createExpandBanner(count));
+                    rightPanel.appendChild(createExpandBanner(count));
+                }
+                collapseStart = -1;
+            }
+            leftPanel.appendChild(createDiffLine(leftLine));
+            rightPanel.appendChild(createDiffLine(rightLine));
+        } else {
+            if (collapseStart === -1) collapseStart = index;
+        }
     });
+
+    // Trailing collapsed lines
+    if (collapseStart !== -1) {
+        const count = state.diffLines.left.length - collapseStart;
+        leftPanel.appendChild(createExpandBanner(count));
+        rightPanel.appendChild(createExpandBanner(count));
+    }
+}
+
+// Helper to determine if a line is within 'n' lines of a change
+function isContextLine(index, n) {
+    const total = state.diffLines.left.length;
+    const start = Math.max(0, index - n);
+    const end = Math.min(total, index + n + 1);
+
+    for (let i = start; i < end; i++) {
+        if (state.diffLines.left[i].type !== 'unchanged' ||
+            state.diffLines.right[i].type !== 'unchanged') {
+            return true;
+        }
+    }
+    return false;
+}
+
+function createExpandBanner(count) {
+    const div = document.createElement('div');
+    div.className = 'expand-banner';
+    div.textContent = `... ${count} unchanged lines ...`;
+    // Click toggles the global setting off
+    div.onclick = () => {
+        document.getElementById('collapseUnchanged').click();
+    };
+    return div;
 }
 
 function createDiffLine(lineData) {
@@ -718,6 +794,30 @@ function showToast(message) {
     setTimeout(() => {
         toast.classList.add('hidden');
     }, CONFIG.TOAST_DURATION);
+}
+
+// ========================================
+// EDUCATIONAL TOGGLE
+// ========================================
+const toggleEducationBtn = document.getElementById('toggleEducation');
+const educationalContent = document.getElementById('educationalContent');
+
+if (toggleEducationBtn && educationalContent) {
+    toggleEducationBtn.addEventListener('click', () => {
+        const isHidden = educationalContent.classList.contains('hidden');
+        if (isHidden) {
+            educationalContent.classList.remove('hidden');
+            toggleEducationBtn.classList.add('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Hide Learning Content';
+            setTimeout(() => {
+                document.getElementById('educationalSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        } else {
+            educationalContent.classList.add('hidden');
+            toggleEducationBtn.classList.remove('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Learn More About Diff Checking';
+        }
+    });
 }
 
 // ========================================

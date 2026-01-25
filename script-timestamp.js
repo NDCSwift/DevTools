@@ -119,6 +119,9 @@ function attachEventListeners() {
         showToast('Batch output copied! ⎘');
     });
     document.getElementById('downloadBatchBtn').addEventListener('click', downloadBatchCSV);
+
+    // Duration
+    document.getElementById('calcDurationBtn').addEventListener('click', calculateDuration);
 }
 
 // ========================================
@@ -142,7 +145,8 @@ function switchMode(mode) {
         'human-to-unix': 'humanToUnixMode',
         'timezone': 'timezoneMode',
         'relative': 'relativeMode',
-        'batch': 'batchMode'
+        'batch': 'batchMode',
+        'duration': 'durationMode'
     };
     
     document.getElementById(modeMap[mode]).classList.add('active');
@@ -525,6 +529,96 @@ function showToast(message) {
 }
 
 // ========================================
+// DURATION CALCULATOR
+// ========================================
+window.setDurationNow = function() {
+    const now = Math.floor(Date.now() / 1000);
+    document.getElementById('durationStart').value = now;
+};
+
+function calculateDuration() {
+    let startVal = document.getElementById('durationStart').value.trim();
+    if (!startVal) startVal = Math.floor(Date.now() / 1000);
+
+    const start = parseInt(startVal);
+    if (isNaN(start)) {
+        showToast('Invalid start timestamp');
+        return;
+    }
+
+    // Handle potential ms input
+    const ms = start.toString().length === 13 ? start : start * 1000;
+    const date = new Date(ms);
+
+    const days = parseInt(document.getElementById('durDays').value) || 0;
+    const hours = parseInt(document.getElementById('durHours').value) || 0;
+    const mins = parseInt(document.getElementById('durMins').value) || 0;
+    const op = document.getElementById('durationOp').value;
+
+    const totalMinutes = (days * 1440) + (hours * 60) + mins;
+    const totalMs = totalMinutes * 60 * 1000;
+
+    let newTime;
+    if (op === 'add') {
+        newTime = new Date(date.getTime() + totalMs);
+    } else {
+        newTime = new Date(date.getTime() - totalMs);
+    }
+
+    const resultTs = Math.floor(newTime.getTime() / 1000);
+
+    // Display
+    const resultDiv = document.getElementById('durationResult');
+    resultDiv.classList.remove('hidden');
+    document.getElementById('resultTimestamp').textContent = resultTs;
+    document.getElementById('resultDate').textContent = newTime.toUTCString() + ' (UTC)';
+
+    showToast('Duration calculated! ⏱️');
+}
+
+// ========================================
+// EDUCATIONAL CONTENT TOGGLE
+// ========================================
+function initEducationalToggle() {
+    const toggleEducationBtn = document.getElementById('toggleEducation');
+    const educationalContent = document.getElementById('educationalContent');
+
+    if (!toggleEducationBtn || !educationalContent) return;
+
+    toggleEducationBtn.addEventListener('click', () => {
+        const isHidden = educationalContent.classList.contains('hidden');
+
+        if (isHidden) {
+            educationalContent.classList.remove('hidden');
+            toggleEducationBtn.classList.add('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Hide Learning Content';
+
+            setTimeout(() => {
+                document.getElementById('educationalSection').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        } else {
+            educationalContent.classList.add('hidden');
+            toggleEducationBtn.classList.remove('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Learn More About Unix Time';
+        }
+
+        // Analytics tracking
+        if (typeof gtag === 'function') {
+            gtag('event', isHidden ? 'expand' : 'collapse', {
+                'event_category': 'Educational',
+                'event_label': 'Timestamp'
+            });
+        }
+    });
+}
+
+// ========================================
 // START
 // ========================================
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    initEducationalToggle();
+});

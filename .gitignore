@@ -1,4 +1,4 @@
-CLAUDE.md
+*.md
 lorem_updates.md
 ROADMAP.md
 script-base64-clean.js
@@ -6,3 +6,5 @@ script-base64-fixed.js
 timestamp_updates.md
 TOOLEXPLANATION.md
 url_content_updates.md
+diff_updates.md
+prompt_updates.md

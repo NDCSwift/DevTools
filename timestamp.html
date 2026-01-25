@@ -122,6 +122,10 @@
                     <span class="tab-icon">📋</span>
                     Batch
                 </button>
+                <button class="mode-tab" data-mode="duration">
+                    <span class="tab-icon">➕</span>
+                    Duration
+                </button>
             </div>
 
             <!-- Unix to Human Mode -->
@@ -369,60 +373,166 @@
                 </div>
             </div>
 
-            <!-- Info Section -->
-            <div class="info-section">
-                <div class="section-header">
+            <!-- Duration Mode -->
+            <div id="durationMode" class="mode-content">
+                <div class="converter-section" style="grid-template-columns: 1fr;">
                     <h3 class="section-title">
                         <span class="section-icon">▸</span>
-                        Understanding Timestamps
+                        Add/Subtract Time
                     </h3>
-                </div>
-                
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h4>⏰ What is Unix Time?</h4>
-                        <p>Unix time (also called POSIX time or Epoch time) is the number of seconds that have elapsed since January 1, 1970 00:00:00 UTC, not counting leap seconds.</p>
-                        <p>It's timezone-independent and widely used in programming, databases, and APIs because it's a simple integer that's easy to store and compare.</p>
+
+                    <div class="duration-grid">
+                        <div class="input-group">
+                            <label class="input-label">Start Time</label>
+                            <input type="text" id="durationStart" class="text-input" placeholder="Unix timestamp (defaults to now)">
+                            <div class="quick-presets">
+                                <button class="preset-btn" onclick="setDurationNow()">Now</button>
+                            </div>
+                        </div>
+
+                        <select id="durationOp" class="select-input operator-select">
+                            <option value="add">+</option>
+                            <option value="sub">−</option>
+                        </select>
+
+                        <div class="input-group">
+                            <label class="input-label">Duration</label>
+                            <div class="duration-inputs">
+                                <input type="number" id="durDays" class="text-input" placeholder="Days" min="0">
+                                <input type="number" id="durHours" class="text-input" placeholder="Hours" min="0">
+                                <input type="number" id="durMins" class="text-input" placeholder="Minutes" min="0">
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="info-card">
-                        <h4>📋 Common Timestamp Formats</h4>
-                        <ul>
-                            <li><strong>Unix (seconds):</strong> <code>1736140800</code> - Most common format</li>
-                            <li><strong>Unix (milliseconds):</strong> <code>1736140800000</code> - JavaScript default</li>
-                            <li><strong>ISO 8601:</strong> <code>2026-01-06T04:00:00.000Z</code> - International standard</li>
-                            <li><strong>RFC 2822:</strong> <code>Mon, 06 Jan 2026 04:00:00 GMT</code> - Email headers</li>
-                            <li><strong>Relative:</strong> "2 hours ago" - Human-friendly display</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>🎯 When to Use Each Format</h4>
-                        <ul>
-                            <li><strong>Unix timestamps:</strong> Database storage, API responses, date calculations</li>
-                            <li><strong>ISO 8601:</strong> API requests, JSON data, international applications</li>
-                            <li><strong>Local time:</strong> UI display for end users in their timezone</li>
-                            <li><strong>Relative time:</strong> Social media posts, activity feeds, notifications</li>
-                            <li><strong>UTC:</strong> Server logs, coordination across multiple timezones</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>⚠️ Common Gotchas</h4>
-                        <ul>
-                            <li>Unix timestamps are always in <strong>UTC</strong> by default</li>
-                            <li>JavaScript uses <strong>milliseconds</strong>, most other systems use <strong>seconds</strong></li>
-                            <li>Daylight Saving Time can cause unexpected issues</li>
-                            <li>Always store timestamps in UTC, convert to local time only for display</li>
-                            <li>The Unix epoch is January 1, 1970 (not 1900!)</li>
-                            <li>The Year 2038 problem: 32-bit timestamps will overflow on January 19, 2038</li>
-                        </ul>
+
+                    <button id="calcDurationBtn" class="btn btn-primary" style="margin-top: var(--spacing-lg);">
+                        <span class="btn-icon">⏱️</span>
+                        Calculate Result
+                    </button>
+
+                    <div id="durationResult" class="duration-result hidden">
+                        <span id="resultTimestamp" class="result-main">-</span>
+                        <span id="resultDate" class="result-sub">-</span>
                     </div>
                 </div>
             </div>
 
         </div>
     </main>
+
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About Unix Time</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is Unix Time -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">⏰</span>
+                        What is a Unix Timestamp?
+                    </h2>
+                    <div class="edu-body">
+                        <p>A <strong>Unix timestamp</strong> (also known as Epoch time or POSIX time) represents the number of seconds that have elapsed since <strong>January 1, 1970 00:00:00 UTC</strong>—a moment called the Unix Epoch. It's a single integer that increases by one every second.</p>
+
+                        <p>Because it's just a number, it's incredibly efficient for computers to store, sort, and calculate dates, regardless of timezones. When you convert <code>1735689600</code> to a human-readable date, your device applies your local timezone offset to show you the correct local time.</p>
+
+                        <p><strong>Why developers use Unix timestamps:</strong></p>
+                        <ul>
+                            <li><strong>Timezone Independence:</strong> The same timestamp means the same instant worldwide</li>
+                            <li><strong>Easy Calculations:</strong> Add 86400 to get tomorrow, subtract 3600 for an hour ago</li>
+                            <li><strong>Storage Efficiency:</strong> Just 4-8 bytes for any date in history or future</li>
+                            <li><strong>Sorting:</strong> Numeric comparison is faster than parsing date strings</li>
+                            <li><strong>API Compatibility:</strong> The universal format most APIs expect and return</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use This Tool -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">🛠️</span>
+                        How to Use This Tool
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Unix → Human</h3>
+                        <p>Paste any Unix timestamp (seconds or milliseconds) to see it converted to multiple human-readable formats: UTC, ISO 8601, local time, and relative time ("2 hours ago").</p>
+
+                        <h3>Human → Unix</h3>
+                        <p>Select a date, time, and timezone to generate the corresponding Unix timestamp in both seconds and milliseconds.</p>
+
+                        <h3>Timezones</h3>
+                        <p>Enter a timestamp to see what time it represents across 8 major world timezones simultaneously. Perfect for coordinating across distributed teams.</p>
+
+                        <h3>Relative Time</h3>
+                        <p>Calculate the exact difference between two timestamps. Great for debugging time-based logic or understanding log sequences.</p>
+
+                        <h3>Duration</h3>
+                        <p>Add or subtract days, hours, and minutes from a starting timestamp. Useful for calculating expiration times, scheduling, or "what time will it be in 3 days?"</p>
+
+                        <h3>Batch</h3>
+                        <p>Convert multiple timestamps at once. Paste a list (one per line) and get them all converted to your chosen format. Export as CSV for spreadsheets.</p>
+                    </div>
+                </div>
+
+                <!-- Common Gotchas -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">⚠️</span>
+                        Common Gotchas
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Seconds vs. Milliseconds</h3>
+                        <p>The most common timestamp bug: mixing up seconds (10 digits) and milliseconds (13 digits).</p>
+                        <ul>
+                            <li><strong>Python, PHP, Ruby, SQL:</strong> Use <strong>seconds</strong> (e.g., <code>1736140800</code>)</li>
+                            <li><strong>JavaScript, Java:</strong> Use <strong>milliseconds</strong> (e.g., <code>1736140800000</code>)</li>
+                        </ul>
+                        <p><strong>Symptom:</strong> If your date shows 1970 (or year 54000+), you likely need to multiply or divide by 1000.</p>
+
+                        <h3>The Year 2038 Problem</h3>
+                        <p>32-bit signed integers max out at <code>2,147,483,647</code>. Unix time will hit this on <strong>January 19, 2038 at 03:14:07 UTC</strong>. One second later, 32-bit systems will wrap to December 13, 1901. Most modern systems use 64-bit integers, which won't overflow for 292 billion years.</p>
+
+                        <h3>Daylight Saving Time</h3>
+                        <p>DST creates two types of problems: hours that happen twice (when clocks fall back) and hours that don't exist (when clocks spring forward). Always store in UTC to avoid these issues—convert to local time only for display.</p>
+
+                        <h3>Leap Seconds</h3>
+                        <p>Unix time ignores leap seconds by definition. A day is always exactly 86,400 seconds. Real-world clocks occasionally add a 61st second to stay synchronized with Earth's rotation, but Unix timestamps just keep counting linearly.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Why January 1, 1970?</h3>
+                        <p><strong>Historical convention.</strong> Unix was being developed in the early 1970s, and the designers needed a reference point. 1970 was recent, round, and practical for the systems of that era. It stuck.</p>
+
+                        <h3>Can timestamps be negative?</h3>
+                        <p><strong>Yes.</strong> Negative Unix timestamps represent dates before 1970. For example, <code>-86400</code> is December 31, 1969. Most modern systems handle this correctly.</p>
+
+                        <h3>Why use UTC instead of local time?</h3>
+                        <p><strong>Consistency.</strong> UTC never changes—no DST, no political timezone adjustments. Store everything in UTC, convert to local time only when displaying to users. This prevents countless bugs.</p>
+
+                        <h3>How do I handle timezone conversions in code?</h3>
+                        <p><strong>Use libraries.</strong> JavaScript has <code>Intl.DateTimeFormat</code>. Python has <code>pytz</code> or <code>zoneinfo</code>. Never try to manually add/subtract hour offsets—DST rules are complex and change frequently.</p>
+
+                        <h3>What's ISO 8601?</h3>
+                        <p><strong>The international standard for date/time strings.</strong> Format: <code>2026-01-23T14:30:00Z</code>. The "T" separates date and time, "Z" means UTC. Use this when you need a human-readable string that's also unambiguous and sortable.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="site-footer">

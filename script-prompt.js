@@ -24,7 +24,8 @@ let state = {
     requestExamples: false,
     stepByStep: false,
     professionalTone: true,
-    
+    isAdvanced: false,
+
     inputText: '',
     outputText: '',
     improvements: []
@@ -452,6 +453,49 @@ function showToast(message) {
     setTimeout(() => {
         toast.classList.add('hidden');
     }, CONFIG.TOAST_DURATION);
+}
+
+// ========================================
+// MODE SWITCHING
+// ========================================
+document.querySelectorAll('.mode-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        // Toggle active class
+        document.querySelectorAll('.mode-toggle-btn').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        const mode = e.currentTarget.dataset.mode;
+
+        // In a full implementation, you might show/hide different input fields here
+        // For now, we'll just toggle a "Advanced" flag in state
+        state.isAdvanced = (mode === 'advanced');
+
+        showToast(`Switched to ${mode === 'advanced' ? 'Advanced' : 'Quick'} Mode`);
+    });
+});
+
+// ========================================
+// EDUCATIONAL TOGGLE
+// ========================================
+const toggleEducationBtn = document.getElementById('toggleEducation');
+const educationalContent = document.getElementById('educationalContent');
+
+if (toggleEducationBtn && educationalContent) {
+    toggleEducationBtn.addEventListener('click', () => {
+        const isHidden = educationalContent.classList.contains('hidden');
+        if (isHidden) {
+            educationalContent.classList.remove('hidden');
+            toggleEducationBtn.classList.add('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Hide Learning Content';
+            setTimeout(() => {
+                document.getElementById('educationalSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        } else {
+            educationalContent.classList.add('hidden');
+            toggleEducationBtn.classList.remove('active');
+            toggleEducationBtn.querySelector('.toggle-text').textContent = 'Learn More About Prompt Engineering';
+        }
+    });
 }
 
 // ========================================

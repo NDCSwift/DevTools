@@ -107,6 +107,10 @@ function hello() {
                     </div>
                 </div>
 
+                <div class="swap-btn-container">
+                    <button class="swap-btn" id="swapBtn" title="Swap Inputs">⇄</button>
+                </div>
+
                 <div class="input-panel right">
                     <h3 class="panel-title">
                         <span class="panel-icon">→</span>
@@ -181,9 +185,13 @@ function hello() {
                                 <input type="checkbox" id="showLineNumbers" checked>
                                 <span>Show line numbers</span>
                             </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="collapseUnchanged">
+                                <span>Collapse unchanged</span>
+                            </label>
                         </div>
                     </div>
-                    
+
                     <div class="setting-group">
                         <label class="setting-label">View Mode</label>
                         <div class="view-mode-selector">
@@ -332,62 +340,70 @@ function hello() {
 
             </div>
 
-            <!-- Info Section -->
-            <div class="info-section">
-                <div class="section-header">
-                    <h3 class="section-title">
-                        <span class="section-icon">▸</span>
-                        Understanding Diff
-                    </h3>
+        </div>
+    </main>
+
+    <!-- Educational Content Section -->
+    <section class="educational-section" id="educationalSection">
+        <div class="container">
+            <div class="educational-toggle">
+                <button id="toggleEducation" class="btn-education">
+                    <span class="btn-icon">📚</span>
+                    <span class="toggle-text">Learn More About Diff Checking</span>
+                    <span class="toggle-arrow">▼</span>
+                </button>
+            </div>
+
+            <div id="educationalContent" class="educational-content hidden">
+                <!-- What is a Diff -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">📝</span>
+                        What is a Diff?
+                    </h2>
+                    <div class="edu-body">
+                        <p>A <strong>Diff</strong> (difference) is a data comparison calculation that outputs the differences between two files. It is the core algorithm behind version control systems like Git.</p>
+                        <p>In a typical "Unified Diff" view:</p>
+                        <ul>
+                            <li><strong>Green (+) lines</strong> represent additions.</li>
+                            <li><strong>Red (-) lines</strong> represent deletions.</li>
+                            <li><strong>White lines</strong> are context (unchanged text) to help you locate where the change happened.</li>
+                        </ul>
+                    </div>
                 </div>
-                
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h4>📝 What is a Diff?</h4>
-                        <p>A diff (difference) shows the changes between two versions of text or code. It highlights additions, deletions, and modifications, making it easy to see exactly what changed.</p>
-                        <p>Diffs are commonly used in version control systems (like Git), code reviews, and document comparison to track changes over time.</p>
+
+                <!-- Best Practices -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">💡</span>
+                        Code Review Best Practices
+                    </h2>
+                    <div class="edu-body">
+                        <h3>1. Self-Review First</h3>
+                        <p>Always diff your own code before submitting a Pull Request. You'll often spot debug statements (<code>console.log</code>), trailing whitespace, or commented-out code that shouldn't be committed.</p>
+                        <h3>2. Focus on "Why", not just "What"</h3>
+                        <p>The diff shows <em>what</em> changed. Good commit messages and code comments should explain <em>why</em> it changed.</p>
+                        <h3>3. Watch for Whitespace</h3>
+                        <p>If a diff shows the entire file as changed, you might have changed the indentation (e.g., tabs to spaces). Use the "Ignore Whitespace" option to see the actual code changes.</p>
                     </div>
-                    
-                    <div class="info-card">
-                        <h4>🎯 When to Use a Diff Checker</h4>
-                        <ul>
-                            <li><strong>Code Reviews:</strong> Compare code before and after changes</li>
-                            <li><strong>Debugging:</strong> Find what changed to cause a bug</li>
-                            <li><strong>Version Control:</strong> Review commits, merges, and pull requests</li>
-                            <li><strong>Document Editing:</strong> Track changes in contracts, agreements, or articles</li>
-                            <li><strong>Configuration Files:</strong> Spot differences in config files across environments</li>
-                            <li><strong>Data Validation:</strong> Compare database dumps, JSON responses, or API outputs</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>🎨 Understanding the Color Coding</h4>
-                        <ul>
-                            <li><strong class="color-added">Green (Added):</strong> New lines or text that didn't exist in the original</li>
-                            <li><strong class="color-deleted">Red (Deleted):</strong> Lines or text that were removed from the original</li>
-                            <li><strong class="color-changed">Yellow (Changed):</strong> Lines that were modified (combination of additions and deletions)</li>
-                            <li><strong class="color-unchanged">Gray (Unchanged):</strong> Lines that stayed exactly the same</li>
-                        </ul>
-                        <p>Character-level highlights within lines show the exact text that was added or removed.</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h4>💡 Tips for Better Comparisons</h4>
-                        <ul>
-                            <li>✅ Enable "Ignore whitespace" to focus on actual content changes</li>
-                            <li>✅ Use "Ignore case" when comparing text where capitalization doesn't matter</li>
-                            <li>✅ Select the correct programming language for syntax awareness</li>
-                            <li>✅ Use Side-by-Side view for quick visual comparison</li>
-                            <li>✅ Use Inline view for detailed line-by-line review</li>
-                            <li>✅ Export to Unified Diff format for sharing with Git or version control tools</li>
-                            <li>✅ Use the navigation buttons to jump between changes quickly</li>
-                        </ul>
+                </div>
+
+                <!-- FAQ -->
+                <div class="edu-card">
+                    <h2 class="edu-title">
+                        <span class="edu-icon">❓</span>
+                        Frequently Asked Questions
+                    </h2>
+                    <div class="edu-body">
+                        <h3>Is my code sent to a server?</h3>
+                        <p>No. <strong>ToolBit runs 100% client-side.</strong> Your code never leaves your browser window, making it safe to paste snippets for comparison.</p>
+                        <h3>What is a "Unified Diff"?</h3>
+                        <p>Unified Diff is a standard format used by Git and patch files. It combines (unifies) the old and new text into a single chronological stream, using <code>+</code> and <code>-</code> to mark changes. It allows you to share changes as a single text file (a patch).</p>
                     </div>
                 </div>
             </div>
-
         </div>
-    </main>
+    </section>
 
     <!-- Footer -->
     <footer class="site-footer">
