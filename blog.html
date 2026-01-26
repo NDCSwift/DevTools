@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolBit Blog | Developer Guides & Insights</title>
+    <meta name="description"
+        content="In-depth guides on JSON, RegEx, Base64, and Prompt Engineering. Master your developer tools with our expert tutorials.">
+    <link rel="canonical" href="https://toolbit.dev/blog.html">
+    <link rel="stylesheet" href="styles-blog.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="json.html" class="nav-link">JSON</a>
+                        <a href="regex.html" class="nav-link">RegEx</a>
+                        <a href="base64.html" class="nav-link">Base64</a>
+                        <a href="colors.html" class="nav-link">Colors</a>
+                        <a href="hash.html" class="nav-link">Hash</a>
+                        <a href="url.html" class="nav-link">URL</a>
+                        <a href="lorem.html" class="nav-link">Lorem</a>
+                        <a href="timestamp.html" class="nav-link">Time</a>
+                        <a href="diff.html" class="nav-link">Diff</a>
+                        <a href="prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="blog.html" class="nav-link active">Blog</a>
+                <a href="about.html" class="nav-link about-link">About</a>
+                <a href="support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="json.html" class="nav-link">JSON Formatter</a>
+            <a href="regex.html" class="nav-link">RegEx Tester</a>
+            <a href="base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="colors.html" class="nav-link">Color Palette</a>
+            <a href="hash.html" class="nav-link">Hash Generator</a>
+            <a href="url.html" class="nav-link">URL Encoder</a>
+            <a href="lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="timestamp.html" class="nav-link">Timestamp</a>
+            <a href="diff.html" class="nav-link">Diff Checker</a>
+            <a href="prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="blog.html" class="nav-link active">Blog</a>
+            <a href="about.html" class="nav-link about-link">About</a>
+            <a href="support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
+
+    <!-- Blog Hero -->
+    <section class="blog-hero">
+        <div class="container">
+            <h1 class="blog-title">Developer Guides</h1>
+            <p class="blog-subtitle">Deep dives into data formats, web standards, and developer productivity.</p>
+
+            <div class="blog-categories">
+                <a href="#" class="category-tag active">All</a>
+                <a href="#" class="category-tag">Web Dev</a>
+                <a href="#" class="category-tag">Data</a>
+                <a href="#" class="category-tag">Productivity</a>
+                <a href="#" class="category-tag">AI</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Grid -->
+    <main class="container">
+        <div class="blog-grid">
+
+            <!-- Article 1: JSON -->
+            <a href="blog/json-vs-xml.html" class="article-card">
+                <div class="article-image">{}</div>
+                <div class="article-content">
+                    <div class="article-meta">Data Formats • 5 min read</div>
+                    <h2 class="article-title">JSON vs XML: Why JSON Won the Web</h2>
+                    <p class="article-excerpt">A deep dive into the history of data interchange formats and why
+                        lightweight JSON became the de facto standard over XML.</p>
+                    <span class="read-more">Read Article</span>
+                </div>
+            </a>
+
+            <!-- Article 2: Base64 -->
+            <a href="blog/base64-explained.html" class="article-card">
+                <div class="article-image">64</div>
+                <div class="article-content">
+                    <div class="article-meta">Web Standards • 6 min read</div>
+                    <h2 class="article-title">Base64 Explained: How Encoding Works</h2>
+                    <p class="article-excerpt">Demystifying the binary-to-text encoding scheme. Learn how Base64 works
+                        under the hood and when to use it.</p>
+                    <span class="read-more">Read Article</span>
+                </div>
+            </a>
+
+            <!-- Article 3: RegEx -->
+            <a href="blog/regex-patterns.html" class="article-card">
+                <div class="article-image">/.*</div>
+                <div class="article-content">
+                    <div class="article-meta">Productivity • 8 min read</div>
+                    <h2 class="article-title">RegEx for Humans: 5 Essential Patterns</h2>
+                    <p class="article-excerpt">Stop copying and pasting StackOverflow regex. Learn the 5 patterns that
+                        solve 90% of validation problems.</p>
+                    <span class="read-more">Read Article</span>
+                </div>
+            </a>
+
+            <!-- Article 4: Prompt Engineering -->
+            <a href="blog/prompt-engineering.html" class="article-card">
+                <div class="article-image">✨</div>
+                <div class="article-content">
+                    <div class="article-meta">AI • 7 min read</div>
+                    <h2 class="article-title">Prompt Engineering 101</h2>
+                    <p class="article-excerpt">Moving beyond "make me a website". How to use context, constraints, and
+                        personas to get production-ready AI outputs.</p>
+                    <span class="read-more">Read Article</span>
+                </div>
+            </a>
+
+            <!-- Placeholder for future -->
+            <div class="article-card" style="opacity: 0.5; pointer-events: none; border-style: dashed;">
+                <div class="article-image">⏰</div>
+                <div class="article-content">
+                    <div class="article-meta">Coming Soon</div>
+                    <h2 class="article-title">The Nightmare of Timezones</h2>
+                    <p class="article-excerpt">Why developers hate dates, and how to tame the beast using ISO 8601 and
+                        proper timestamp handling.</p>
+                    <span class="read-more">Coming Soon</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="json.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="hash.html">Hash Generator</a>
+                    <a href="url.html">URL Encoder</a>
+                    <a href="lorem.html">Lorem Ipsum Generator</a>
+                    <a href="timestamp.html">Timestamp Converter</a>
+                    <a href="diff.html">Diff Checker</a>
+                    <a href="prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -299,6 +299,35 @@
     color: var(--color-primary);
 }
 
+/* History Dropdown */
+.history-dropdown {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    max-width: 120px;
+}
+
+.history-dropdown:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.history-dropdown:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.history-dropdown option {
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
 .action-btn .icon {
     font-size: 0.95rem;
 }

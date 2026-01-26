@@ -78,6 +78,24 @@ function attachEventListeners() {
             loadExample(e.currentTarget.dataset.example);
         });
     });
+
+    // History Dropdown
+    const historyDropdown = document.getElementById('historyDropdown');
+    if (historyDropdown) {
+        historyDropdown.addEventListener('change', (e) => {
+            const index = parseInt(e.target.value, 10);
+            if (!isNaN(index)) {
+                loadFromHistory(index);
+                e.target.value = ''; // Reset dropdown
+            }
+        });
+    }
+
+    // Clear History Button
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+    if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', clearHistory);
+    }
 }
 
 function attachLogicListeners() {
@@ -202,6 +220,7 @@ function optimizePrompt() {
                 context: context,
                 format: format || "Clear and concise text",
                 // Specifics for certain templates
+                type: role || "content",
                 language: "programming language",
                 topic: task,
                 audience: "general audience",
@@ -256,6 +275,13 @@ function optimizePrompt() {
     }
 
     state.outputText = finalPrompt;
+
+    // Save to history
+    const inputForHistory = state.isAdvanced
+        ? document.getElementById('wizTask').value.trim()
+        : document.getElementById('inputPrompt').value.trim();
+    saveToHistory(inputForHistory, finalPrompt);
+
     renderOutput();
     showToast("Prompt Optimized! 🚀");
 }
@@ -403,6 +429,62 @@ function showToast(msg) {
     text.textContent = msg;
     toast.classList.remove('hidden');
     setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+// ========================================
+// HISTORY FUNCTIONS
+// ========================================
+function saveToHistory(input, output) {
+    const entry = {
+        input: input,
+        output: output,
+        timestamp: Date.now()
+    };
+    state.history.unshift(entry);
+    state.history = state.history.slice(0, 10); // Keep last 10
+    localStorage.setItem('promptHistory', JSON.stringify(state.history));
+    renderHistoryDropdown();
+}
+
+function loadFromHistory(index) {
+    if (index < 0 || index >= state.history.length) return;
+    const entry = state.history[index];
+
+    if (!state.isAdvanced) {
+        document.getElementById('inputPrompt').value = entry.input;
+        updateInputWordCount();
+        analyzeRealTime();
+    }
+
+    state.outputText = entry.output;
+    renderOutput();
+    showToast("Loaded from history");
+}
+
+function renderHistoryDropdown() {
+    const dropdown = document.getElementById('historyDropdown');
+    if (!dropdown) return;
+
+    if (state.history.length === 0) {
+        dropdown.innerHTML = '<option value="">No history yet</option>';
+        dropdown.disabled = true;
+        return;
+    }
+
+    dropdown.disabled = false;
+    dropdown.innerHTML = '<option value="">Load from history...</option>' +
+        state.history.map((h, i) => {
+            const preview = h.input.substring(0, 35) + (h.input.length > 35 ? '...' : '');
+            const date = new Date(h.timestamp).toLocaleTimeString();
+            return `<option value="${i}">${preview} (${date})</option>`;
+        }).join('');
+}
+
+function clearHistory() {
+    state.history = [];
+    localStorage.removeItem('promptHistory');
+    renderHistoryDropdown();
+    showToast("History cleared");
 }
 
 // Start

@@ -25,6 +25,10 @@ const PROMPT_LOGIC = {
             regex: /\b(analyze|summarize|extract|data|trend|pattern|insight|report|chart|table|excel|csv|metrics)\b/i,
             weight: 1.5
         },
+        reasoning: {
+            regex: /\b(step by step|explain why|how does|reason|think through|logic|prove|derive|calculate|solve|work out|breakdown|break down)\b/i,
+            weight: 2
+        },
         weakWords: {
             regex: /\b(stuff|things|good|make|do|give|something|kinda|sorta|whatever)\b/gi,
             weight: -1
@@ -127,7 +131,8 @@ Constraints:
             code: 0,
             image: 0,
             writing: 0,
-            analysis: 0
+            analysis: 0,
+            reasoning: 0
         };
 
         // Detect Intent
@@ -147,6 +152,11 @@ Constraints:
                 primaryIntent = intent;
             }
         });
+
+        // Map reasoning intent to Chain-of-Thought template
+        if (primaryIntent === 'reasoning') {
+            primaryIntent = 'cot';
+        }
 
         // Calculate Quality Score (0-100)
         let qualityScore = 50; // Base score
@@ -218,6 +228,15 @@ Constraints:
             }
             if (!/\b(trend|pattern|insight|compare|find)\b/i.test(text)) {
                 suggestions.push("Specify what insights you're looking for.");
+            }
+        }
+
+        if (intent === 'cot' || intent === 'reasoning') {
+            if (!/\b(problem|question|solve|calculate)\b/i.test(text)) {
+                suggestions.push("Clearly state the problem to be solved.");
+            }
+            if (!/\b(show|explain|verify)\b/i.test(text)) {
+                suggestions.push("Ask the AI to show its work or verify assumptions.");
             }
         }
 
