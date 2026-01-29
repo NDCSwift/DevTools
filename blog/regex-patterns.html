@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegEx for Humans: 5 Essential Patterns | ToolBit Blog</title>
+    <meta name="description"
+        content="Stop fearing Regular Expressions. Learn the 5 most useful regex patterns for email validation, dates, password strength, and more.">
+    <link rel="canonical" href="https://toolbit.dev/blog/regex-patterns.html">
+    <link rel="stylesheet" href="../styles-blog.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="../json.html" class="nav-link">JSON</a>
+                        <a href="../regex.html" class="nav-link">RegEx</a>
+                        <a href="../base64.html" class="nav-link">Base64</a>
+                        <a href="../colors.html" class="nav-link">Colors</a>
+                        <a href="../hash.html" class="nav-link">Hash</a>
+                        <a href="../url.html" class="nav-link">URL</a>
+                        <a href="../lorem.html" class="nav-link">Lorem</a>
+                        <a href="../timestamp.html" class="nav-link">Time</a>
+                        <a href="../diff.html" class="nav-link">Diff</a>
+                        <a href="../prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="../blog.html" class="nav-link active">Blog</a>
+                <a href="../about.html" class="nav-link about-link">About</a>
+                <a href="../support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="../json.html" class="nav-link">JSON Formatter</a>
+            <a href="../regex.html" class="nav-link">RegEx Tester</a>
+            <a href="../base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="../colors.html" class="nav-link">Color Palette</a>
+            <a href="../hash.html" class="nav-link">Hash Generator</a>
+            <a href="../url.html" class="nav-link">URL Encoder</a>
+            <a href="../lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="../timestamp.html" class="nav-link">Timestamp</a>
+            <a href="../diff.html" class="nav-link">Diff Checker</a>
+            <a href="../prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="../blog.html" class="nav-link active">Blog</a>
+            <a href="../about.html" class="nav-link about-link">About</a>
+            <a href="../support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
+
+    <!-- Article Content -->
+    <main class="container">
+        <div class="article-layout">
+
+            <article class="article-content-wrapper">
+                <header class="article-header">
+                    <div class="article-meta">Productivity • Published Jan 25, 2026</div>
+                    <h1 class="article-h1">RegEx for Humans: 5 Essential Patterns Every Developer Should Know</h1>
+                    <p class="article-excerpt">"I have a problem. I'll use regex. Now I have two problems." It doesn't
+                        have to be this way. Here are 5 copy-paste patterns that actually work.</p>
+                </header>
+
+                <div class="article-body">
+                    <p>Regular Expressions (RegEx) are the dark magic of computer science. Extremely powerful, but
+                        arguably the least readable syntax ever invented. However, you don't need to be a wizard to use
+                        them. You just need a few solid spells in your book.</p>
+
+                    <p>Here are the 5 patterns that solve 90% of validation problems I encounter.</p>
+
+                    <h2>1. The "Good Enough" Email Validator</h2>
+                    <p>Validating emails perfectly is actually impossible with regex (the RFC spec is pages long). But
+                        for a login form, you just need to catch typos.</p>
+                    <pre><code>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$</code></pre>
+                    <p><strong>Breakdown:</strong>
+                    <ul>
+                        <li> `^` : Start of line.</li>
+                        <li> `[a-zA-Z0-9._%+-]+` : One or more allowed characters for the username.</li>
+                        <li> `@` : The literal @ symbol.</li>
+                        <li> `[a-zA-Z0-9.-]+` : The domain name.</li>
+                        <li> `\.` : A literal dot.</li>
+                        <li> `[a-zA-Z]{2,}` : The extension (TLD) must be at least 2 letters (e.g., .com, .io).</li>
+                    </ul>
+
+                    <h2>2. ISO 8601 Dates (YYYY-MM-DD)</h2>
+                    <p>Essential for validating API date inputs.</p>
+                    <pre><code>^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$</code></pre>
+                    <p><strong>Why it works:</strong> It's strict. It forces the month to be 01-12 and the day to be
+                        01-31. It prevents inputs like `2024-99-99`.</p>
+
+                    <h2>3. Simple Password Strength</h2>
+                    <p>Enforce: At least 8 chars, 1 uppercase, 1 lowercase, 1 number.</p>
+                    <pre><code>^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$</code></pre>
+                    <p><strong>The Magic of Lookaheads `(?=)`:</strong> These verify a condition without "consuming"
+                        characters. It checks for a lower, then upper, then digit, independently.</p>
+
+                    <h2>4. Extracting Domain from URL</h2>
+                    <p>Useful for analytics or cleaning data lists.</p>
+                    <pre><code>(?:https?:\/\/)?(?:www\.)?([^:\/\n]+)</code></pre>
+                    <p>This ignores the protocol (`http://`) and `www.`, capturing just `google.com` or `toolbit.dev`.
+                    </p>
+
+                    <h2>5. Matching Empty Lines</h2>
+                    <p>Great for cleaning up text files or code.</p>
+                    <pre><code>^\s*$</code></pre>
+                    <p>This matches any line that is either completely empty or contains only whitespace (so spaces and
+                        tabs don't trick you).</p>
+
+                    <h2>Testing is Key</h2>
+                    <p>Never deploy a regex without testing it against edge cases (like empty strings or huge inputs).
+                        Use a real-time tester to visualize exactly what your pattern is matching.</p>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <div class="widget-title">Table of Contents</div>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">1. Email Validator</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">2. Date Format</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">3. Password Strength</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">4. URL Domains</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">5. Empty Lines</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget tool-cta">
+                    <span class="tool-cta-icon">/.*</span>
+                    <div class="widget-title">Test Your Regex</div>
+                    <p>Debug these patterns in real-time with visual highlighting and explanations.</p>
+                    <a href="../regex.html" class="btn-sidebar">Open RegEx Tester</a>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <!-- ... tools list ... -->
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="../json.html">JSON Formatter</a>
+                    <a href="../regex.html">RegEx Tester</a>
+                    <a href="../base64.html">Base64 Encoder</a>
+                    <a href="../colors.html">Color Palette Generator</a>
+                    <a href="../hash.html">Hash Generator</a>
+                    <a href="../url.html">URL Encoder</a>
+                    <a href="../lorem.html">Lorem Ipsum Generator</a>
+                    <a href="../timestamp.html">Timestamp Converter</a>
+                    <a href="../diff.html">Diff Checker</a>
+                    <a href="../prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="../support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

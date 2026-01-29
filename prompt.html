@@ -60,6 +60,7 @@
                         <a href="prompt.html" class="nav-link active">Prompt</a>
                     </div>
                 </div>
+                <a href="blog.html" class="nav-link">Blog</a>
                 <a href="about.html" class="nav-link about-link">About</a>
                 <a href="support.html" class="nav-link support-link">☕ Support</a>
             </nav>
@@ -83,6 +84,7 @@
         </div>
         <div class="mobile-nav-section">
             <h4>More</h4>
+            <a href="blog.html" class="nav-link">Blog</a>
             <a href="about.html" class="nav-link about-link">About</a>
             <a href="support.html" class="nav-link support-link">☕ Support</a>
         </div>
@@ -183,37 +185,24 @@
                 <div id="scoreFeedback" class="score-feedback">Start typing to see feedback...</div>
             </div>
 
-            <!-- Quick Examples -->
-            <div class="quick-examples">
-                <h3 class="examples-title">
-                    <span class="examples-icon">💡</span>
-                    Quick Examples
+            <!-- Developer Prompt Library -->
+            <div class="prompt-library">
+                <h3 class="library-title">
+                    <span class="library-icon">📚</span>
+                    Developer Prompt Library
                 </h3>
-                <div class="examples-grid">
-                    <button class="example-btn" data-example="login">
-                        <span class="example-icon">🔐</span>
-                        Login Page
-                    </button>
-                    <button class="example-btn" data-example="blog">
-                        <span class="example-icon">✍️</span>
-                        Blog Post
-                    </button>
-                    <button class="example-btn" data-example="api">
-                        <span class="example-icon">🔌</span>
-                        REST API
-                    </button>
-                    <button class="example-btn" data-example="email">
-                        <span class="example-icon">📧</span>
-                        Email Copy
-                    </button>
-                    <button class="example-btn" data-example="analyze">
-                        <span class="example-icon">📊</span>
-                        Data Analysis
-                    </button>
-                    <button class="example-btn" data-example="logo">
-                        <span class="example-icon">🎨</span>
-                        Logo Design
-                    </button>
+
+                <div class="library-tabs">
+                    <button class="tab-btn active" data-category="all">All</button>
+                    <button class="tab-btn" data-category="build">🔧 Build</button>
+                    <button class="tab-btn" data-category="debug">🐛 Debug</button>
+                    <button class="tab-btn" data-category="test">🧪 Test</button>
+                    <button class="tab-btn" data-category="quality">✨ Quality</button>
+                    <button class="tab-btn" data-category="general">📝 General</button>
+                </div>
+
+                <div class="library-grid" id="libraryGrid">
+                    <!-- Dynamically populated by JS -->
                 </div>
             </div>
 
@@ -248,28 +237,22 @@ We'll transform it into a detailed, structured prompt that gets better AI result
 
                     <!-- ADDED: WIZARD MODE FIELDS (Hidden by default) -->
                     <div id="wizardFields" class="wizard-fields hidden">
-                        <div class="wizard-help-text">Fill in the fields below to construct a detailed prompt
-                            automatically.</div>
+                        <div class="wizard-header">
+                            <label class="wizard-label">Template Type</label>
+                            <select id="wizardTemplateSelect" class="wizard-select">
+                                <option value="general">📝 General Prompt</option>
+                                <option value="code">💻 Write Code</option>
+                                <option value="debug">🐛 Debug / Fix Bug</option>
+                                <option value="feature">🔧 New Feature</option>
+                                <option value="testing">🧪 Write Tests</option>
+                                <option value="review">👀 Code Review</option>
+                                <option value="refactor">✨ Refactor Code</option>
+                                <option value="api">🔌 API Design</option>
+                            </select>
+                        </div>
 
-                        <div class="input-group">
-                            <label>Role / Persona</label>
-                            <input type="text" id="wizRole" class="text-input"
-                                placeholder="e.g. Senior Java Developer, Marketing Expert">
-                        </div>
-                        <div class="input-group">
-                            <label>Task / Objective</label>
-                            <input type="text" id="wizTask" class="text-input"
-                                placeholder="e.g. Create a secure login system, Write a blog post">
-                        </div>
-                        <div class="input-group">
-                            <label>Context / Constraints</label>
-                            <input type="text" id="wizContext" class="text-input"
-                                placeholder="e.g. Must use Spring Boot, target audience is CTOs">
-                        </div>
-                        <div class="input-group">
-                            <label>Desired Format</label>
-                            <input type="text" id="wizFormat" class="text-input"
-                                placeholder="e.g. Markdown table, JSON response only">
+                        <div id="dynamicWizardFields" class="dynamic-fields">
+                            <!-- Dynamically populated based on template selection -->
                         </div>
                     </div>
 

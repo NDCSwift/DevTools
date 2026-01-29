@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Engineering 101: Moving Beyond "Make Me a Website" | ToolBit Blog</title>
+    <meta name="description"
+        content="Stop getting mediocre results from ChatGPT. Learn the core principles of prompt engineering: Context, Constraints, Personas, and Chain-of-Thought.">
+    <link rel="canonical" href="https://toolbit.dev/blog/prompt-engineering.html">
+    <link rel="stylesheet" href="../styles-blog.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="../json.html" class="nav-link">JSON</a>
+                        <a href="../regex.html" class="nav-link">RegEx</a>
+                        <a href="../base64.html" class="nav-link">Base64</a>
+                        <a href="../colors.html" class="nav-link">Colors</a>
+                        <a href="../hash.html" class="nav-link">Hash</a>
+                        <a href="../url.html" class="nav-link">URL</a>
+                        <a href="../lorem.html" class="nav-link">Lorem</a>
+                        <a href="../timestamp.html" class="nav-link">Time</a>
+                        <a href="../diff.html" class="nav-link">Diff</a>
+                        <a href="../prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="../blog.html" class="nav-link active">Blog</a>
+                <a href="../about.html" class="nav-link about-link">About</a>
+                <a href="../support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="../json.html" class="nav-link">JSON Formatter</a>
+            <a href="../regex.html" class="nav-link">RegEx Tester</a>
+            <a href="../base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="../colors.html" class="nav-link">Color Palette</a>
+            <a href="../hash.html" class="nav-link">Hash Generator</a>
+            <a href="../url.html" class="nav-link">URL Encoder</a>
+            <a href="../lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="../timestamp.html" class="nav-link">Timestamp</a>
+            <a href="../diff.html" class="nav-link">Diff Checker</a>
+            <a href="../prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="../blog.html" class="nav-link active">Blog</a>
+            <a href="../about.html" class="nav-link about-link">About</a>
+            <a href="../support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
+
+    <!-- Article Content -->
+    <main class="container">
+        <div class="article-layout">
+
+            <article class="article-content-wrapper">
+                <header class="article-header">
+                    <div class="article-meta">AI & Productivity • Published Jan 25, 2026</div>
+                    <h1 class="article-h1">Prompt Engineering 101: Moving Beyond "Make Me a Website"</h1>
+                    <p class="article-excerpt">The difference between a generic answer and a production-grade solution
+                        is often just a few extra sentences. Here is the framework for perfect prompts.</p>
+                </header>
+
+                <div class="article-body">
+                    <p>We've all done it. We open ChatGPT or Claude and type: <em>"Write a function to validate
+                            emails."</em></p>
+                    <p>And the AI gives us a decent function. But it's in Python, and you wanted JavaScript. It uses a
+                        regex that allows existing domains. It doesn't handle errors. </p>
+                    <p>This is the "garbage in, garbage out" principle of AI. Prompt Engineering isn't about tricking
+                        the AI; it's about providing the <strong>context</strong> you already have in your head but
+                        forgot to type.</p>
+
+                    <h2>1. The Persona (Who)</h2>
+                    <p>LLMs are trained on the entire internet—Reddit threads, academic papers, and YouTube comments. If
+                        you don't steer them, they aim for the average.</p>
+                    <p>Assigning a persona narrows the search space to high-quality data.</p>
+                    <p><strong>Bad:</strong> "Explain how to center a div."</p>
+                    <p><strong>Good:</strong> "A<em>ct as a Senior CSS Developer.</em> Explain how to center a div using
+                        modern Grid and Flexbox techniques, avoiding legacy floats."</p>
+
+                    <h2>2. Context & Constraints (What & How)</h2>
+                    <p>Tell the model what you <em>don't</em> want. Constraints are often more powerful than
+                        instructions.</p>
+                    <ul>
+                        <li>"Use TypeScript, not vanilla JS."</li>
+                        <li>"No external libraries."</li>
+                        <li>"Keep the response under 100 words."</li>
+                        <li>"Format the output as a JSON object."</li>
+                    </ul>
+
+                    <h2>3. Chain of Thought (The Reasoning)</h2>
+                    <p>For complex logic, LLMs often hallucinate because they try to predict the answer immediately.
+                        Asking them to "think step by step" forces them to generate intermediate reasoning tokens, which
+                        increases accuracy.</p>
+                    <p><strong>Prompt:</strong> "Critique this design. <em>Think step by step. First valid the
+                            usability, then checking color contrast, and finally giving a score.</em>"</p>
+
+                    <h2>4. Few-Shot Prompting (examples)</h2>
+                    <p>The best way to get a specific format is to show, not tell. Give the AI 1 or 2 examples of what
+                        you want.</p>
+                    <pre><code>Task: Convert movie titles 
+Example 1:
+Input: "Star Wars"
+Output: "star-wars"
+
+Example 2:
+Input: "The Matrix"
+Output: "the-matrix"
+
+Input: "Lord of the Rings"
+Output:</code></pre>
+                    <p>The AI will almost certainly output `"lord-of-the-rings"`.</p>
+
+                    <h2>Automating the Perfect Prompt</h2>
+                    <p>Remembering all these rules (Persona, Context, Constraints, Format) is tedious every time you
+                        want to write an email or code snippet.</p>
+
+                    <p>That's why we built the <strong>Prompt Optimizer</strong>. It's a local tool that takes your
+                        basic request and expands it into a structured, engineer-grade prompt using these exact
+                        principles.</p>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <div class="widget-title">Table of Contents</div>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">1. The Persona</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">2. Context & Constraints</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">3. Chain of Thought</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">4. Few-Shot Prompting</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">Automate It</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget tool-cta">
+                    <span class="tool-cta-icon">✨</span>
+                    <div class="widget-title">Optimize Your Prompts</div>
+                    <p>Turn lazy inputs into "God Tier" prompts automatically.</p>
+                    <a href="../prompt.html" class="btn-sidebar">Open Prompt Optimizer</a>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <!-- ... tools list ... -->
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="../json.html">JSON Formatter</a>
+                    <a href="../regex.html">RegEx Tester</a>
+                    <a href="../base64.html">Base64 Encoder</a>
+                    <a href="../colors.html">Color Palette Generator</a>
+                    <a href="../hash.html">Hash Generator</a>
+                    <a href="../url.html">URL Encoder</a>
+                    <a href="../lorem.html">Lorem Ipsum Generator</a>
+                    <a href="../timestamp.html">Timestamp Converter</a>
+                    <a href="../diff.html">Diff Checker</a>
+                    <a href="../prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="../support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

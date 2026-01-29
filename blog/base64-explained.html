@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Explained: How Encoding Works | ToolBit Blog</title>
+    <meta name="description"
+        content="What is Base64 encoding? Learn how it converts binary data into ASCII text, why it uses padding, and when to use Data URIs.">
+    <link rel="canonical" href="https://toolbit.dev/blog/base64-explained.html">
+    <link rel="stylesheet" href="../styles-blog.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="../json.html" class="nav-link">JSON</a>
+                        <a href="../regex.html" class="nav-link">RegEx</a>
+                        <a href="../base64.html" class="nav-link">Base64</a>
+                        <a href="../colors.html" class="nav-link">Colors</a>
+                        <a href="../hash.html" class="nav-link">Hash</a>
+                        <a href="../url.html" class="nav-link">URL</a>
+                        <a href="../lorem.html" class="nav-link">Lorem</a>
+                        <a href="../timestamp.html" class="nav-link">Time</a>
+                        <a href="../diff.html" class="nav-link">Diff</a>
+                        <a href="../prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="../blog.html" class="nav-link active">Blog</a>
+                <a href="../about.html" class="nav-link about-link">About</a>
+                <a href="../support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="../json.html" class="nav-link">JSON Formatter</a>
+            <a href="../regex.html" class="nav-link">RegEx Tester</a>
+            <a href="../base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="../colors.html" class="nav-link">Color Palette</a>
+            <a href="../hash.html" class="nav-link">Hash Generator</a>
+            <a href="../url.html" class="nav-link">URL Encoder</a>
+            <a href="../lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="../timestamp.html" class="nav-link">Timestamp</a>
+            <a href="../diff.html" class="nav-link">Diff Checker</a>
+            <a href="../prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="../blog.html" class="nav-link active">Blog</a>
+            <a href="../about.html" class="nav-link about-link">About</a>
+            <a href="../support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
+
+    <!-- Article Content -->
+    <main class="container">
+        <div class="article-layout">
+
+            <article class="article-content-wrapper">
+                <header class="article-header">
+                    <div class="article-meta">Web Standards • Published Jan 25, 2026</div>
+                    <h1 class="article-h1">Base64 Explained: How Encoding Works Under the Hood</h1>
+                    <p class="article-excerpt">Ever wondered what those long strings ending in `==` are? Discover the
+                        mechanics of Base64 and why it's the glue of the internet.</p>
+                </header>
+
+                <div class="article-body">
+                    <p>You see it in email attachments, basic authentication headers, and inline images in CSS.
+                        <strong>Base64</strong> is one of the most common encoding schemes on the web, but it's often
+                        misunderstood as encryption or compression. It is neither. It's a translation tool.</p>
+
+                    <h2>The Problem: Binary Data vs. Text Protocols</h2>
+                    <p>The early internet was built on text. Protocols like SMTP (email) and HTTP (web) were designed to
+                        handle ASCII characters—letters, numbers, and punctuation. They weren't designed to handle raw
+                        binary bytes like `01001100`, which could be interpreted as control characters that break the
+                        transmission.</p>
+
+                    <p>If you tried to send a JPEG image (raw binary) through an old email system, the system might
+                        interprete a byte as "End of File" and cut off your attachment halfway through. We needed a way
+                        to translate <strong>any</strong> binary data into <strong>safe, printable text.</strong></p>
+
+                    <h2>How Base64 Works</h2>
+                    <p>Base64 works by taking binary data and translating it into a set of 64 safe characters:</p>
+                    <ul>
+                        <li><strong>A-Z</strong> (26 characters)</li>
+                        <li><strong>a-z</strong> (26 characters)</li>
+                        <li><strong>0-9</strong> (10 characters)</li>
+                        <li><strong>+</strong> and <strong>/</strong> (2 characters)</li>
+                    </ul>
+                    <p>Total: 64 characters.</p>
+
+                    <h3>The Process in Simple Terms:</h3>
+                    <ol>
+                        <li>Take 3 bytes of binary data (8 bits each = 24 bits total).</li>
+                        <li>Split those 24 bits into 4 groups of 6 bits.</li>
+                        <li>Map each 6-bit number (0-63) to a character in the Base64 alphabet.</li>
+                    </ol>
+
+                    <p>This means <strong>3 bytes of input become 4 bytes of output</strong>.</p>
+
+                    <h2>The Math of the Overhead</h2>
+                    <p>Because we transform 3 bytes into 4 characters, the file size increases by approximately
+                        <strong>33%</strong>. </p>
+                    <ul>
+                        <li>1MB binary file ≈ 1.33MB Base64 string.</li>
+                    </ul>
+                    <p>This is why you shouldn't Base64 encode large video files or high-res images for web pages. The
+                        bandwidth penalty is significant.</p>
+
+                    <h2>What is the `==` Padding?</h2>
+                    <p>You often see Base64 strings ending with `=` or `==`. This is padding.</p>
+                    <p>Base64 processes data in chunks of 3 bytes. If your file size isn't perfectly divisible by 3, we
+                        have leftover bits. The encoding adds `=` characters to the end to signal "this group wasn't
+                        full." It tells the decoder how many placeholder bits to ignore.</p>
+
+                    <h2>Common Use Cases</h2>
+                    <h3>1. Data URIs</h3>
+                    <p>You can embed small icons directly into HTML or CSS to save an HTTP request:</p>
+                    <pre><code>&lt;img src="data:image/png;base64,iVBORw0K..." /&gt;</code></pre>
+
+                    <h3>2. Basic Authentication</h3>
+                    <p>In HTTP Basic Auth, the `username:password` string is Base64 encoded in the header. (Note: This
+                        is NOT secure without HTTPS, as Base64 is easily reversible).</p>
+
+                    <h3>3. Email Attachments</h3>
+                    <p>MIME (Multipurpose Internet Mail Extensions) uses Base64 to bundle your PDF or photo into the
+                        text body of an email.</p>
+
+                    <h2>Conclusion</h2>
+                    <p>Base64 is a bridge between the binary world of files and the text world of protocols. It's a
+                        fascinating example of how we adapt old systems to handle modern media.</p>
+
+                    <p>Need to encode or decode a string? Use our <strong>Base64 Tool</strong> to handle the conversion
+                        instantly in your browser.</p>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <div class="widget-title">Table of Contents</div>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">The Problem</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">How It Works</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">The Usage Overhead</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">What is Padding?</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">Common Use Cases</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget tool-cta">
+                    <span class="tool-cta-icon">64</span>
+                    <div class="widget-title">Try the Tool</div>
+                    <p>Encode text or files to Base64 instantly without uploading data.</p>
+                    <a href="../base64.html" class="btn-sidebar">Open Base64 Encoder</a>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="../json.html">JSON Formatter</a>
+                    <a href="../regex.html">RegEx Tester</a>
+                    <a href="../base64.html">Base64 Encoder</a>
+                    <a href="../colors.html">Color Palette Generator</a>
+                    <a href="../hash.html">Hash Generator</a>
+                    <a href="../url.html">URL Encoder</a>
+                    <a href="../lorem.html">Lorem Ipsum Generator</a>
+                    <a href="../timestamp.html">Timestamp Converter</a>
+                    <a href="../diff.html">Diff Checker</a>
+                    <a href="../prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="../support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

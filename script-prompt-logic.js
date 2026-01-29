@@ -9,9 +9,10 @@ const PROMPT_LOGIC = {
     // 1. PATTERN LIBRARY
     // ==========================================
     PATTERNS: {
+        // General code (lower weight so specific patterns take priority)
         code: {
-            regex: /\b(function|class|def|var|const|let|=>|api|endpoint|database|react|css|html|python|javascript|java|sql|query|json|xml|debug|fix|repo)\b/i,
-            weight: 2
+            regex: /\b(function|class|def|var|const|let|=>|database|react|css|html|python|javascript|java|sql|query|json|xml|repo|component|module)\b/i,
+            weight: 1.5
         },
         image: {
             regex: /\b(image|photo|picture|draw|generate|style|ratio|aspect|4k|hd|render|art|illustration|logo|icon)\b/i,
@@ -29,6 +30,33 @@ const PROMPT_LOGIC = {
             regex: /\b(step by step|explain why|how does|reason|think through|logic|prove|derive|calculate|solve|work out|breakdown|break down)\b/i,
             weight: 2
         },
+
+        // Developer-specific patterns (higher weight for specificity)
+        debug: {
+            regex: /\b(debug|bug|error|fix|issue|crash|fail|broken|not working|exception|stack trace|undefined is not|null|TypeError|ReferenceError)\b/i,
+            weight: 2.5
+        },
+        feature: {
+            regex: /\b(add feature|implement|new feature|functionality|develop|integrate|build a|create a)\b/i,
+            weight: 2
+        },
+        testing: {
+            regex: /\b(test|spec|unit test|integration test|e2e|mock|stub|assert|coverage|jest|mocha|pytest|vitest|testing)\b/i,
+            weight: 2.5
+        },
+        review: {
+            regex: /\b(review|code review|check this|audit|inspect|evaluate|feedback|critique|look at this code)\b/i,
+            weight: 2
+        },
+        refactor: {
+            regex: /\b(refactor|clean up|simplify|optimize|restructure|improve code|technical debt|code smell|rewrite)\b/i,
+            weight: 2
+        },
+        api: {
+            regex: /\b(api design|endpoint|route|rest api|graphql|request|response|http|fetch|axios|crud)\b/i,
+            weight: 2
+        },
+
         weakWords: {
             regex: /\b(stuff|things|good|make|do|give|something|kinda|sorta|whatever)\b/gi,
             weight: -1
@@ -118,6 +146,161 @@ Constraints:
 - Show your reasoning clearly.
 - Verify assumptions.
 `
+        },
+
+        // ==========================================
+        // DEVELOPER TEMPLATES
+        // ==========================================
+        debug: {
+            name: "Bug Detective",
+            structure: `
+Act as a Senior Debugging Specialist.
+
+**Error/Issue:** {{TASK}}
+**Language/Framework:** {{LANGUAGE}}
+**Context:** {{CONTEXT}}
+
+Debugging Approach:
+1. Analyze the error message and stack trace
+2. Identify potential root causes
+3. Suggest diagnostic steps (console.log, breakpoints, etc.)
+4. Provide the fix with detailed explanation
+5. Recommend prevention strategies
+
+Output format: {{FORMAT}}
+
+Constraints:
+- Explain *why* the bug occurs, not just how to fix it
+- Include before/after code snippets
+- Mention edge cases that could cause similar issues
+`
+        },
+        feature: {
+            name: "Feature Architect",
+            structure: `
+Act as a Senior Software Architect.
+
+**Feature Request:** {{TASK}}
+**Tech Stack:** {{LANGUAGE}}
+**Existing Context:** {{CONTEXT}}
+
+Implementation Plan:
+1. Requirements breakdown
+2. Architecture/design decisions
+3. Step-by-step implementation guide
+4. Integration points with existing code
+5. Error handling considerations
+6. Testing strategy
+
+Output format: {{FORMAT}}
+
+Constraints:
+- Follow existing code patterns and conventions
+- Consider scalability and maintainability
+- Include TypeScript types if applicable
+- Add JSDoc/docstring comments
+`
+        },
+        testing: {
+            name: "Test Engineer",
+            structure: `
+Act as a Senior Test Engineer.
+
+**Code/Function to Test:** {{TASK}}
+**Testing Framework:** {{LANGUAGE}}
+**Test Type:** {{CONTEXT}}
+
+Generate comprehensive tests including:
+1. Happy path / expected behavior
+2. Edge cases and boundary conditions
+3. Error handling scenarios
+4. Mock/stub setup if needed
+5. Assertions with clear descriptions
+
+Output format: {{FORMAT}}
+
+Constraints:
+- Use AAA pattern (Arrange, Act, Assert)
+- Each test should test ONE behavior
+- Include descriptive test names (should_X_when_Y)
+- Add setup/teardown if needed
+`
+        },
+        review: {
+            name: "Code Reviewer",
+            structure: `
+Act as a Senior Code Reviewer performing a thorough review.
+
+**Code to Review:**
+{{TASK}}
+
+**Language/Framework:** {{LANGUAGE}}
+**Focus Areas:** {{CONTEXT}}
+
+Review for:
+1. **Correctness**: Logic errors, off-by-one, null checks
+2. **Security**: Injection, XSS, authentication issues
+3. **Performance**: N+1 queries, memory leaks, inefficient loops
+4. **Readability**: Naming, complexity, documentation
+5. **Best Practices**: SOLID principles, DRY, design patterns
+
+Output format: {{FORMAT}}
+
+For each issue found: [Severity: Critical/Major/Minor] + Location + Suggestion
+`
+        },
+        refactor: {
+            name: "Refactoring Expert",
+            structure: `
+Act as a Senior Developer specializing in code refactoring.
+
+**Code to Refactor:**
+{{TASK}}
+
+**Language:** {{LANGUAGE}}
+**Goals:** {{CONTEXT}}
+
+Refactoring Approach:
+1. Identify code smells (duplication, long methods, etc.)
+2. Propose refactoring techniques to apply
+3. Show step-by-step transformation
+4. Ensure behavior is preserved
+5. Suggest test coverage improvements
+
+Output format: {{FORMAT}}
+
+Constraints:
+- Make incremental, safe changes
+- Preserve existing functionality (no regressions)
+- Explain the "why" behind each change
+- Follow language idioms and conventions
+`
+        },
+        api: {
+            name: "API Designer",
+            structure: `
+Act as a Senior API Architect.
+
+**API Requirement:** {{TASK}}
+**Framework/Style:** {{LANGUAGE}}
+**Context:** {{CONTEXT}}
+
+Design deliverables:
+1. Endpoint structure (routes, HTTP methods)
+2. Request/response schemas (with examples)
+3. Authentication/authorization approach
+4. Error response format
+5. Pagination/filtering strategy
+6. Example requests with curl/fetch
+
+Output format: {{FORMAT}}
+
+Constraints:
+- Follow RESTful conventions (or GraphQL best practices)
+- Include proper HTTP status codes
+- Document edge cases and error scenarios
+- Consider rate limiting and versioning
+`
         }
     },
 
@@ -132,7 +315,14 @@ Constraints:
             image: 0,
             writing: 0,
             analysis: 0,
-            reasoning: 0
+            reasoning: 0,
+            // Developer intents
+            debug: 0,
+            feature: 0,
+            testing: 0,
+            review: 0,
+            refactor: 0,
+            api: 0
         };
 
         // Detect Intent
@@ -237,6 +427,55 @@ Constraints:
             }
             if (!/\b(show|explain|verify)\b/i.test(text)) {
                 suggestions.push("Ask the AI to show its work or verify assumptions.");
+            }
+        }
+
+        // Developer intent suggestions
+        if (intent === 'debug') {
+            if (!/\b(error|message|stack|trace|log)\b/i.test(text)) {
+                suggestions.push("Include the error message or stack trace.");
+            }
+            if (!/\b(python|js|javascript|react|node|java|typescript)\b/i.test(text)) {
+                suggestions.push("Mention the programming language or framework.");
+            }
+        }
+
+        if (intent === 'feature') {
+            if (!/\b(existing|current|codebase|project)\b/i.test(text)) {
+                suggestions.push("Describe the existing codebase context.");
+            }
+            if (!/\b(requirement|should|must|need)\b/i.test(text)) {
+                suggestions.push("List specific requirements for the feature.");
+            }
+        }
+
+        if (intent === 'testing') {
+            if (!/\b(jest|mocha|pytest|vitest|cypress)\b/i.test(text)) {
+                suggestions.push("Specify the testing framework to use.");
+            }
+            if (!/\b(unit|integration|e2e|end-to-end)\b/i.test(text)) {
+                suggestions.push("Clarify the type of tests needed.");
+            }
+        }
+
+        if (intent === 'review') {
+            if (!/\b(security|performance|readability)\b/i.test(text)) {
+                suggestions.push("Specify focus areas (security, performance, readability).");
+            }
+        }
+
+        if (intent === 'refactor') {
+            if (!/\b(goal|improve|simplify|readable)\b/i.test(text)) {
+                suggestions.push("Describe the refactoring goals.");
+            }
+        }
+
+        if (intent === 'api') {
+            if (!/\b(rest|graphql|grpc)\b/i.test(text)) {
+                suggestions.push("Specify the API style (REST, GraphQL, etc.).");
+            }
+            if (!/\b(auth|authentication|authorization)\b/i.test(text)) {
+                suggestions.push("Mention authentication requirements.");
             }
         }
 

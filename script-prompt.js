@@ -6,13 +6,131 @@ const CONFIG = {
 };
 
 const EXAMPLES = {
+    // General
     login: "make me a login page",
     blog: "write a blog post about AI",
-    api: "create a REST API",
     email: "write an email about our new product",
     analyze: "analyze this data",
-    logo: "design a logo for my coffee shop"
+    logo: "design a logo for my coffee shop",
+
+    // Developer - Build
+    feature: "Add user authentication with JWT tokens to my Express app",
+    api: "Design a REST API for a todo list application with CRUD operations",
+    component: "Create a React component for a searchable dropdown",
+
+    // Developer - Debug
+    debug: "I'm getting 'Cannot read property of undefined' when calling my API endpoint",
+    error: "Fix this TypeScript error: Type 'string' is not assignable to type 'number'",
+
+    // Developer - Test
+    test: "Write unit tests for this React component that fetches user data",
+    e2e: "Write Cypress e2e tests for the login flow",
+
+    // Developer - Quality
+    review: "Review this function for security and performance issues",
+    refactor: "Refactor this 200-line function into smaller, testable pieces"
 };
+
+// Dynamic field configurations for Advanced Builder
+const WIZARD_CONFIGS = {
+    general: {
+        name: "General Prompt",
+        fields: [
+            { id: 'wizRole', label: 'Role / Persona', placeholder: 'e.g. Helpful Assistant, Expert Consultant' },
+            { id: 'wizTask', label: 'Task / Objective', placeholder: 'e.g. Help me understand, Create a summary' },
+            { id: 'wizContext', label: 'Context / Constraints', placeholder: 'e.g. For a beginner audience, Keep it brief' },
+            { id: 'wizFormat', label: 'Desired Format', placeholder: 'e.g. Bullet points, Markdown, JSON' }
+        ]
+    },
+    debug: {
+        name: "🐛 Debug / Fix Bug",
+        fields: [
+            { id: 'wizError', label: 'Error Message / Issue', placeholder: 'e.g. TypeError: Cannot read property of undefined' },
+            { id: 'wizLanguage', label: 'Language / Framework', placeholder: 'e.g. React, Node.js, Python, TypeScript' },
+            { id: 'wizCode', label: 'Relevant Code Snippet', placeholder: 'Paste the code causing the issue', multiline: true },
+            { id: 'wizTried', label: 'What You\'ve Tried', placeholder: 'e.g. Checked for null, added console.log' }
+        ]
+    },
+    feature: {
+        name: "🔧 New Feature",
+        fields: [
+            { id: 'wizFeature', label: 'Feature Description', placeholder: 'e.g. Add user authentication with JWT' },
+            { id: 'wizStack', label: 'Tech Stack', placeholder: 'e.g. React + Node.js + PostgreSQL' },
+            { id: 'wizExisting', label: 'Existing Codebase Context', placeholder: 'e.g. Already have a User model, using Express' },
+            { id: 'wizRequirements', label: 'Requirements / Constraints', placeholder: 'e.g. Must support OAuth, needs rate limiting' }
+        ]
+    },
+    testing: {
+        name: "🧪 Write Tests",
+        fields: [
+            { id: 'wizTestCode', label: 'Code to Test', placeholder: 'Paste the function/component to test', multiline: true },
+            { id: 'wizFramework', label: 'Testing Framework', placeholder: 'e.g. Jest, Vitest, Pytest, Mocha' },
+            { id: 'wizTestType', label: 'Test Type', placeholder: 'e.g. Unit tests, Integration tests, E2E' },
+            { id: 'wizCoverage', label: 'Focus Areas', placeholder: 'e.g. Edge cases, error handling, async behavior' }
+        ]
+    },
+    review: {
+        name: "👀 Code Review",
+        fields: [
+            { id: 'wizReviewCode', label: 'Code to Review', placeholder: 'Paste the code for review', multiline: true },
+            { id: 'wizReviewLang', label: 'Language / Framework', placeholder: 'e.g. TypeScript, React, Python' },
+            { id: 'wizFocus', label: 'Focus Areas', placeholder: 'e.g. Security, performance, readability, best practices' },
+            { id: 'wizSeverity', label: 'Review Depth', placeholder: 'e.g. Quick scan, Thorough review, Security audit' }
+        ]
+    },
+    refactor: {
+        name: "✨ Refactor Code",
+        fields: [
+            { id: 'wizRefactorCode', label: 'Code to Refactor', placeholder: 'Paste the code to improve', multiline: true },
+            { id: 'wizRefactorLang', label: 'Language', placeholder: 'e.g. JavaScript, Python, Go' },
+            { id: 'wizGoals', label: 'Refactoring Goals', placeholder: 'e.g. Improve readability, reduce complexity, add types' },
+            { id: 'wizConstraints', label: 'Constraints', placeholder: 'e.g. Keep same API, maintain backwards compatibility' }
+        ]
+    },
+    api: {
+        name: "🔌 API Design",
+        fields: [
+            { id: 'wizApiDesc', label: 'API Requirements', placeholder: 'e.g. User management API with CRUD operations' },
+            { id: 'wizApiStyle', label: 'API Style', placeholder: 'e.g. REST, GraphQL, gRPC' },
+            { id: 'wizAuth', label: 'Authentication', placeholder: 'e.g. JWT Bearer tokens, API keys, OAuth2' },
+            { id: 'wizEndpoints', label: 'Key Endpoints Needed', placeholder: 'e.g. GET /users, POST /auth/login, DELETE /users/:id' }
+        ]
+    },
+    code: {
+        name: "💻 Write Code",
+        fields: [
+            { id: 'wizCodeTask', label: 'What to Build', placeholder: 'e.g. A function that validates email addresses' },
+            { id: 'wizCodeLang', label: 'Language / Framework', placeholder: 'e.g. TypeScript, Python, React' },
+            { id: 'wizCodeReqs', label: 'Requirements', placeholder: 'e.g. Handle edge cases, return boolean, be performant' },
+            { id: 'wizCodeFormat', label: 'Output Format', placeholder: 'e.g. Code only, Code with explanation, With tests' }
+        ]
+    }
+};
+
+// Prompt cards for the tabbed library UI
+const PROMPT_CARDS = [
+    // Build category
+    { id: 'feature', icon: '🔧', title: 'New Feature', desc: 'Implement new functionality', category: 'build', template: 'feature' },
+    { id: 'api', icon: '🔌', title: 'API Design', desc: 'Design REST/GraphQL endpoints', category: 'build', template: 'api' },
+    { id: 'component', icon: '🧩', title: 'Component', desc: 'Create UI components', category: 'build', template: 'code' },
+
+    // Debug category
+    { id: 'debug', icon: '🐛', title: 'Fix Bug', desc: 'Debug errors and exceptions', category: 'debug', template: 'debug' },
+    { id: 'error', icon: '⚠️', title: 'Error Help', desc: 'Understand error messages', category: 'debug', template: 'debug' },
+
+    // Test category
+    { id: 'test', icon: '🧪', title: 'Unit Tests', desc: 'Write unit/integration tests', category: 'test', template: 'testing' },
+    { id: 'e2e', icon: '🎭', title: 'E2E Tests', desc: 'End-to-end testing', category: 'test', template: 'testing' },
+
+    // Quality category
+    { id: 'review', icon: '👀', title: 'Code Review', desc: 'Review for issues', category: 'quality', template: 'review' },
+    { id: 'refactor', icon: '✨', title: 'Refactor', desc: 'Clean up and improve code', category: 'quality', template: 'refactor' },
+
+    // General (shown in All)
+    { id: 'blog', icon: '✍️', title: 'Blog Post', desc: 'Write content', category: 'general', template: 'writing' },
+    { id: 'analyze', icon: '📊', title: 'Analyze Data', desc: 'Data analysis prompts', category: 'general', template: 'analysis' },
+    { id: 'logo', icon: '🎨', title: 'Image Gen', desc: 'AI image prompts', category: 'general', template: 'image' }
+];
 
 // ========================================
 // STATE
@@ -20,6 +138,7 @@ const EXAMPLES = {
 let state = {
     promptType: 'general',
     isAdvanced: false, // Tracks "Wizard Mode" status
+    wizardTemplate: 'general', // Currently selected wizard template
 
     // UI Options
     addStructure: true,
@@ -42,6 +161,8 @@ function init() {
     attachLogicListeners(); // New listener group for Logic Engine
     setupEducationalToggle(); // Standard educational content toggle
     renderHistoryDropdown(); // Initialize history UI
+    initPromptLibrary(); // Initialize the tabbed prompt library
+    initWizardTemplates(); // Initialize dynamic wizard fields
     console.log('✨ ToolBit Prompt Optimizer (Beast Mode) initialized');
 }
 
@@ -107,11 +228,7 @@ function attachLogicListeners() {
             analyzeRealTime();
         });
     }
-
-    // Wizard Fields Analysis (optional, updates score based on combined length)
-    ['wizRole', 'wizTask', 'wizContext'].forEach(id => {
-        document.getElementById(id).addEventListener('input', analyzeRealTime);
-    });
+    // Note: Wizard field listeners are attached dynamically in renderWizardFields()
 }
 
 function setupEducationalToggle() {
@@ -145,9 +262,9 @@ function analyzeRealTime() {
     // Gather text from either main input or wizard fields
     let textToAnalyze = "";
     if (state.isAdvanced) {
-        textToAnalyze += document.getElementById('wizRole').value + " ";
-        textToAnalyze += document.getElementById('wizTask').value + " ";
-        textToAnalyze += document.getElementById('wizContext').value;
+        // Collect all dynamic wizard field values
+        const values = getWizardFieldValues();
+        textToAnalyze = Object.values(values).join(' ');
     } else {
         textToAnalyze = document.getElementById('inputPrompt').value;
     }
@@ -198,39 +315,27 @@ function optimizePrompt() {
     }
 
     if (state.isAdvanced) {
-        // WIZARD COMPILATION
-        const role = document.getElementById('wizRole').value.trim();
-        const task = document.getElementById('wizTask').value.trim();
-        const context = document.getElementById('wizContext').value.trim();
-        const format = document.getElementById('wizFormat').value.trim();
+        // WIZARD COMPILATION - Dynamic fields based on template
+        const wizardValues = getWizardFieldValues();
+        const template = state.wizardTemplate;
 
-        if (!task) {
-            showToast("Please enter at least a Task.");
+        // Check for required input (first non-empty field)
+        const hasInput = Object.values(wizardValues).some(v => v.length > 0);
+        if (!hasInput) {
+            showToast("Please fill in at least one field.");
             return;
         }
 
-        // Detect intent from the task to choose template
-        const analysis = PROMPT_LOGIC.analyze(task);
+        // Build fields object based on template type
+        const fields = buildFieldsForTemplate(template, wizardValues);
 
         const data = {
-            intent: analysis.intent,
-            fields: {
-                role: role || "Helpful Assistant",
-                task: task,
-                context: context,
-                format: format || "Clear and concise text",
-                // Specifics for certain templates
-                type: role || "content",
-                language: "programming language",
-                topic: task,
-                audience: "general audience",
-                tone: "professional",
-                length: "appropriate length"
-            }
+            intent: template,
+            fields: fields
         };
 
         finalPrompt = PROMPT_LOGIC.compile(data);
-        state.improvements.push("Constructed via Advanced Builder");
+        state.improvements.push(`Built with ${WIZARD_CONFIGS[template]?.name || 'Advanced Builder'}`);
 
     } else {
         // QUICK COMPILATION (Legacy + Logic)
@@ -276,10 +381,15 @@ function optimizePrompt() {
 
     state.outputText = finalPrompt;
 
-    // Save to history
-    const inputForHistory = state.isAdvanced
-        ? document.getElementById('wizTask').value.trim()
-        : document.getElementById('inputPrompt').value.trim();
+    // Save to history - get first field value for advanced mode
+    let inputForHistory = '';
+    if (state.isAdvanced) {
+        const config = WIZARD_CONFIGS[state.wizardTemplate] || WIZARD_CONFIGS.general;
+        const firstField = document.getElementById(config.fields[0]?.id);
+        inputForHistory = firstField ? firstField.value.trim() : 'Advanced prompt';
+    } else {
+        inputForHistory = document.getElementById('inputPrompt').value.trim();
+    }
     saveToHistory(inputForHistory, finalPrompt);
 
     renderOutput();
@@ -328,11 +438,14 @@ function pasteText() {
 
 function clearInput() {
     document.getElementById('inputPrompt').value = '';
-    // Clear wizard inputs too
-    ['wizRole', 'wizTask', 'wizContext', 'wizFormat'].forEach(id => {
-        document.getElementById(id).value = '';
+    // Clear dynamic wizard inputs based on current template
+    const config = WIZARD_CONFIGS[state.wizardTemplate] || WIZARD_CONFIGS.general;
+    config.fields.forEach(field => {
+        const el = document.getElementById(field.id);
+        if (el) el.value = '';
     });
     updateInputWordCount();
+    analyzeRealTime();
     document.getElementById('scoreBarContainer').classList.add('hidden');
 }
 
@@ -387,10 +500,15 @@ function renderOutput() {
         </div>
     `).join('');
 
-    // Calculate real stats
-    const inputText = state.isAdvanced
-        ? document.getElementById('wizTask').value
-        : document.getElementById('inputPrompt').value;
+    // Calculate real stats - get first field value for advanced mode
+    let inputText = '';
+    if (state.isAdvanced) {
+        const config = WIZARD_CONFIGS[state.wizardTemplate] || WIZARD_CONFIGS.general;
+        const firstField = document.getElementById(config.fields[0]?.id);
+        inputText = firstField ? firstField.value : '';
+    } else {
+        inputText = document.getElementById('inputPrompt').value;
+    }
     const stats = calculateRealStats(inputText, state.outputText);
 
     document.getElementById('wordDiff').textContent = `${stats.wordDiff >= 0 ? '+' : ''}${stats.wordDiff} words`;
@@ -415,12 +533,41 @@ function downloadOutput() {
     showToast("Downloaded! 📥");
 }
 
-function loadExample(key) {
-    if (state.isAdvanced) return; // Only works in quick mode
-    document.getElementById('inputPrompt').value = EXAMPLES[key];
-    updateInputWordCount();
-    analyzeRealTime();
-    showToast("Example loaded");
+function loadExample(key, template) {
+    const exampleText = EXAMPLES[key] || '';
+
+    if (state.isAdvanced) {
+        // Advanced mode: switch template and pre-fill first field
+        const targetTemplate = template || 'general';
+        const selector = document.getElementById('wizardTemplateSelect');
+
+        if (selector && WIZARD_CONFIGS[targetTemplate]) {
+            // Update selector and state
+            selector.value = targetTemplate;
+            state.wizardTemplate = targetTemplate;
+
+            // Render new fields
+            renderWizardFields(targetTemplate);
+
+            // Pre-fill the first field with example text
+            const config = WIZARD_CONFIGS[targetTemplate];
+            if (config.fields.length > 0) {
+                const firstField = document.getElementById(config.fields[0].id);
+                if (firstField) {
+                    firstField.value = exampleText;
+                }
+            }
+
+            analyzeRealTime();
+            showToast(`Switched to ${config.name} template`);
+        }
+    } else {
+        // Quick mode: fill textarea
+        document.getElementById('inputPrompt').value = exampleText;
+        updateInputWordCount();
+        analyzeRealTime();
+        showToast("Example loaded");
+    }
 }
 
 function showToast(msg) {
@@ -485,6 +632,186 @@ function clearHistory() {
     localStorage.removeItem('promptHistory');
     renderHistoryDropdown();
     showToast("History cleared");
+}
+
+// ========================================
+// WIZARD TEMPLATE FUNCTIONS
+// ========================================
+function initWizardTemplates() {
+    const selector = document.getElementById('wizardTemplateSelect');
+    if (!selector) return;
+
+    // Render initial fields
+    renderWizardFields('general');
+
+    // Listen for template changes
+    selector.addEventListener('change', (e) => {
+        const template = e.target.value;
+        state.wizardTemplate = template;
+        renderWizardFields(template);
+        analyzeRealTime();
+    });
+}
+
+function renderWizardFields(templateKey) {
+    const container = document.getElementById('dynamicWizardFields');
+    if (!container) return;
+
+    const config = WIZARD_CONFIGS[templateKey] || WIZARD_CONFIGS.general;
+
+    container.innerHTML = config.fields.map(field => {
+        if (field.multiline) {
+            return `
+                <div class="input-group">
+                    <label>${field.label}</label>
+                    <textarea id="${field.id}" class="text-input wizard-textarea"
+                        placeholder="${field.placeholder}" rows="4"></textarea>
+                </div>
+            `;
+        }
+        return `
+            <div class="input-group">
+                <label>${field.label}</label>
+                <input type="text" id="${field.id}" class="text-input"
+                    placeholder="${field.placeholder}">
+            </div>
+        `;
+    }).join('');
+
+    // Re-attach input listeners for real-time analysis
+    container.querySelectorAll('input, textarea').forEach(input => {
+        input.addEventListener('input', analyzeRealTime);
+    });
+}
+
+function getWizardFieldValues() {
+    const config = WIZARD_CONFIGS[state.wizardTemplate] || WIZARD_CONFIGS.general;
+    const values = {};
+
+    config.fields.forEach(field => {
+        const el = document.getElementById(field.id);
+        values[field.id] = el ? el.value.trim() : '';
+    });
+
+    return values;
+}
+
+function buildFieldsForTemplate(template, values) {
+    // Map wizard field values to template placeholders
+    switch (template) {
+        case 'debug':
+            return {
+                task: values.wizError || 'Debug this issue',
+                language: values.wizLanguage || 'JavaScript',
+                context: values.wizCode ? `Code:\n${values.wizCode}\n\nAlready tried: ${values.wizTried || 'Nothing yet'}` : values.wizTried || '',
+                format: 'Code fix with explanation'
+            };
+
+        case 'feature':
+            return {
+                task: values.wizFeature || 'Implement feature',
+                language: values.wizStack || 'JavaScript',
+                context: `${values.wizExisting || ''}\n\nRequirements: ${values.wizRequirements || 'Standard requirements'}`,
+                format: 'Implementation plan with code'
+            };
+
+        case 'testing':
+            return {
+                task: values.wizTestCode || 'Write tests',
+                language: values.wizFramework || 'Jest',
+                context: `Test type: ${values.wizTestType || 'Unit tests'}\nFocus: ${values.wizCoverage || 'Full coverage'}`,
+                format: 'Test file with all test cases'
+            };
+
+        case 'review':
+            return {
+                task: values.wizReviewCode || 'Review this code',
+                language: values.wizReviewLang || 'JavaScript',
+                context: `Focus areas: ${values.wizFocus || 'All'}\nDepth: ${values.wizSeverity || 'Thorough'}`,
+                format: 'Review comments with severity levels'
+            };
+
+        case 'refactor':
+            return {
+                task: values.wizRefactorCode || 'Refactor this code',
+                language: values.wizRefactorLang || 'JavaScript',
+                context: `Goals: ${values.wizGoals || 'Improve readability'}\nConstraints: ${values.wizConstraints || 'Maintain API'}`,
+                format: 'Refactored code with explanation'
+            };
+
+        case 'api':
+            return {
+                task: values.wizApiDesc || 'Design API',
+                language: values.wizApiStyle || 'REST',
+                context: `Auth: ${values.wizAuth || 'JWT'}\nEndpoints: ${values.wizEndpoints || 'CRUD operations'}`,
+                format: 'API specification with examples'
+            };
+
+        case 'code':
+            return {
+                task: values.wizCodeTask || 'Write code',
+                language: values.wizCodeLang || 'JavaScript',
+                context: values.wizCodeReqs || 'Standard requirements',
+                format: values.wizCodeFormat || 'Code with explanation'
+            };
+
+        case 'general':
+        default:
+            return {
+                role: values.wizRole || 'Helpful Assistant',
+                task: values.wizTask || 'Help with this request',
+                context: values.wizContext || '',
+                format: values.wizFormat || 'Clear and concise text'
+            };
+    }
+}
+
+// ========================================
+// PROMPT LIBRARY FUNCTIONS
+// ========================================
+function initPromptLibrary() {
+    renderPromptCards('all');
+    attachLibraryListeners();
+}
+
+function attachLibraryListeners() {
+    // Tab switching
+    document.querySelectorAll('.library-tabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const category = e.currentTarget.dataset.category;
+            // Update active tab
+            document.querySelectorAll('.library-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            // Render cards for this category
+            renderPromptCards(category);
+        });
+    });
+}
+
+function renderPromptCards(category) {
+    const grid = document.getElementById('libraryGrid');
+    if (!grid) return;
+
+    const filteredCards = category === 'all'
+        ? PROMPT_CARDS
+        : PROMPT_CARDS.filter(card => card.category === category);
+
+    grid.innerHTML = filteredCards.map(card => `
+        <button class="prompt-card" data-example="${card.id}" data-template="${card.template}">
+            <span class="card-icon">${card.icon}</span>
+            <span class="card-title">${card.title}</span>
+            <span class="card-desc">${card.desc}</span>
+        </button>
+    `).join('');
+
+    // Attach click handlers to new cards
+    grid.querySelectorAll('.prompt-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            const exampleKey = e.currentTarget.dataset.example;
+            const template = e.currentTarget.dataset.template;
+            loadExample(exampleKey, template);
+        });
+    });
 }
 
 // Start

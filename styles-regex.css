@@ -1,5 +1,8 @@
+/* Import shared base styles */
+@import url('styles.css');
+
 /* ========================================
-   CSS VARIABLES & THEME
+   CSS VARIABLES & THEME (Overrides)
    ======================================== */
 :root {
     /* Colors - Brutalist Terminal Theme */
