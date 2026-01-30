@@ -104,6 +104,33 @@ const WIZARD_CONFIGS = {
             { id: 'wizCodeReqs', label: 'Requirements', placeholder: 'e.g. Handle edge cases, return boolean, be performant' },
             { id: 'wizCodeFormat', label: 'Output Format', placeholder: 'e.g. Code only, Code with explanation, With tests' }
         ]
+    },
+    writing: {
+        name: "✍️ Content Writing",
+        fields: [
+            { id: 'wizWriteTopic', label: 'Topic / Subject', placeholder: 'e.g. Benefits of remote work, AI in healthcare' },
+            { id: 'wizWriteType', label: 'Content Type', placeholder: 'e.g. Blog post, Article, Newsletter, Social media' },
+            { id: 'wizWriteAudience', label: 'Target Audience', placeholder: 'e.g. Developers, Business executives, General public' },
+            { id: 'wizWriteTone', label: 'Tone & Style', placeholder: 'e.g. Professional, Casual, Persuasive, Educational' }
+        ]
+    },
+    analysis: {
+        name: "📊 Data Analysis",
+        fields: [
+            { id: 'wizAnalyzeData', label: 'Data Description', placeholder: 'e.g. Sales data from Q4, User engagement metrics', multiline: true },
+            { id: 'wizAnalyzeGoal', label: 'Analysis Goal', placeholder: 'e.g. Find trends, Identify outliers, Compare periods' },
+            { id: 'wizAnalyzeFormat', label: 'Output Format', placeholder: 'e.g. Summary with charts, Detailed report, Key insights only' },
+            { id: 'wizAnalyzeContext', label: 'Business Context', placeholder: 'e.g. Preparing for board meeting, Quarterly review' }
+        ]
+    },
+    image: {
+        name: "🎨 Image Generation",
+        fields: [
+            { id: 'wizImageSubject', label: 'Subject / Scene', placeholder: 'e.g. A futuristic city, A cozy coffee shop' },
+            { id: 'wizImageStyle', label: 'Art Style', placeholder: 'e.g. Photorealistic, Watercolor, Digital art, Minimalist' },
+            { id: 'wizImageMood', label: 'Mood / Lighting', placeholder: 'e.g. Warm sunset, Dramatic shadows, Soft and dreamy' },
+            { id: 'wizImageDetails', label: 'Additional Details', placeholder: 'e.g. Include a cat, Cinematic composition, 4K quality' }
+        ]
     }
 };
 
@@ -753,6 +780,29 @@ function buildFieldsForTemplate(template, values) {
                 language: values.wizCodeLang || 'JavaScript',
                 context: values.wizCodeReqs || 'Standard requirements',
                 format: values.wizCodeFormat || 'Code with explanation'
+            };
+
+        case 'writing':
+            return {
+                task: `Write a ${values.wizWriteType || 'blog post'} about: ${values.wizWriteTopic || 'the topic'}`,
+                topic: values.wizWriteTopic || 'General topic',
+                audience: values.wizWriteAudience || 'General audience',
+                tone: values.wizWriteTone || 'Professional',
+                format: `${values.wizWriteType || 'Article'} with engaging structure`
+            };
+
+        case 'analysis':
+            return {
+                task: `Analyze the following data: ${values.wizAnalyzeData || 'Provided data'}`,
+                context: `Goal: ${values.wizAnalyzeGoal || 'Find insights'}\nBusiness context: ${values.wizAnalyzeContext || 'General analysis'}`,
+                format: values.wizAnalyzeFormat || 'Summary with key insights'
+            };
+
+        case 'image':
+            return {
+                task: `Generate an image of: ${values.wizImageSubject || 'A scene'}`,
+                context: `Style: ${values.wizImageStyle || 'Digital art'}\nMood: ${values.wizImageMood || 'Balanced lighting'}`,
+                format: `Image prompt with details: ${values.wizImageDetails || 'High quality'}`
             };
 
         case 'general':
