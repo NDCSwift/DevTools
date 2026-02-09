@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timestamp Converter - Unix to Date, Timezone Converter | ToolBit</title>
-    <meta name="description" content="Free timestamp converter with live updates. Convert Unix timestamps to human-readable dates, handle timezones, calculate relative time, and batch convert. Supports seconds and milliseconds.">
+    <meta name="description"
+        content="Free timestamp converter with live updates. Convert Unix timestamps to human-readable dates, handle timezones, calculate relative time, and batch convert. Supports seconds and milliseconds.">
     <link rel="canonical" href="https://toolbit.dev/timestamp.html">
     <link rel="stylesheet" href="styles-timestamp.css">
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -15,21 +17,24 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap"
+        rel="stylesheet">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-      gtag('config', 'G-L3T8NYVCJ6');
+        gtag('config', 'G-L3T8NYVCJ6');
     </script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9275564079466116"
-     crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header class="site-header">
@@ -105,14 +110,15 @@
                 <span class="glitch" data-text="TIME">TIME</span>
                 <span class="hero-subtitle">Timestamp Converter</span>
             </h1>
-            <p class="hero-description">Convert Unix timestamps to human-readable dates and vice versa. Live updates, timezone support, relative time, and batch conversion. Essential for developers.</p>
+            <p class="hero-description">Convert Unix timestamps to human-readable dates and vice versa. Live updates,
+                timezone support, relative time, and batch conversion. Essential for developers.</p>
         </div>
     </section>
 
     <!-- Main Tool Area -->
     <main class="tool-container">
         <div class="container">
-            
+
             <!-- Current Timestamp Display -->
             <div class="current-timestamp">
                 <h3 class="current-title">
@@ -179,13 +185,8 @@
                             <span class="section-icon">▸</span>
                             Unix Timestamp
                         </h3>
-                        <input 
-                            type="text" 
-                            id="unixInput" 
-                            class="text-input large" 
-                            placeholder="1736140800 or 1736140800000"
-                            spellcheck="false"
-                        >
+                        <input type="text" id="unixInput" class="text-input large"
+                            placeholder="1736140800 or 1736140800000" spellcheck="false">
                         <div class="quick-presets">
                             <button class="preset-btn" data-preset="now">Now</button>
                             <button class="preset-btn" data-preset="1h_ago">1h Ago</button>
@@ -194,7 +195,7 @@
                             <button class="preset-btn" data-preset="tomorrow">Tomorrow</button>
                         </div>
                     </div>
-                    
+
                     <div class="output-section">
                         <h3 class="section-title">
                             <span class="section-icon">▸</span>
@@ -238,13 +239,13 @@
                             <span class="section-icon">▸</span>
                             Date & Time
                         </h3>
-                        
+
                         <label class="input-label" for="dateInput">Date</label>
                         <input type="date" id="dateInput" class="text-input">
-                        
+
                         <label class="input-label" for="timeInput">Time</label>
                         <input type="time" id="timeInput" step="1" class="text-input">
-                        
+
                         <label class="input-label" for="timezoneSelect">Timezone</label>
                         <select id="timezoneSelect" class="select-input">
                             <option value="UTC">UTC</option>
@@ -260,19 +261,19 @@
                             <option value="Asia/Dubai">Asia/Dubai (GST)</option>
                             <option value="Australia/Sydney">Australia/Sydney (AEDT/AEST)</option>
                         </select>
-                        
+
                         <div class="quick-presets">
                             <button class="preset-btn" data-preset="now">Now</button>
                             <button class="preset-btn" data-preset="today_start">Start of Today</button>
                             <button class="preset-btn" data-preset="today_end">End of Today</button>
                         </div>
-                        
+
                         <button id="convertToUnixBtn" class="btn btn-primary">
                             <span class="btn-icon">⏰</span>
                             Convert to Unix
                         </button>
                     </div>
-                    
+
                     <div class="output-section">
                         <h3 class="section-title">
                             <span class="section-icon">▸</span>
@@ -301,14 +302,17 @@
                         <span class="section-icon">▸</span>
                         Timestamp in Multiple Timezones
                     </h3>
-                    
-                    <input 
-                        type="text" 
-                        id="timezoneInput" 
-                        class="text-input large" 
-                        placeholder="Enter Unix timestamp (e.g., 1736140800)"
-                    >
-                    
+
+                    <input type="text" id="timezoneInput" class="text-input large"
+                        placeholder="Enter Unix timestamp (e.g., 1736140800)">
+
+                    <div class="quick-presets">
+                        <button class="preset-btn" onclick="applyPreset('now', 'timezone')">Now</button>
+                        <button class="preset-btn" onclick="applyPreset('today_start', 'timezone')">Start of
+                            Today</button>
+                        <button class="preset-btn" onclick="applyPreset('year_2038', 'timezone')">Y2K38</button>
+                    </div>
+
                     <div id="timezoneList" class="timezone-list">
                         <!-- Populated by JavaScript -->
                     </div>
@@ -322,26 +326,40 @@
                         <span class="section-icon">▸</span>
                         Calculate Time Difference
                     </h3>
-                    
+
                     <div class="relative-inputs">
                         <div class="relative-input-group">
                             <label class="input-label">From</label>
                             <input type="text" id="relativeFrom" class="text-input" placeholder="Unix timestamp">
-                            <button class="preset-btn" onclick="setRelativeNow('from')">Now</button>
+                            <div class="quick-presets mini">
+                                <button class="preset-btn"
+                                    onclick="applyRelativePreset('now', 'relativeFrom')">Now</button>
+                                <button class="preset-btn" onclick="applyRelativePreset('yesterday', 'relativeFrom')">-1
+                                    Day</button>
+                                <button class="preset-btn" onclick="applyRelativePreset('1h_ago', 'relativeFrom')">-1
+                                    Hour</button>
+                            </div>
                         </div>
-                        
+
                         <div class="relative-input-group">
                             <label class="input-label">To</label>
                             <input type="text" id="relativeTo" class="text-input" placeholder="Unix timestamp">
-                            <button class="preset-btn" onclick="setRelativeNow('to')">Now</button>
+                            <div class="quick-presets mini">
+                                <button class="preset-btn"
+                                    onclick="applyRelativePreset('now', 'relativeTo')">Now</button>
+                                <button class="preset-btn" onclick="applyRelativePreset('tomorrow', 'relativeTo')">+1
+                                    Day</button>
+                                <button class="preset-btn" onclick="applyRelativePreset('1h_from_now', 'relativeTo')">+1
+                                    Hour</button>
+                            </div>
                         </div>
                     </div>
-                    
+
                     <button id="calculateBtn" class="btn btn-primary">
                         <span class="btn-icon">⏱️</span>
                         Calculate Difference
                     </button>
-                    
+
                     <div id="relativeDifference" class="difference-output hidden">
                         <h4>Time Difference:</h4>
                         <div class="difference-grid">
@@ -374,18 +392,13 @@
                         <span class="section-icon">▸</span>
                         Batch Conversion
                     </h3>
-                    
+
                     <div class="batch-grid">
                         <div class="batch-input-panel">
                             <label>Input (one timestamp per line)</label>
-                            <textarea 
-                                id="batchInput" 
-                                class="text-area" 
-                                rows="10"
-                                placeholder="1736140800
+                            <textarea id="batchInput" class="text-area" rows="10" placeholder="1736140800
 1736227200
-1736313600"
-                            ></textarea>
+1736313600"></textarea>
                             <div class="batch-controls">
                                 <label class="input-label" for="batchFormat">Format:</label>
                                 <select id="batchFormat" class="select-input">
@@ -397,16 +410,11 @@
                                 <button id="convertBatchBtn" class="btn btn-primary">Convert</button>
                             </div>
                         </div>
-                        
+
                         <div class="batch-output-panel">
                             <label>Output</label>
-                            <textarea 
-                                id="batchOutput" 
-                                class="text-area" 
-                                rows="10" 
-                                readonly
-                                placeholder="Results will appear here..."
-                            ></textarea>
+                            <textarea id="batchOutput" class="text-area" rows="10" readonly
+                                placeholder="Results will appear here..."></textarea>
                             <div class="batch-actions">
                                 <button id="copyBatchBtn" class="btn-secondary">Copy All</button>
                                 <button id="downloadBatchBtn" class="btn-secondary">Download CSV</button>
@@ -418,44 +426,67 @@
 
             <!-- Duration Mode -->
             <div id="durationMode" class="mode-content">
-                <div class="converter-section" style="grid-template-columns: 1fr;">
+                <div class="duration-container">
                     <h3 class="section-title">
                         <span class="section-icon">▸</span>
                         Add/Subtract Time
                     </h3>
 
-                    <div class="duration-grid">
-                        <div class="input-group">
-                            <label class="input-label">Start Time</label>
-                            <input type="text" id="durationStart" class="text-input" placeholder="Unix timestamp (defaults to now)">
-                            <div class="quick-presets">
-                                <button class="preset-btn" onclick="setDurationNow()">Now</button>
+                    <div class="duration-control-panel">
+                        <!-- Operation Switch -->
+                        <div class="duration-toggle-group">
+                            <input type="radio" name="durationOp" id="opAdd" value="add" checked>
+                            <label for="opAdd" class="toggle-btn add-btn">
+                                <span class="icon">+</span> Add
+                            </label>
+
+                            <input type="radio" name="durationOp" id="opSub" value="sub">
+                            <label for="opSub" class="toggle-btn sub-btn">
+                                <span class="icon">−</span> Subtract
+                            </label>
+                        </div>
+
+                        <div class="input-group full-width start-time-group">
+                            <label class="input-label">Start Time (Unix)</label>
+                            <div class="input-wrapper-btn">
+                                <input type="text" id="durationStart" class="text-input"
+                                    placeholder="Current Timestamp (default)">
+                                <button class="btn-inline" onclick="setDurationNow()">Now</button>
                             </div>
                         </div>
 
-                        <select id="durationOp" class="select-input operator-select">
-                            <option value="add">+</option>
-                            <option value="sub">−</option>
-                        </select>
-
-                        <div class="input-group">
-                            <label class="input-label">Duration</label>
-                            <div class="duration-inputs">
-                                <input type="number" id="durDays" class="text-input" placeholder="Days" min="0">
-                                <input type="number" id="durHours" class="text-input" placeholder="Hours" min="0">
-                                <input type="number" id="durMins" class="text-input" placeholder="Minutes" min="0">
+                        <div class="duration-fields">
+                            <div class="field-group">
+                                <label>Days</label>
+                                <input type="number" id="durDays" class="text-input" placeholder="0" min="0">
+                            </div>
+                            <div class="field-group">
+                                <label>Hours</label>
+                                <input type="number" id="durHours" class="text-input" placeholder="0" min="0">
+                            </div>
+                            <div class="field-group">
+                                <label>Minutes</label>
+                                <input type="number" id="durMins" class="text-input" placeholder="0" min="0">
+                            </div>
+                            <div class="field-group">
+                                <label>Seconds</label>
+                                <input type="number" id="durSecs" class="text-input" placeholder="0" min="0">
                             </div>
                         </div>
+
+                        <button id="calcDurationBtn" class="btn btn-primary full-width">
+                            Calculate New Date
+                        </button>
                     </div>
 
-                    <button id="calcDurationBtn" class="btn btn-primary" style="margin-top: var(--spacing-lg);">
-                        <span class="btn-icon">⏱️</span>
-                        Calculate Result
-                    </button>
-
-                    <div id="durationResult" class="duration-result hidden">
-                        <span id="resultTimestamp" class="result-main">-</span>
-                        <span id="resultDate" class="result-sub">-</span>
+                    <div id="durationResult" class="duration-result-card hidden">
+                        <div class="result-header">Resulting Date</div>
+                        <div class="result-main-value" id="resultDate">-</div>
+                        <div class="result-meta">
+                            <span class="meta-label">Unix Timestamp:</span>
+                            <span class="meta-value" id="resultTimestamp">-</span>
+                            <button class="copy-btn-small" onclick="copyValue('resultTimestamp')">⎘</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -482,17 +513,26 @@
                         What is a Unix Timestamp?
                     </h2>
                     <div class="edu-body">
-                        <p>A <strong>Unix timestamp</strong> (also known as Epoch time or POSIX time) represents the number of seconds that have elapsed since <strong>January 1, 1970 00:00:00 UTC</strong>—a moment called the Unix Epoch. It's a single integer that increases by one every second.</p>
+                        <p>A <strong>Unix timestamp</strong> (also known as Epoch time or POSIX time) represents the
+                            number of seconds that have elapsed since <strong>January 1, 1970 00:00:00 UTC</strong>—a
+                            moment called the Unix Epoch. It's a single integer that increases by one every second.</p>
 
-                        <p>Because it's just a number, it's incredibly efficient for computers to store, sort, and calculate dates, regardless of timezones. When you convert <code>1735689600</code> to a human-readable date, your device applies your local timezone offset to show you the correct local time.</p>
+                        <p>Because it's just a number, it's incredibly efficient for computers to store, sort, and
+                            calculate dates, regardless of timezones. When you convert <code>1735689600</code> to a
+                            human-readable date, your device applies your local timezone offset to show you the correct
+                            local time.</p>
 
                         <p><strong>Why developers use Unix timestamps:</strong></p>
                         <ul>
-                            <li><strong>Timezone Independence:</strong> The same timestamp means the same instant worldwide</li>
-                            <li><strong>Easy Calculations:</strong> Add 86400 to get tomorrow, subtract 3600 for an hour ago</li>
-                            <li><strong>Storage Efficiency:</strong> Just 4-8 bytes for any date in history or future</li>
+                            <li><strong>Timezone Independence:</strong> The same timestamp means the same instant
+                                worldwide</li>
+                            <li><strong>Easy Calculations:</strong> Add 86400 to get tomorrow, subtract 3600 for an hour
+                                ago</li>
+                            <li><strong>Storage Efficiency:</strong> Just 4-8 bytes for any date in history or future
+                            </li>
                             <li><strong>Sorting:</strong> Numeric comparison is faster than parsing date strings</li>
-                            <li><strong>API Compatibility:</strong> The universal format most APIs expect and return</li>
+                            <li><strong>API Compatibility:</strong> The universal format most APIs expect and return
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -505,22 +545,28 @@
                     </h2>
                     <div class="edu-body">
                         <h3>Unix → Human</h3>
-                        <p>Paste any Unix timestamp (seconds or milliseconds) to see it converted to multiple human-readable formats: UTC, ISO 8601, local time, and relative time ("2 hours ago").</p>
+                        <p>Paste any Unix timestamp (seconds or milliseconds) to see it converted to multiple
+                            human-readable formats: UTC, ISO 8601, local time, and relative time ("2 hours ago").</p>
 
                         <h3>Human → Unix</h3>
-                        <p>Select a date, time, and timezone to generate the corresponding Unix timestamp in both seconds and milliseconds.</p>
+                        <p>Select a date, time, and timezone to generate the corresponding Unix timestamp in both
+                            seconds and milliseconds.</p>
 
                         <h3>Timezones</h3>
-                        <p>Enter a timestamp to see what time it represents across 8 major world timezones simultaneously. Perfect for coordinating across distributed teams.</p>
+                        <p>Enter a timestamp to see what time it represents across 8 major world timezones
+                            simultaneously. Perfect for coordinating across distributed teams.</p>
 
                         <h3>Relative Time</h3>
-                        <p>Calculate the exact difference between two timestamps. Great for debugging time-based logic or understanding log sequences.</p>
+                        <p>Calculate the exact difference between two timestamps. Great for debugging time-based logic
+                            or understanding log sequences.</p>
 
                         <h3>Duration</h3>
-                        <p>Add or subtract days, hours, and minutes from a starting timestamp. Useful for calculating expiration times, scheduling, or "what time will it be in 3 days?"</p>
+                        <p>Add or subtract days, hours, and minutes from a starting timestamp. Useful for calculating
+                            expiration times, scheduling, or "what time will it be in 3 days?"</p>
 
                         <h3>Batch</h3>
-                        <p>Convert multiple timestamps at once. Paste a list (one per line) and get them all converted to your chosen format. Export as CSV for spreadsheets.</p>
+                        <p>Convert multiple timestamps at once. Paste a list (one per line) and get them all converted
+                            to your chosen format. Export as CSV for spreadsheets.</p>
                     </div>
                 </div>
 
@@ -532,21 +578,32 @@
                     </h2>
                     <div class="edu-body">
                         <h3>Seconds vs. Milliseconds</h3>
-                        <p>The most common timestamp bug: mixing up seconds (10 digits) and milliseconds (13 digits).</p>
+                        <p>The most common timestamp bug: mixing up seconds (10 digits) and milliseconds (13 digits).
+                        </p>
                         <ul>
-                            <li><strong>Python, PHP, Ruby, SQL:</strong> Use <strong>seconds</strong> (e.g., <code>1736140800</code>)</li>
-                            <li><strong>JavaScript, Java:</strong> Use <strong>milliseconds</strong> (e.g., <code>1736140800000</code>)</li>
+                            <li><strong>Python, PHP, Ruby, SQL:</strong> Use <strong>seconds</strong> (e.g.,
+                                <code>1736140800</code>)</li>
+                            <li><strong>JavaScript, Java:</strong> Use <strong>milliseconds</strong> (e.g.,
+                                <code>1736140800000</code>)</li>
                         </ul>
-                        <p><strong>Symptom:</strong> If your date shows 1970 (or year 54000+), you likely need to multiply or divide by 1000.</p>
+                        <p><strong>Symptom:</strong> If your date shows 1970 (or year 54000+), you likely need to
+                            multiply or divide by 1000.</p>
 
                         <h3>The Year 2038 Problem</h3>
-                        <p>32-bit signed integers max out at <code>2,147,483,647</code>. Unix time will hit this on <strong>January 19, 2038 at 03:14:07 UTC</strong>. One second later, 32-bit systems will wrap to December 13, 1901. Most modern systems use 64-bit integers, which won't overflow for 292 billion years.</p>
+                        <p>32-bit signed integers max out at <code>2,147,483,647</code>. Unix time will hit this on
+                            <strong>January 19, 2038 at 03:14:07 UTC</strong>. One second later, 32-bit systems will
+                            wrap to December 13, 1901. Most modern systems use 64-bit integers, which won't overflow for
+                            292 billion years.</p>
 
                         <h3>Daylight Saving Time</h3>
-                        <p>DST creates two types of problems: hours that happen twice (when clocks fall back) and hours that don't exist (when clocks spring forward). Always store in UTC to avoid these issues—convert to local time only for display.</p>
+                        <p>DST creates two types of problems: hours that happen twice (when clocks fall back) and hours
+                            that don't exist (when clocks spring forward). Always store in UTC to avoid these
+                            issues—convert to local time only for display.</p>
 
                         <h3>Leap Seconds</h3>
-                        <p>Unix time ignores leap seconds by definition. A day is always exactly 86,400 seconds. Real-world clocks occasionally add a 61st second to stay synchronized with Earth's rotation, but Unix timestamps just keep counting linearly.</p>
+                        <p>Unix time ignores leap seconds by definition. A day is always exactly 86,400 seconds.
+                            Real-world clocks occasionally add a 61st second to stay synchronized with Earth's rotation,
+                            but Unix timestamps just keep counting linearly.</p>
                     </div>
                 </div>
 
@@ -558,19 +615,28 @@
                     </h2>
                     <div class="edu-body">
                         <h3>Why January 1, 1970?</h3>
-                        <p><strong>Historical convention.</strong> Unix was being developed in the early 1970s, and the designers needed a reference point. 1970 was recent, round, and practical for the systems of that era. It stuck.</p>
+                        <p><strong>Historical convention.</strong> Unix was being developed in the early 1970s, and the
+                            designers needed a reference point. 1970 was recent, round, and practical for the systems of
+                            that era. It stuck.</p>
 
                         <h3>Can timestamps be negative?</h3>
-                        <p><strong>Yes.</strong> Negative Unix timestamps represent dates before 1970. For example, <code>-86400</code> is December 31, 1969. Most modern systems handle this correctly.</p>
+                        <p><strong>Yes.</strong> Negative Unix timestamps represent dates before 1970. For example,
+                            <code>-86400</code> is December 31, 1969. Most modern systems handle this correctly.</p>
 
                         <h3>Why use UTC instead of local time?</h3>
-                        <p><strong>Consistency.</strong> UTC never changes—no DST, no political timezone adjustments. Store everything in UTC, convert to local time only when displaying to users. This prevents countless bugs.</p>
+                        <p><strong>Consistency.</strong> UTC never changes—no DST, no political timezone adjustments.
+                            Store everything in UTC, convert to local time only when displaying to users. This prevents
+                            countless bugs.</p>
 
                         <h3>How do I handle timezone conversions in code?</h3>
-                        <p><strong>Use libraries.</strong> JavaScript has <code>Intl.DateTimeFormat</code>. Python has <code>pytz</code> or <code>zoneinfo</code>. Never try to manually add/subtract hour offsets—DST rules are complex and change frequently.</p>
+                        <p><strong>Use libraries.</strong> JavaScript has <code>Intl.DateTimeFormat</code>. Python has
+                            <code>pytz</code> or <code>zoneinfo</code>. Never try to manually add/subtract hour
+                            offsets—DST rules are complex and change frequently.</p>
 
                         <h3>What's ISO 8601?</h3>
-                        <p><strong>The international standard for date/time strings.</strong> Format: <code>2026-01-23T14:30:00Z</code>. The "T" separates date and time, "Z" means UTC. Use this when you need a human-readable string that's also unambiguous and sortable.</p>
+                        <p><strong>The international standard for date/time strings.</strong> Format:
+                            <code>2026-01-23T14:30:00Z</code>. The "T" separates date and time, "Z" means UTC. Use this
+                            when you need a human-readable string that's also unambiguous and sortable.</p>
                     </div>
                 </div>
             </div>
@@ -584,7 +650,8 @@
                 <div class="footer-section">
                     <h4>ToolBit</h4>
                     <p>Professional developer tools, zero bloat.</p>
-                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Noah</a></p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
                 </div>
                 <div class="footer-section">
                     <h4>Tools</h4>
@@ -626,4 +693,5 @@
 
     <script src="script-timestamp.js"></script>
 </body>
+
 </html>

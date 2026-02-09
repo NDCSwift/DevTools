@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Hashing: MD5, SHA-1, SHA-256 Explained | ToolBit Blog</title>
+    <meta name="description"
+        content="What is a hash function? Why are MD5 and SHA-1 considered broken? Learn the basics of cryptography and how to safely store passwords.">
+    <link rel="canonical" href="https://toolbit.dev/blog/hashing-explained.html">
+    <link rel="stylesheet" href="../styles-blog.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="../json.html" class="nav-link">JSON</a>
+                        <a href="../regex.html" class="nav-link">RegEx</a>
+                        <a href="../base64.html" class="nav-link">Base64</a>
+                        <a href="../colors.html" class="nav-link">Colors</a>
+                        <a href="../hash.html" class="nav-link">Hash</a>
+                        <a href="../url.html" class="nav-link">URL</a>
+                        <a href="../lorem.html" class="nav-link">Lorem</a>
+                        <a href="../timestamp.html" class="nav-link">Time</a>
+                        <a href="../diff.html" class="nav-link">Diff</a>
+                        <a href="../prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="../blog.html" class="nav-link active">Blog</a>
+                <a href="../about.html" class="nav-link about-link">About</a>
+                <a href="../support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="../json.html" class="nav-link">JSON Formatter</a>
+            <a href="../regex.html" class="nav-link">RegEx Tester</a>
+            <a href="../base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="../colors.html" class="nav-link">Color Palette</a>
+            <a href="../hash.html" class="nav-link">Hash Generator</a>
+            <a href="../url.html" class="nav-link">URL Encoder</a>
+            <a href="../lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="../timestamp.html" class="nav-link">Timestamp</a>
+            <a href="../diff.html" class="nav-link">Diff Checker</a>
+            <a href="../prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="../blog.html" class="nav-link active">Blog</a>
+            <a href="../about.html" class="nav-link about-link">About</a>
+            <a href="../support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
+
+    <!-- Article Content -->
+    <main class="container">
+        <div class="article-layout">
+
+            <article class="article-content-wrapper">
+                <header class="article-header">
+                    <div class="article-meta">
+                        <a href="#" class="category-tag">Security</a>
+                        • Published Jan 29, 2026
+                    </div>
+                    <h1 class="article-h1">Understanding Hashing: Why MD5 is Dead and SHA-256 Rules</h1>
+                    <p class="article-excerpt">In the world of cybersecurity, a good hash is the difference between a
+                        secure
+                        password and a data breach. Here is what every developer needs to know about hashing algorithms.
+                    </p>
+                </header>
+
+                <div class="article-body">
+                    <p>Hashing is the process of taking an input (like a password or a file) and turning it into a
+                        fixed-size
+                        string of characters. It's a one-way street: you can turn a steak into ground beef, but you
+                        can't
+                        turn ground beef back into a steak.</p>
+                    <p>Cryptography relies on this "one-way" property. If I give you the hash, you shouldn't be able to
+                        guess the original password.</p>
+
+                    <h2>1. The Fallen Hero: MD5</h2>
+                    <p>Message Digest algorithm 5 (MD5) was once the standard. It's fast—too fast.</p>
+                    <p><strong>The problem: Collisions.</strong></p>
+                    <p>A collision occurs when two different inputs produce the exact same hash. Researchers have found
+                        ways to
+                        generate two completely different PDF files that have the same MD5 hash. This means an attacker
+                        could trick your system into accepting a malicious file by making it look like a safe one.</p>
+                    <p><strong>Verdict:</strong> Never use MD5 for security. Use it only for non-critical checksums
+                        (like
+                        verifying a file download wasn't corrupted).</p>
+
+                    <h2>2. The Retired Veteran: SHA-1</h2>
+                    <p>SHA-1 (Secure Hash Algorithm 1) replaced MD5. But, like its predecessor, it fell victim to
+                        increased computing
+                        power. In 2017, Google announced the first practical collision attack against SHA-1.</p>
+                    <p><strong>Verdict:</strong> Do not use for new applications. Browsers have stopped accepting SHA-1
+                        SSL certificates years ago.</p>
+
+                    <h2>3. The Current Standard: SHA-256</h2>
+                    <p>SHA-256 (part of the SHA-2 family) is the current gold standard. It produces a 256-bit hash that
+                        is exponentially harder to crack than MD5 or SHA-1.</p>
+                    <p>It is used by:</p>
+                    <ul>
+                        <li><strong>Bitcoin:</strong> For mining and transaction verification.</li>
+                        <li><strong>SSL/TLS:</strong> securing HTTPS connections.</li>
+                        <li><strong>Digital Signatures:</strong> verifying software updates.</li>
+                    </ul>
+
+                    <h2>4. Passwords are Special</h2>
+                    <p>Even a strong hash like SHA-256 is <strong>fast</strong>. A modern GPU can calculate billions of
+                        SHA-256 hashes per second. This is bad for passwords.</p>
+                    <p>If an attacker steals your database of hashed passwords, they can use a "Rainbow Table" to guess
+                        millions of passwords instantly.</p>
+                    <p><strong>The Fix: Salt + Slow Hashing.</strong></p>
+                    <p>For passwords, use algorithms designed to be slow, like <strong>Argon2, bcrypt, or
+                            PBKDF2</strong>.
+                        These force the computer to do extra work (thousands of iterations) for each guess, making
+                        brute-force
+                        attacks impractical.</p>
+
+                    <h2>Conclusion</h2>
+                    <p>If you're verifying a file, use SHA-256. If you're storing a password, use bcrypt. If you're
+                        using
+                        MD5... please stop.</p>
+                    <p>Want to see what these hashes look like? Try our <a href="../hash.html">Hash Generator</a> tool.
+                    </p>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <div class="widget-title">Table of Contents</div>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">1. MD5 (Broken)</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">2. SHA-1 (Retired)</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">3. SHA-256 (Standard)</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">4. Password Hashing</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget tool-cta">
+                    <span class="tool-cta-icon">#</span>
+                    <div class="widget-title">Generate Hashes</div>
+                    <p>Create MD5, SHA-1, SHA-256, and SHA-512 hashes instantly in your browser.</p>
+                    <a href="../hash.html" class="btn-sidebar">Open Hash Generator</a>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <!-- ... tools list ... -->
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="../json.html">JSON Formatter</a>
+                    <a href="../regex.html">RegEx Tester</a>
+                    <a href="../base64.html">Base64 Encoder</a>
+                    <a href="../colors.html">Color Palette Generator</a>
+                    <a href="../hash.html">Hash Generator</a>
+                    <a href="../url.html">URL Encoder</a>
+                    <a href="../lorem.html">Lorem Ipsum Generator</a>
+                    <a href="../timestamp.html">Timestamp Converter</a>
+                    <a href="../diff.html">Diff Checker</a>
+                    <a href="../prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="../support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

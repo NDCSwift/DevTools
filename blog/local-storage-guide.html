@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managing State: Local Storage vs Cookies vs IndexedDB | ToolBit Blog</title>
+    <meta name="description"
+        content="Where should you store user data? A deep dive into the pros and cons of local storage, cookies, and IndexedDB for modern web apps.">
+    <link rel="canonical" href="https://toolbit.dev/blog/local-storage-guide.html">
+    <link rel="stylesheet" href="../styles-blog.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="../json.html" class="nav-link">JSON</a>
+                        <a href="../regex.html" class="nav-link">RegEx</a>
+                        <a href="../base64.html" class="nav-link">Base64</a>
+                        <a href="../colors.html" class="nav-link">Colors</a>
+                        <a href="../hash.html" class="nav-link">Hash</a>
+                        <a href="../url.html" class="nav-link">URL</a>
+                        <a href="../lorem.html" class="nav-link">Lorem</a>
+                        <a href="../timestamp.html" class="nav-link">Time</a>
+                        <a href="../diff.html" class="nav-link">Diff</a>
+                        <a href="../prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="../blog.html" class="nav-link active">Blog</a>
+                <a href="../about.html" class="nav-link about-link">About</a>
+                <a href="../support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="../json.html" class="nav-link">JSON Formatter</a>
+            <a href="../regex.html" class="nav-link">RegEx Tester</a>
+            <a href="../base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="../colors.html" class="nav-link">Color Palette</a>
+            <a href="../hash.html" class="nav-link">Hash Generator</a>
+            <a href="../url.html" class="nav-link">URL Encoder</a>
+            <a href="../lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="../timestamp.html" class="nav-link">Timestamp</a>
+            <a href="../diff.html" class="nav-link">Diff Checker</a>
+            <a href="../prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="../blog.html" class="nav-link active">Blog</a>
+            <a href="../about.html" class="nav-link about-link">About</a>
+            <a href="../support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
+
+    <!-- Article Content -->
+    <main class="container">
+        <div class="article-layout">
+
+            <article class="article-content-wrapper">
+                <header class="article-header">
+                    <div class="article-meta">
+                        <a href="#" class="category-tag">Web Dev</a>
+                        • Published Jan 28, 2026
+                    </div>
+                    <h1 class="article-h1">Local Storage vs Cookies vs IndexedDB: Where Should You Store Data?</h1>
+                    <p class="article-excerpt">Gone are the days when specific user settings required server-side
+                        databases.
+                        Today's browsers are powerful storage engines. Here is how to pick the right one.</p>
+                </header>
+
+                <div class="article-body">
+                    <p>Modern web applications, especially Single Page Applications (SPAs), rely heavily on client-side
+                        storage. Whether it's caching API responses, saving a dark mode preference, or keeping a user
+                        logged in,
+                        you have three main choices: <strong>LocalStorage</strong>, <strong>Cookies</strong>, and
+                        <strong>IndexedDB</strong>.
+                    </p>
+
+                    <p>Each has a specific purpose, and misuse can lead to security vulnerabilities or performance
+                        bottlenecks.</p>
+
+                    <h2>1. Cookies: The Old Guard</h2>
+                    <p>Cookies are the oldest form of client storage. They are small (4KB max) text files sent with
+                        <strong>every single HTTP request</strong> to your domain.
+                    </p>
+                    <p><strong>Use Case: Authentication.</strong></p>
+                    <p>Because cookies are sent automatically to the server, they are perfect for session tokens (JWTs).
+                        By marking a cookie as `HttpOnly`, you prevent JavaScript from accessing it, making your app
+                        immune
+                        to Cross-Site Scripting (XSS) attacks that try to steal tokens.</p>
+                    <p><strong>Don't use for:</strong> Storing large amounts of data. It slows down every request.</p>
+
+                    <h2>2. LocalStorage: Simple & Synchronous</h2>
+                    <p>LocalStorage is a key-value store that persists until the user clears their browser cache. It's
+                        easy
+                        to use (`localStorage.setItem('key', 'value')`) and offers about 5MB of space.</p>
+                    <p><strong>Use Case: User Preferences.</strong></p>
+                    <p>Perfect for things like theme settings (Light/Dark mode), sidebar collapsed state, or temporary
+                        form
+                        data (so users don't lose work if they refresh).</p>
+                    <p><strong>Warning:</strong> LocalStorage is <strong>synchronous</strong>. If you try to read a
+                        massive JSON
+                        object from it, you will freeze the main thread and the UI will stutter.</p>
+
+                    <h2>3. IndexedDB: The Heavy Lifter</h2>
+                    <p>IndexedDB is a full-blown transactional database running inside the browser. It's asynchronous
+                        (won't
+                        block the UI), supports indexes for fast searching, and can store huge amounts of structured
+                        data
+                        (hundreds of MBs).</p>
+                    <p><strong>Use Case: Offline Apps & Complex Data.</strong></p>
+                    <p>If you're building a PWA (Progressive Web App) that works offline, IndexedDB is where you cache
+                        your
+                        API responses, images, and user-generated content.</p>
+
+                    <h2>Summary Table</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <thead>
+                            <tr style="background: rgba(255,255,255,0.05); text-align: left;">
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Storage</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Capacity</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Performance</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Cookies</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">4KB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Slow (Network)</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Auth Tokens</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">LocalStorage</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">5MB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Blocking (Sync)</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Simple Configs</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">IndexedDB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">&gt;500MB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Fast (Async)</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Complex Data</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>At ToolBit, we use LocalStorage to remember your preferences (like staying in "Hex" mode on the
+                        color picker) because it's fast, simple, and privacy-friendly. No data ever leaves your device.
+                    </p>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <div class="widget-title">Table of Contents</div>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">1. Cookies</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">2. LocalStorage</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">3. IndexedDB</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">Comparison</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget tool-cta">
+                    <span class="tool-cta-icon">💾</span>
+                    <div class="widget-title">Format Your Data</div>
+                    <p>Working with large JSON objects in storage? Format them for easier debugging.</p>
+                    <a href="../json.html" class="btn-sidebar">Open JSON Formatter</a>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <!-- ... tools list ... -->
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="../json.html">JSON Formatter</a>
+                    <a href="../regex.html">RegEx Tester</a>
+                    <a href="../base64.html">Base64 Encoder</a>
+                    <a href="../colors.html">Color Palette Generator</a>
+                    <a href="../hash.html">Hash Generator</a>
+                    <a href="../url.html">URL Encoder</a>
+                    <a href="../lorem.html">Lorem Ipsum Generator</a>
+                    <a href="../timestamp.html">Timestamp Converter</a>
+                    <a href="../diff.html">Diff Checker</a>
+                    <a href="../prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="../support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

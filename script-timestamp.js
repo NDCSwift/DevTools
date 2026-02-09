@@ -44,7 +44,7 @@ function initializeDefaultValues() {
 function initializeTimezoneList() {
     const list = document.getElementById('timezoneList');
     list.innerHTML = '';
-    
+
     POPULAR_TIMEZONES.forEach(tz => {
         const item = document.createElement('div');
         item.className = 'timezone-item';
@@ -68,7 +68,7 @@ function startLiveUpdate() {
 function updateCurrentTimestamp() {
     const now = Date.now();
     const seconds = Math.floor(now / 1000);
-    
+
     document.getElementById('currentUnix').textContent = seconds;
     document.getElementById('currentUnixMs').textContent = now;
     document.getElementById('currentISO').textContent = new Date(now).toISOString();
@@ -86,7 +86,7 @@ function attachEventListeners() {
             switchMode(mode);
         });
     });
-    
+
     // Unix to Human
     document.getElementById('unixInput').addEventListener('input', convertUnixToHuman);
     document.querySelectorAll('#unixToHumanMode .preset-btn').forEach(btn => {
@@ -95,7 +95,7 @@ function attachEventListeners() {
             applyPreset(preset, 'unix');
         });
     });
-    
+
     // Human to Unix
     document.getElementById('convertToUnixBtn').addEventListener('click', convertHumanToUnix);
     document.querySelectorAll('#humanToUnixMode .preset-btn').forEach(btn => {
@@ -104,13 +104,13 @@ function attachEventListeners() {
             applyPreset(preset, 'human');
         });
     });
-    
+
     // Timezone
     document.getElementById('timezoneInput').addEventListener('input', updateTimezones);
-    
+
     // Relative Time
     document.getElementById('calculateBtn').addEventListener('click', calculateRelativeTime);
-    
+
     // Batch
     document.getElementById('convertBatchBtn').addEventListener('click', convertBatch);
     document.getElementById('copyBatchBtn').addEventListener('click', () => {
@@ -129,17 +129,17 @@ function attachEventListeners() {
 // ========================================
 function switchMode(mode) {
     state.mode = mode;
-    
+
     // Update tabs
     document.querySelectorAll('.mode-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.mode === mode);
     });
-    
+
     // Update content
     document.querySelectorAll('.mode-content').forEach(content => {
         content.classList.remove('active');
     });
-    
+
     const modeMap = {
         'unix-to-human': 'unixToHumanMode',
         'human-to-unix': 'humanToUnixMode',
@@ -148,7 +148,7 @@ function switchMode(mode) {
         'batch': 'batchMode',
         'duration': 'durationMode'
     };
-    
+
     document.getElementById(modeMap[mode]).classList.add('active');
 }
 
@@ -157,28 +157,28 @@ function switchMode(mode) {
 // ========================================
 function convertUnixToHuman() {
     const input = document.getElementById('unixInput').value.trim();
-    
+
     if (!input) {
         clearUnixToHumanOutputs();
         return;
     }
-    
+
     const timestamp = parseInt(input);
-    
+
     if (isNaN(timestamp)) {
         clearUnixToHumanOutputs();
         return;
     }
-    
+
     // Detect if milliseconds or seconds
     const ms = timestamp.toString().length === 10 ? timestamp * 1000 : timestamp;
     const date = new Date(ms);
-    
+
     if (isNaN(date.getTime())) {
         clearUnixToHumanOutputs();
         return;
     }
-    
+
     document.getElementById('outputUTC').textContent = date.toUTCString();
     document.getElementById('outputISO').textContent = date.toISOString();
     document.getElementById('outputLocal').textContent = date.toString();
@@ -201,23 +201,23 @@ function convertHumanToUnix() {
     const dateValue = document.getElementById('dateInput').value;
     const timeValue = document.getElementById('timeInput').value;
     const timezone = document.getElementById('timezoneSelect').value;
-    
+
     if (!dateValue || !timeValue) {
         showToast('Please select both date and time');
         return;
     }
-    
+
     // Construct ISO string
     const isoString = `${dateValue}T${timeValue}`;
     const date = new Date(isoString);
-    
+
     // Adjust for timezone (this is simplified - in production use a library like moment-timezone)
     const seconds = Math.floor(date.getTime() / 1000);
     const milliseconds = date.getTime();
-    
+
     document.getElementById('unixSeconds').textContent = seconds;
     document.getElementById('unixMilliseconds').textContent = milliseconds;
-    
+
     showToast('Converted to Unix timestamp! ⏰');
 }
 
@@ -226,27 +226,27 @@ function convertHumanToUnix() {
 // ========================================
 function updateTimezones() {
     const input = document.getElementById('timezoneInput').value.trim();
-    
+
     if (!input) {
         clearTimezones();
         return;
     }
-    
+
     const timestamp = parseInt(input);
-    
+
     if (isNaN(timestamp)) {
         clearTimezones();
         return;
     }
-    
+
     const ms = timestamp.toString().length === 10 ? timestamp * 1000 : timestamp;
     const date = new Date(ms);
-    
+
     if (isNaN(date.getTime())) {
         clearTimezones();
         return;
     }
-    
+
     document.querySelectorAll('.timezone-time').forEach(el => {
         const timezone = el.dataset.timezone;
         try {
@@ -274,39 +274,39 @@ function clearTimezones() {
 function calculateRelativeTime() {
     const fromInput = document.getElementById('relativeFrom').value.trim();
     const toInput = document.getElementById('relativeTo').value.trim();
-    
+
     if (!fromInput || !toInput) {
         showToast('Please enter both timestamps');
         return;
     }
-    
+
     const fromTimestamp = parseInt(fromInput);
     const toTimestamp = parseInt(toInput);
-    
+
     if (isNaN(fromTimestamp) || isNaN(toTimestamp)) {
         showToast('Invalid timestamps');
         return;
     }
-    
+
     const fromMs = fromTimestamp.toString().length === 10 ? fromTimestamp * 1000 : fromTimestamp;
     const toMs = toTimestamp.toString().length === 10 ? toTimestamp * 1000 : toTimestamp;
-    
+
     const diffMs = Math.abs(toMs - fromMs);
-    
+
     const seconds = Math.floor(diffMs / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-    
+
     document.getElementById('diffDays').textContent = days;
     document.getElementById('diffHours').textContent = hours;
     document.getElementById('diffMinutes').textContent = minutes;
     document.getElementById('diffSeconds').textContent = seconds;
-    
+
     const direction = toMs > fromMs ? 'later' : 'earlier';
     const summary = `${days} days, ${hours % 24} hours, ${minutes % 60} minutes, ${seconds % 60} seconds ${direction}`;
     document.getElementById('diffSummary').textContent = summary;
-    
+
     document.getElementById('relativeDifference').classList.remove('hidden');
 }
 
@@ -314,14 +314,14 @@ function getRelativeTime(date) {
     const now = Date.now();
     const diff = date.getTime() - now;
     const absDiff = Math.abs(diff);
-    
+
     const seconds = Math.floor(absDiff / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
     const months = Math.floor(days / 30);
     const years = Math.floor(days / 365);
-    
+
     if (seconds < 10) return 'just now';
     if (seconds < 60) return diff > 0 ? 'in a few seconds' : 'a few seconds ago';
     if (minutes < 60) {
@@ -350,31 +350,31 @@ function getRelativeTime(date) {
 function convertBatch() {
     const input = document.getElementById('batchInput').value;
     const format = document.getElementById('batchFormat').value;
-    
+
     if (!input.trim()) {
         showToast('Please enter some timestamps');
         return;
     }
-    
+
     const lines = input.split('\n').filter(line => line.trim());
     const results = [];
-    
+
     lines.forEach(line => {
         const timestamp = parseInt(line.trim());
-        
+
         if (isNaN(timestamp)) {
             results.push('ERROR: Invalid timestamp');
             return;
         }
-        
+
         const ms = timestamp.toString().length === 10 ? timestamp * 1000 : timestamp;
         const date = new Date(ms);
-        
+
         if (isNaN(date.getTime())) {
             results.push('ERROR: Invalid date');
             return;
         }
-        
+
         switch (format) {
             case 'utc':
                 results.push(date.toUTCString());
@@ -392,7 +392,7 @@ function convertBatch() {
                 results.push(date.toUTCString());
         }
     });
-    
+
     document.getElementById('batchOutput').value = results.join('\n');
     showToast('Batch conversion complete! ✓');
 }
@@ -400,20 +400,20 @@ function convertBatch() {
 function downloadBatchCSV() {
     const input = document.getElementById('batchInput').value;
     const output = document.getElementById('batchOutput').value;
-    
+
     if (!input.trim() || !output.trim()) {
         showToast('Convert batch first');
         return;
     }
-    
+
     const inputLines = input.split('\n').filter(line => line.trim());
     const outputLines = output.split('\n');
-    
+
     let csv = 'Input,Output\n';
     inputLines.forEach((line, i) => {
         csv += `"${line.replace(/"/g, '""')}","${outputLines[i].replace(/"/g, '""')}"\n`;
     });
-    
+
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -421,7 +421,7 @@ function downloadBatchCSV() {
     a.download = 'timestamp-batch.csv';
     a.click();
     URL.revokeObjectURL(url);
-    
+
     showToast('CSV downloaded! 📥');
 }
 
@@ -431,7 +431,7 @@ function downloadBatchCSV() {
 function applyPreset(preset, mode) {
     const now = Date.now();
     let timestamp;
-    
+
     switch (preset) {
         case 'now':
             timestamp = now;
@@ -458,10 +458,14 @@ function applyPreset(preset, mode) {
             endOfDay.setHours(23, 59, 59, 999);
             timestamp = endOfDay.getTime();
             break;
+        case 'year_2038':
+            // Jan 19 2038 03:14:07 UTC
+            timestamp = 2147483647 * 1000;
+            break;
         default:
             timestamp = now;
     }
-    
+
     if (mode === 'unix') {
         document.getElementById('unixInput').value = Math.floor(timestamp / 1000);
         convertUnixToHuman();
@@ -469,7 +473,26 @@ function applyPreset(preset, mode) {
         const date = new Date(timestamp);
         document.getElementById('dateInput').valueAsDate = date;
         document.getElementById('timeInput').value = date.toTimeString().split(' ')[0];
+    } else if (mode === 'timezone') {
+        document.getElementById('timezoneInput').value = Math.floor(timestamp / 1000);
+        updateTimezones();
     }
+}
+
+function applyRelativePreset(preset, targetId) {
+    const now = Date.now();
+    let timestamp;
+
+    switch (preset) {
+        case 'now': timestamp = now; break;
+        case 'yesterday': timestamp = now - (24 * 60 * 60 * 1000); break;
+        case 'tomorrow': timestamp = now + (24 * 60 * 60 * 1000); break;
+        case '1h_ago': timestamp = now - (60 * 60 * 1000); break;
+        case '1h_from_now': timestamp = now + (60 * 60 * 1000); break;
+        default: timestamp = now;
+    }
+
+    document.getElementById(targetId).value = Math.floor(timestamp / 1000);
 }
 
 function setRelativeNow(field) {
@@ -480,20 +503,20 @@ function setRelativeNow(field) {
 // ========================================
 // COPY FUNCTIONS
 // ========================================
-window.copyValue = function(elementId) {
+window.copyValue = function (elementId) {
     const element = document.getElementById(elementId);
     const value = element.textContent;
-    
+
     if (value && value !== '-') {
         copyToClipboard(value);
         showToast('Copied to clipboard! ⎘');
     }
 };
 
-window.copyTimezoneValue = function(timezone) {
+window.copyTimezoneValue = function (timezone) {
     const element = document.querySelector(`[data-timezone="${timezone}"]`);
     const value = element.textContent;
-    
+
     if (value && value !== '-') {
         copyToClipboard(value);
         showToast(`${timezone} time copied! ⎘`);
@@ -519,10 +542,10 @@ async function copyToClipboard(text) {
 function showToast(message) {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
-    
+
     toastMessage.textContent = message;
     toast.classList.remove('hidden');
-    
+
     setTimeout(() => {
         toast.classList.add('hidden');
     }, CONFIG.TOAST_DURATION);
@@ -531,7 +554,7 @@ function showToast(message) {
 // ========================================
 // DURATION CALCULATOR
 // ========================================
-window.setDurationNow = function() {
+window.setDurationNow = function () {
     const now = Math.floor(Date.now() / 1000);
     document.getElementById('durationStart').value = now;
 };
@@ -553,10 +576,13 @@ function calculateDuration() {
     const days = parseInt(document.getElementById('durDays').value) || 0;
     const hours = parseInt(document.getElementById('durHours').value) || 0;
     const mins = parseInt(document.getElementById('durMins').value) || 0;
-    const op = document.getElementById('durationOp').value;
+    const secs = parseInt(document.getElementById('durSecs').value) || 0; // Added seconds
 
-    const totalMinutes = (days * 1440) + (hours * 60) + mins;
-    const totalMs = totalMinutes * 60 * 1000;
+    // Get radio value
+    const op = document.querySelector('input[name="durationOp"]:checked').value;
+
+    const totalSeconds = (days * 86400) + (hours * 3600) + (mins * 60) + secs;
+    const totalMs = totalSeconds * 1000;
 
     let newTime;
     if (op === 'add') {
