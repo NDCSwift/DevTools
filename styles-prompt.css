@@ -190,6 +190,52 @@
     border-color: var(--color-primary);
 }
 
+/* Prompt Type Selector */
+.prompt-type-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.prompt-type-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.prompt-type-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text);
+    background: rgba(0, 255, 159, 0.05);
+}
+
+.prompt-type-btn.active {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(0, 255, 159, 0.1);
+    box-shadow: 0 0 8px rgba(0, 255, 159, 0.15);
+}
+
+.pt-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.pt-label {
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+}
+
 /* Settings Panel */
 .settings-panel {
     background: var(--color-surface);

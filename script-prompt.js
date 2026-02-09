@@ -206,7 +206,13 @@ function attachEventListeners() {
     });
 
     // Settings Inputs
-    document.getElementById('promptType').addEventListener('change', (e) => state.promptType = e.target.value);
+    document.querySelectorAll('.prompt-type-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.prompt-type-btn').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            state.promptType = e.currentTarget.dataset.type;
+        });
+    });
     document.getElementById('addStructure').addEventListener('change', (e) => state.addStructure = e.target.checked);
     document.getElementById('addContext').addEventListener('change', (e) => state.addContext = e.target.checked);
     document.getElementById('requestExamples').addEventListener('change', (e) => state.requestExamples = e.target.checked);
