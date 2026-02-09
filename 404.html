@@ -19,6 +19,34 @@
     </style>
 </head>
 <body>
-    <!-- --- PAGE CONTENT WILL GO HERE --- -->
+    <!-- Main container - centers everything vertically and horizontally -->
+    <div class="container">
+
+        <!-- Large 404 heading - the first thing visitors see -->
+        <h1 class="error-code">404</h1>
+
+        <!-- Friendly message - tells the visitor what happened without blame -->
+        <h2 class="error-message">Page Not Found</h2>
+
+        <!-- Helpful subtitle - acknowledges the problem and offers direction -->
+        <p class="error-description">
+            The page you're looking for doesn't exist or has been moved.
+        </p>
+
+        <!-- Navigation button - gives the visitor a clear way out -->
+        <!-- Links back to toolbit.dev homepage -->
+        <a href="https://toolbit.dev/index.html" class="home-button">
+            ← Back to Home
+        </a>
+
+        <!-- Auto-redirect countdown - optional but improves UX -->
+        <!-- Shows a countdown then automatically redirects to homepage -->
+        <p class="redirect-notice" id="redirect-notice">
+            Redirecting to homepage in <span id="countdown">10</span> seconds...
+        </p>
+    </div>
+
+    <!-- Redirect script lives at the bottom of body -->
+    <!-- We'll add this in the bonus section -->
 </body>
 </html>
