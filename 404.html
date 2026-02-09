@@ -1,85 +1,393 @@
-<!-- 404.html -->
-
-<!-- Custom 404 error page for GitHub Pages -->
-
-<!-- GitHub automatically serves this file for any URL that doesn't match an existing page -->
-
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-
-    <!-- Standard meta tags for character encoding and responsive viewport -->
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | ToolBit</title>
+    <meta name="description" content="The page you're looking for doesn't exist. Head back to ToolBit's developer tools.">
+    <link rel="stylesheet" href="styles-index.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Page title - shows in the browser tab when a visitor hits a 404 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&display=swap"
+        rel="stylesheet">
 
-    <title>Page Not Found – ToolBit</title>
-
-    <!-- Inline styles - keeps everything in a single file for simplicity -->
-
-    <!-- No external CSS files to worry about loading or path issues -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
 
     <style>
+        .error-page {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
 
-        /* --- STYLES WILL GO HERE --- */
+        .error-content {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
 
+        .error-code {
+            font-family: var(--font-display);
+            font-size: clamp(6rem, 20vw, 12rem);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-tertiary) 50%, var(--color-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glitch-flicker 4s infinite;
+        }
+
+        .error-terminal {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+            text-align: left;
+            box-shadow: var(--shadow-md);
+        }
+
+        .error-terminal-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: var(--color-secondary); }
+        .terminal-dot.yellow { background: var(--color-warning); }
+        .terminal-dot.green { background: var(--color-primary); }
+
+        .terminal-title {
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+
+        .error-terminal pre {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: var(--color-text-muted);
+            overflow-x: auto;
+        }
+
+        .error-terminal .prompt {
+            color: var(--color-primary);
+        }
+
+        .error-terminal .cmd {
+            color: var(--color-text);
+        }
+
+        .error-terminal .err {
+            color: var(--color-secondary);
+        }
+
+        .error-terminal .info {
+            color: var(--color-tertiary);
+        }
+
+        .error-terminal .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.1em;
+            background: var(--color-primary);
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+
+        .error-message {
+            font-size: 1.1rem;
+            color: var(--color-text-muted);
+            margin-bottom: var(--spacing-xl);
+            line-height: 1.7;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .error-actions .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 2rem;
+            background: var(--color-primary);
+            color: var(--color-bg);
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .error-actions .btn-primary:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .error-actions .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 2rem;
+            background: transparent;
+            color: var(--color-text);
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .error-actions .btn-secondary:hover {
+            border-color: var(--color-tertiary);
+            color: var(--color-tertiary);
+            transform: translateY(-2px);
+        }
+
+        .error-tools {
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .error-tools h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--color-text-muted);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .error-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-sm);
+        }
+
+        .error-tool-link {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .error-tool-link:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            transform: translateY(-1px);
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        @keyframes glitch-flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; transform: translateX(-2px); }
+            94% { opacity: 1; transform: translateX(2px); }
+            95% { opacity: 0.9; transform: translateX(0); }
+        }
     </style>
-
 </head>
 
 <body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="json.html" class="nav-link">JSON</a>
+                        <a href="regex.html" class="nav-link">RegEx</a>
+                        <a href="base64.html" class="nav-link">Base64</a>
+                        <a href="colors.html" class="nav-link">Colors</a>
+                        <a href="hash.html" class="nav-link">Hash</a>
+                        <a href="url.html" class="nav-link">URL</a>
+                        <a href="lorem.html" class="nav-link">Lorem</a>
+                        <a href="timestamp.html" class="nav-link">Time</a>
+                        <a href="diff.html" class="nav-link">Diff</a>
+                        <a href="prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="about.html" class="nav-link about-link">About</a>
+                <a href="support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="json.html" class="nav-link">JSON Formatter</a>
+            <a href="regex.html" class="nav-link">RegEx Tester</a>
+            <a href="base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="colors.html" class="nav-link">Color Palette</a>
+            <a href="hash.html" class="nav-link">Hash Generator</a>
+            <a href="url.html" class="nav-link">URL Encoder</a>
+            <a href="lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="timestamp.html" class="nav-link">Timestamp</a>
+            <a href="diff.html" class="nav-link">Diff Checker</a>
+            <a href="prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <a href="blog.html" class="nav-link">Blog</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="support.html" class="nav-link">☕ Support ToolBit</a>
+        </div>
+    </nav>
 
-    <!-- Main container - centers everything vertically and horizontally -->
+    <!-- 404 Content -->
+    <main class="error-page">
+        <div class="container">
+            <div class="error-content">
+                <div class="error-code">404</div>
 
-    <div class="container">
+                <div class="error-terminal">
+                    <div class="error-terminal-bar">
+                        <span class="terminal-dot red"></span>
+                        <span class="terminal-dot yellow"></span>
+                        <span class="terminal-dot green"></span>
+                        <span class="terminal-title">bash — toolbit</span>
+                    </div>
+                    <pre><span class="prompt">$</span> <span class="cmd">curl -I toolbit.dev<span id="path"></span></span>
+<span class="err">HTTP/1.1 404 Not Found</span>
+<span class="info">→ The requested resource could not be located.</span>
+<span class="info">→ It may have been moved, renamed, or never existed.</span>
 
-        <!-- Large 404 heading - the first thing visitors see -->
+<span class="prompt">$</span> <span class="cmd">cd /home</span><span class="cursor"></span></pre>
+                </div>
 
-        <h1 class="error-code">404</h1>
+                <p class="error-message">
+                    Looks like this route doesn't resolve. Head back to the homepage or jump straight into a tool.
+                </p>
 
-        <!-- Friendly message - tells the visitor what happened without blame -->
+                <div class="error-actions">
+                    <a href="index.html" class="btn-primary">← Back to Home</a>
+                    <a href="json.html" class="btn-secondary">Open a Tool →</a>
+                </div>
 
-        <h2 class="error-message">Page Not Found</h2>
+                <div class="error-tools">
+                    <h3>Quick Access</h3>
+                    <div class="error-tools-grid">
+                        <a href="json.html" class="error-tool-link">JSON</a>
+                        <a href="regex.html" class="error-tool-link">RegEx</a>
+                        <a href="base64.html" class="error-tool-link">Base64</a>
+                        <a href="colors.html" class="error-tool-link">Colors</a>
+                        <a href="hash.html" class="error-tool-link">Hash</a>
+                        <a href="url.html" class="error-tool-link">URL</a>
+                        <a href="lorem.html" class="error-tool-link">Lorem</a>
+                        <a href="timestamp.html" class="error-tool-link">Timestamp</a>
+                        <a href="diff.html" class="error-tool-link">Diff</a>
+                        <a href="prompt.html" class="error-tool-link">Prompt</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-        <!-- Helpful subtitle - acknowledges the problem and offers direction -->
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Your local execution layer, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="json.html">JSON Formatter</a>
+                    <a href="regex.html">RegEx Tester</a>
+                    <a href="base64.html">Base64 Encoder</a>
+                    <a href="colors.html">Color Palette Generator</a>
+                    <a href="hash.html">Hash Generator</a>
+                    <a href="url.html">URL Encoder</a>
+                    <a href="lorem.html">Lorem Ipsum Generator</a>
+                    <a href="timestamp.html">Timestamp Converter</a>
+                    <a href="diff.html">Diff Checker</a>
+                    <a href="prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
 
-        <p class="error-description">
-
-            The page you're looking for doesn't exist or has been moved.
-
-        </p>
-
-        <!-- Navigation button - gives the visitor a clear way out -->
-
-        <!-- Links back to toolbit.dev homepage -->
-
-        <a href="https://toolbit.dev/index.html" class="home-button">
-
-            ← Back to Home
-
-        </a>
-
-        <!-- Auto-redirect countdown - optional but improves UX -->
-
-        <!-- Shows a countdown then automatically redirects to homepage -->
-
-        <p class="redirect-notice" id="redirect-notice">
-
-            Redirecting to homepage in <span id="countdown">10</span> seconds...
-
-        </p>
-
-    </div>
-
-    <!-- Redirect script lives at the bottom of body -->
-
-    <!-- We'll add this in the bonus section -->
-
+    <script src="script-index.js"></script>
+    <script>
+        // Inject the current path into the terminal output
+        const pathEl = document.getElementById('path');
+        if (pathEl) {
+            pathEl.textContent = window.location.pathname;
+        }
+    </script>
 </body>
 
 </html>
