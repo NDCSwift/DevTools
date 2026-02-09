@@ -107,11 +107,13 @@
             <p class="blog-subtitle">Deep dives into data formats, web standards, and developer productivity.</p>
 
             <div class="blog-categories">
-                <a href="#" class="category-tag active">All</a>
-                <a href="#" class="category-tag">Web Dev</a>
-                <a href="#" class="category-tag">Data</a>
-                <a href="#" class="category-tag">Productivity</a>
-                <a href="#" class="category-tag">AI</a>
+                <button class="category-tag active" data-filter="all">All</button>
+                <button class="category-tag" data-filter="web-dev">Web Dev</button>
+                <button class="category-tag" data-filter="data">Data</button>
+                <button class="category-tag" data-filter="security">Security</button>
+                <button class="category-tag" data-filter="backend">Backend</button>
+                <button class="category-tag" data-filter="productivity">Productivity</button>
+                <button class="category-tag" data-filter="ai">AI</button>
             </div>
         </div>
     </section>
@@ -121,91 +123,157 @@
         <div class="blog-grid">
 
             <!-- Article 1: JSON -->
-            <a href="blog/json-vs-xml.html" class="article-card">
+            <a href="blog/json-vs-xml.html" class="article-card" data-tags="data,web-dev">
                 <div class="article-image">{}</div>
                 <div class="article-content">
                     <div class="article-meta">Data Formats • 5 min read</div>
                     <h2 class="article-title">JSON vs XML: Why JSON Won the Web</h2>
                     <p class="article-excerpt">A deep dive into the history of data interchange formats and why
                         lightweight JSON became the de facto standard over XML.</p>
+                    <div class="article-tags">
+                        <span class="article-tag">Data</span>
+                        <span class="article-tag">Web Dev</span>
+                    </div>
                     <span class="read-more">Read Article</span>
                 </div>
             </a>
 
             <!-- Article 2: Base64 -->
-            <a href="blog/base64-explained.html" class="article-card">
+            <a href="blog/base64-explained.html" class="article-card" data-tags="web-dev">
                 <div class="article-image">64</div>
                 <div class="article-content">
                     <div class="article-meta">Web Standards • 6 min read</div>
                     <h2 class="article-title">Base64 Explained: How Encoding Works</h2>
                     <p class="article-excerpt">Demystifying the binary-to-text encoding scheme. Learn how Base64 works
                         under the hood and when to use it.</p>
+                    <div class="article-tags">
+                        <span class="article-tag">Web Dev</span>
+                    </div>
                     <span class="read-more">Read Article</span>
                 </div>
             </a>
 
             <!-- Article 3: RegEx -->
-            <a href="blog/regex-patterns.html" class="article-card">
+            <a href="blog/regex-patterns.html" class="article-card" data-tags="productivity,web-dev">
                 <div class="article-image">/.*</div>
                 <div class="article-content">
                     <div class="article-meta">Productivity • 8 min read</div>
                     <h2 class="article-title">RegEx for Humans: 5 Essential Patterns</h2>
                     <p class="article-excerpt">Stop copying and pasting StackOverflow regex. Learn the 5 patterns that
                         solve 90% of validation problems.</p>
+                    <div class="article-tags">
+                        <span class="article-tag">Productivity</span>
+                        <span class="article-tag">Web Dev</span>
+                    </div>
                     <span class="read-more">Read Article</span>
                 </div>
             </a>
 
             <!-- Article 4: Prompt Engineering -->
-            <a href="blog/prompt-engineering.html" class="article-card">
+            <a href="blog/prompt-engineering.html" class="article-card" data-tags="ai,productivity">
                 <div class="article-image">✨</div>
                 <div class="article-content">
                     <div class="article-meta">AI • 7 min read</div>
                     <h2 class="article-title">Prompt Engineering 101</h2>
                     <p class="article-excerpt">Moving beyond "make me a website". How to use context, constraints, and
                         personas to get production-ready AI outputs.</p>
+                    <div class="article-tags">
+                        <span class="article-tag">AI</span>
+                        <span class="article-tag">Productivity</span>
+                    </div>
                     <span class="read-more">Read Article</span>
                 </div>
             </a>
 
             <!-- Article 5: Timezones -->
-            <a href="blog/timezone-nightmare.html" class="article-card">
+            <a href="blog/timezone-nightmare.html" class="article-card" data-tags="backend">
                 <div class="article-image">⏰</div>
                 <div class="article-content">
                     <div class="article-meta">Backend • 6 min read</div>
                     <h2 class="article-title">The Timezone Nightmare</h2>
                     <p class="article-excerpt">Why developers hate dates, and how to tame the beast using ISO 8601 and
                         proper timestamp handling.</p>
+                    <div class="article-tags">
+                        <span class="article-tag">Backend</span>
+                    </div>
                     <span class="read-more">Read Article</span>
                 </div>
             </a>
 
             <!-- Article 6: Local Storage -->
-            <a href="blog/local-storage-guide.html" class="article-card">
+            <a href="blog/local-storage-guide.html" class="article-card" data-tags="web-dev">
                 <div class="article-image">💾</div>
                 <div class="article-content">
                     <div class="article-meta">Web Dev • 5 min read</div>
                     <h2 class="article-title">Local Storage vs Cookies vs IndexedDB</h2>
                     <p class="article-excerpt">Where should you store user data? A deep dive into the pros and cons of
                         client-side storage options.</p>
+                    <div class="article-tags">
+                        <span class="article-tag">Web Dev</span>
+                    </div>
                     <span class="read-more">Read Article</span>
                 </div>
             </a>
 
             <!-- Article 7: Hashing -->
-            <a href="blog/hashing-explained.html" class="article-card">
+            <a href="blog/hashing-explained.html" class="article-card" data-tags="security,backend">
                 <div class="article-image">#</div>
                 <div class="article-content">
                     <div class="article-meta">Security • 7 min read</div>
                     <h2 class="article-title">Understanding Hashing Algorithms</h2>
                     <p class="article-excerpt">Why MD5 is dead, why SHA-256 rules, and how to safely store passwords
                         in 2026.</p>
+                    <div class="article-tags">
+                        <span class="article-tag">Security</span>
+                        <span class="article-tag">Backend</span>
+                    </div>
                     <span class="read-more">Read Article</span>
                 </div>
             </a>
 
         </div>
     </main>
+
+    <!-- No Results Message -->
+    <div class="container">
+        <p class="no-results" style="display:none;">No articles found for this category.</p>
+    </div>
+
+    <!-- Tag Filtering Script -->
+    <script>
+        (function () {
+            const filterBtns = document.querySelectorAll('.category-tag[data-filter]');
+            const cards = document.querySelectorAll('.article-card[data-tags]');
+            const noResults = document.querySelector('.no-results');
+
+            filterBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const filter = btn.getAttribute('data-filter');
+
+                    filterBtns.forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+
+                    var visibleCount = 0;
+                    cards.forEach(function (card) {
+                        if (filter === 'all') {
+                            card.style.display = '';
+                            visibleCount++;
+                        } else {
+                            var tags = card.getAttribute('data-tags').split(',');
+                            if (tags.indexOf(filter) !== -1) {
+                                card.style.display = '';
+                                visibleCount++;
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    noResults.style.display = visibleCount === 0 ? '' : 'none';
+                });
+            });
+        })();
+    </script>
 
     <!-- Footer -->
     <footer class="site-footer">

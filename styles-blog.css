@@ -41,7 +41,9 @@
     border-radius: var(--radius-full);
     color: var(--color-text-muted);
     font-size: 0.9rem;
+    font-family: var(--font-mono);
     text-decoration: none;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
@@ -120,6 +122,32 @@
     line-height: 1.6;
     margin-bottom: var(--spacing-lg);
     flex: 1;
+}
+
+/* Article Tag Pills */
+.article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.article-tag {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    background: rgba(0, 255, 159, 0.1);
+    color: var(--color-primary);
+    border: 1px solid rgba(0, 255, 159, 0.2);
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.02em;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: var(--spacing-xxl) 0;
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
 }
 
 .read-more {

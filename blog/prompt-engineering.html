@@ -116,7 +116,7 @@
                     <p>We've all done it. We open ChatGPT or Claude and type: <em>"Write a function to validate
                             emails."</em></p>
                     <p>And the AI gives us a decent function. But it's in Python, and you wanted JavaScript. It uses a
-                        regex that allows existing domains. It doesn't handle errors. </p>
+                        regex that doesn't validate real domains. It doesn't handle errors.</p>
                     <p>This is the "garbage in, garbage out" principle of AI. Prompt Engineering isn't about tricking
                         the AI; it's about providing the <strong>context</strong> you already have in your head but
                         forgot to type.</p>
@@ -143,8 +143,8 @@
                     <p>For complex logic, LLMs often hallucinate because they try to predict the answer immediately.
                         Asking them to "think step by step" forces them to generate intermediate reasoning tokens, which
                         increases accuracy.</p>
-                    <p><strong>Prompt:</strong> "Critique this design. <em>Think step by step. First valid the
-                            usability, then checking color contrast, and finally giving a score.</em>"</p>
+                    <p><strong>Prompt:</strong> "Critique this design. <em>Think step by step. First, validate the
+                            usability, then check color contrast, and finally give a score.</em>"</p>
 
                     <h2>4. Few-Shot Prompting (examples)</h2>
                     <p>The best way to get a specific format is to show, not tell. Give the AI 1 or 2 examples of what
