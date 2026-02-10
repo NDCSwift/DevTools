@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Diff Algorithms Work: From Myers to Patience | ToolBit Blog</title>
+    <meta name="description"
+        content="How does git diff know what changed? Explore the Myers diff algorithm, LCS matching, and when to use unified vs side-by-side views in code review.">
+    <link rel="canonical" href="https://toolbit.dev/blog/diff-algorithms-explained.html">
+    <link rel="stylesheet" href="../styles-blog.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="../json.html" class="nav-link">JSON</a>
+                        <a href="../regex.html" class="nav-link">RegEx</a>
+                        <a href="../base64.html" class="nav-link">Base64</a>
+                        <a href="../colors.html" class="nav-link">Colors</a>
+                        <a href="../hash.html" class="nav-link">Hash</a>
+                        <a href="../url.html" class="nav-link">URL</a>
+                        <a href="../lorem.html" class="nav-link">Lorem</a>
+                        <a href="../timestamp.html" class="nav-link">Time</a>
+                        <a href="../diff.html" class="nav-link">Diff</a>
+                        <a href="../prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="../blog.html" class="nav-link active">Blog</a>
+                <a href="../about.html" class="nav-link about-link">About</a>
+                <a href="../support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="../json.html" class="nav-link">JSON Formatter</a>
+            <a href="../regex.html" class="nav-link">RegEx Tester</a>
+            <a href="../base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="../colors.html" class="nav-link">Color Palette</a>
+            <a href="../hash.html" class="nav-link">Hash Generator</a>
+            <a href="../url.html" class="nav-link">URL Encoder</a>
+            <a href="../lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="../timestamp.html" class="nav-link">Timestamp</a>
+            <a href="../diff.html" class="nav-link">Diff Checker</a>
+            <a href="../prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="../blog.html" class="nav-link active">Blog</a>
+            <a href="../about.html" class="nav-link about-link">About</a>
+            <a href="../support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
+
+    <!-- Article Content -->
+    <main class="container">
+        <div class="article-layout">
+
+            <article class="article-content-wrapper">
+                <header class="article-header">
+                    <div class="article-meta">
+                        <a href="../blog.html" class="category-tag">Productivity</a>
+                        • Published Feb 9, 2026
+                    </div>
+                    <h1 class="article-h1">How Diff Algorithms Work: The Engine Behind Every Code Review</h1>
+                    <p class="article-excerpt">You use <code>git diff</code> every day, but how does it actually decide
+                        which lines were added, removed, or moved? Here's what's happening under the hood.</p>
+                </header>
+
+                <div class="article-body">
+                    <p>Every code review starts with a diff. Green lines added, red lines removed. It looks simple, but
+                        the algorithm deciding <em>which</em> lines to mark as changed and <em>how</em> to group them is
+                        solving a genuinely hard computer science problem.</p>
+
+                    <p>Understanding how diff works helps you write better commits, review code faster, and troubleshoot
+                        confusing merge conflicts.</p>
+
+                    <h2>1. The Core Problem: Longest Common Subsequence</h2>
+                    <p>At its heart, a diff algorithm is finding the <strong>Longest Common Subsequence (LCS)</strong>
+                        between two sequences (files). The LCS is the longest set of lines that appear in both files in
+                        the same order, without needing to be contiguous.</p>
+
+                    <p>Consider two versions of a file:</p>
+
+                    <pre><code>Version A:        Version B:
+1. import foo     1. import foo
+2. import bar     2. import baz
+3.                3. import bar
+4. function x()   4.
+5.   return 1     5. function x()
+6. }              6.   return 2
+                  7. }</code></pre>
+
+                    <p>The LCS here is: <code>import foo</code>, <code>import bar</code>, <code>function x()</code>,
+                        <code>}</code>. Everything not in the LCS is either an insertion or a deletion. The diff
+                        algorithm's job is to find this LCS as efficiently as possible.</p>
+
+                    <h2>2. The Myers Algorithm: Git's Default</h2>
+                    <p>Eugene Myers published his diff algorithm in 1986, and it's still the default in Git. It works by
+                        exploring an "edit graph" where moving right represents deleting a line from file A, moving down
+                        represents inserting a line from file B, and moving diagonally represents a matching line (no
+                        change).</p>
+
+                    <p>The algorithm finds the <strong>shortest edit script</strong>: the minimum number of insertions
+                        and deletions needed to transform file A into file B. This is what makes Git diffs feel
+                        "minimal"—they show the fewest changes possible.</p>
+
+                    <h3>Why "Minimal" Matters</h3>
+                    <p>There are often multiple valid diffs for the same change. Imagine you add a blank line between two
+                        functions. Should the diff show the blank line added after the first function's closing brace, or
+                        before the second function's opening line? Myers picks the shortest path, which usually produces
+                        the most intuitive result.</p>
+
+                    <h2>3. Patience Diff: Better for Code</h2>
+                    <p>Myers is optimal for minimizing edit distance, but it can produce confusing results when large
+                        blocks of code are moved or when files have many similar lines (like closing braces in
+                        C-style languages).</p>
+
+                    <p><strong>Patience diff</strong> takes a different approach:</p>
+                    <ol>
+                        <li>Find all lines that appear <em>exactly once</em> in both files. These are "anchor" lines—they're
+                            almost certainly the same logical line.</li>
+                        <li>Match these unique lines first to establish a skeleton.</li>
+                        <li>Recursively diff the gaps between anchors using the standard LCS approach.</li>
+                    </ol>
+
+                    <p>The result is diffs that align on semantically meaningful lines (function signatures, class
+                        definitions) rather than on braces and blank lines. You can enable it in Git:</p>
+                    <pre><code>git diff --diff-algorithm=patience</code></pre>
+
+                    <h2>4. Unified vs. Side-by-Side: Choosing a View</h2>
+                    <p>The algorithm produces a list of changes. How you <em>display</em> them is a separate design
+                        decision.</p>
+
+                    <h3>Unified Diff</h3>
+                    <p>The classic format you see in <code>git diff</code> output and GitHub PRs. Both files are
+                        interleaved in a single column, with <code>-</code> for removed lines and <code>+</code> for
+                        added lines.</p>
+
+                    <pre><code> import foo
+-import bar
++import baz
++import bar
+
+ function x()
+-  return 1
++  return 2
+ }</code></pre>
+
+                    <p><strong>Best for:</strong> Small, focused changes. Quick scanning. Terminal output. Patch files.</p>
+
+                    <h3>Side-by-Side Diff</h3>
+                    <p>The old file and new file are displayed in parallel columns. Changed lines are aligned
+                        horizontally so you can compare them directly.</p>
+
+                    <p><strong>Best for:</strong> Large refactors. Comparing config files. Reviewing changes where
+                        context matters (seeing what a line <em>was</em> alongside what it <em>became</em>).</p>
+
+                    <h3>Inline Highlighting</h3>
+                    <p>The most useful enhancement to either view is <strong>word-level</strong> or
+                        <strong>character-level</strong> highlighting within changed lines. Instead of marking the entire
+                        line as changed, the diff highlights only the specific characters that differ. This is
+                        invaluable when a line has a small typo fix buried in a long string.</p>
+
+                    <h2>5. Writing Diff-Friendly Code</h2>
+                    <p>Understanding how diffs work helps you write code that produces cleaner code reviews:</p>
+
+                    <ul>
+                        <li><strong>Trailing commas:</strong> In arrays and objects, trailing commas mean adding an item
+                            only shows one added line, not a modified line plus an added line.</li>
+                        <li><strong>One import per line:</strong> Sorting imports alphabetically and putting each on its
+                            own line produces minimal diffs when adding or removing dependencies.</li>
+                        <li><strong>Separate refactoring from logic changes:</strong> A commit that renames a variable
+                            across 50 files makes it impossible to spot the one-line bug fix buried inside it. Split
+                            them into separate commits.</li>
+                        <li><strong>Avoid reformatting in the same commit:</strong> Running a code formatter on an entire
+                            file in the same commit as a bug fix creates noise. Format first, then fix.</li>
+                    </ul>
+
+                    <h2>6. Beyond Text: Structured Diffing</h2>
+                    <p>Traditional diff algorithms operate on lines of text. They don't understand that your file is
+                        JSON, or HTML, or a programming language with syntax. This leads to diffs that are technically
+                        correct but semantically confusing.</p>
+
+                    <p>Structured diff tools parse the file into an AST (Abstract Syntax Tree) and compare the trees
+                        instead of the text. This means:</p>
+                    <ul>
+                        <li>Reordering JSON keys doesn't show as a deletion + insertion.</li>
+                        <li>Moving a function to a different location shows as a "move," not a delete + add.</li>
+                        <li>Changing indentation style doesn't generate any diff at all.</li>
+                    </ul>
+
+                    <p>While these tools are still maturing, they represent the future of code review.</p>
+
+                    <h2>Conclusion</h2>
+                    <p>Diff algorithms are a fascinating intersection of theoretical computer science and practical
+                        developer tooling. Myers gives you minimal diffs, Patience gives you semantic diffs, and the
+                        display format you choose affects how quickly reviewers can understand your changes.</p>
+
+                    <p>Need to compare two files or API responses? Use our <a href="../diff.html">Diff Checker</a> to
+                        see changes highlighted side-by-side or in unified view, with character-level diffing.</p>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <div class="widget-title">Table of Contents</div>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">1. LCS Problem</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">2. Myers Algorithm</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">3. Patience Diff</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">4. Unified vs Side-by-Side</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">5. Diff-Friendly Code</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">6. Structured Diffing</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget tool-cta">
+                    <span class="tool-cta-icon">📊</span>
+                    <div class="widget-title">Compare Files</div>
+                    <p>Paste two texts and see changes highlighted with character-level precision.</p>
+                    <a href="../diff.html" class="btn-sidebar">Open Diff Checker</a>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="../json.html">JSON Formatter</a>
+                    <a href="../regex.html">RegEx Tester</a>
+                    <a href="../base64.html">Base64 Encoder</a>
+                    <a href="../colors.html">Color Palette Generator</a>
+                    <a href="../hash.html">Hash Generator</a>
+                    <a href="../url.html">URL Encoder</a>
+                    <a href="../lorem.html">Lorem Ipsum Generator</a>
+                    <a href="../timestamp.html">Timestamp Converter</a>
+                    <a href="../diff.html">Diff Checker</a>
+                    <a href="../prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="../support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

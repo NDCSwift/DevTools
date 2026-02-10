@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Encoding Demystified: Why %20 Exists | ToolBit Blog</title>
+    <meta name="description"
+        content="Why does a space become %20? Learn how percent-encoding works, the difference between encodeURI and encodeURIComponent, and common URL pitfalls.">
+    <link rel="canonical" href="https://toolbit.dev/blog/url-encoding-demystified.html">
+    <link rel="stylesheet" href="../styles-blog.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="../json.html" class="nav-link">JSON</a>
+                        <a href="../regex.html" class="nav-link">RegEx</a>
+                        <a href="../base64.html" class="nav-link">Base64</a>
+                        <a href="../colors.html" class="nav-link">Colors</a>
+                        <a href="../hash.html" class="nav-link">Hash</a>
+                        <a href="../url.html" class="nav-link">URL</a>
+                        <a href="../lorem.html" class="nav-link">Lorem</a>
+                        <a href="../timestamp.html" class="nav-link">Time</a>
+                        <a href="../diff.html" class="nav-link">Diff</a>
+                        <a href="../prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="../blog.html" class="nav-link active">Blog</a>
+                <a href="../about.html" class="nav-link about-link">About</a>
+                <a href="../support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="../json.html" class="nav-link">JSON Formatter</a>
+            <a href="../regex.html" class="nav-link">RegEx Tester</a>
+            <a href="../base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="../colors.html" class="nav-link">Color Palette</a>
+            <a href="../hash.html" class="nav-link">Hash Generator</a>
+            <a href="../url.html" class="nav-link">URL Encoder</a>
+            <a href="../lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="../timestamp.html" class="nav-link">Timestamp</a>
+            <a href="../diff.html" class="nav-link">Diff Checker</a>
+            <a href="../prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="../blog.html" class="nav-link active">Blog</a>
+            <a href="../about.html" class="nav-link about-link">About</a>
+            <a href="../support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
+
+    <!-- Article Content -->
+    <main class="container">
+        <div class="article-layout">
+
+            <article class="article-content-wrapper">
+                <header class="article-header">
+                    <div class="article-meta">
+                        <a href="../blog.html" class="category-tag">Web Dev</a>
+                        • Published Feb 7, 2026
+                    </div>
+                    <h1 class="article-h1">URL Encoding Demystified: Why %20 Exists</h1>
+                    <p class="article-excerpt">A URL looks simple until it breaks. Here's the definitive guide to
+                        percent-encoding, the difference between encodeURI and encodeURIComponent, and the gotchas that
+                        will ruin your API calls.</p>
+                </header>
+
+                <div class="article-body">
+                    <p>Every developer has hit this bug: you pass a search query to an API, and it works perfectly until
+                        someone searches for "Tom & Jerry." The ampersand splits your query parameter in half. The server
+                        receives <code>q=Tom</code> and a mysterious second parameter called <code>Jerry</code>.</p>
+
+                    <p>URL encoding exists to prevent exactly this kind of chaos.</p>
+
+                    <h2>1. The Anatomy of a URL</h2>
+                    <p>Before we can understand encoding, we need to understand what a URL is made of. RFC 3986 defines
+                        the structure:</p>
+
+                    <pre><code>https://api.example.com:8080/v2/search?q=hello+world&lang=en#results
+\___/   \_______________/\___/\________/ \__________________/ \_____/
+scheme       host        port   path        query string      fragment</code></pre>
+
+                    <p>Each part has its own rules about which characters are allowed. The <code>?</code> separates the
+                        path from the query. The <code>&</code> separates query parameters. The <code>#</code> marks the
+                        fragment. The <code>/</code> separates path segments.</p>
+
+                    <p>These characters are called <strong>reserved characters</strong>. If your <em>data</em> contains
+                        one of them, the URL parser can't tell the difference between structure and content. That's where
+                        percent-encoding comes in.</p>
+
+                    <h2>2. How Percent-Encoding Works</h2>
+                    <p>Percent-encoding replaces unsafe characters with a <code>%</code> followed by two hexadecimal
+                        digits representing the character's ASCII (or UTF-8) byte value.</p>
+
+                    <ul>
+                        <li>Space → <code>%20</code> (ASCII 32 = hex 20)</li>
+                        <li><code>&</code> → <code>%26</code> (ASCII 38 = hex 26)</li>
+                        <li><code>=</code> → <code>%3D</code> (ASCII 61 = hex 3D)</li>
+                        <li><code>#</code> → <code>%23</code> (ASCII 35 = hex 23)</li>
+                        <li><code>/</code> → <code>%2F</code> (ASCII 47 = hex 2F)</li>
+                    </ul>
+
+                    <p>So "Tom & Jerry" in a query parameter becomes <code>Tom%20%26%20Jerry</code>. The URL parser now
+                        sees the <code>%26</code> as data, not as a parameter separator.</p>
+
+                    <h3>What About the + Sign?</h3>
+                    <p>In HTML form submissions (<code>application/x-www-form-urlencoded</code>), spaces are encoded as
+                        <code>+</code> instead of <code>%20</code>. Both are valid, but they belong to different specs.
+                        <code>%20</code> is the RFC 3986 standard. <code>+</code> is the HTML form convention. Most
+                        servers accept both, but it's a common source of double-encoding bugs.</p>
+
+                    <h2>3. encodeURI vs. encodeURIComponent</h2>
+                    <p>JavaScript gives you two encoding functions, and using the wrong one is one of the most common
+                        web development mistakes.</p>
+
+                    <h3>encodeURI()</h3>
+                    <p>Encodes a <strong>full URL</strong>. It leaves structural characters alone
+                        (<code>: / ? # & =</code>) because it assumes they're part of the URL's structure.</p>
+
+                    <pre><code>encodeURI("https://example.com/path?q=hello world")
+// "https://example.com/path?q=hello%20world"
+// ✅ The :// and ? are preserved</code></pre>
+
+                    <h3>encodeURIComponent()</h3>
+                    <p>Encodes a <strong>single value</strong> within a URL. It encodes everything except
+                        letters, digits, and <code>- _ . ~ </code>.</p>
+
+                    <pre><code>encodeURIComponent("hello world&foo=bar")
+// "hello%20world%26foo%3Dbar"
+// ✅ The & and = are escaped because they're DATA, not structure</code></pre>
+
+                    <h3>The Golden Rule</h3>
+                    <p>Building a full URL from scratch? Use <code>encodeURI()</code>. Inserting a user-provided value
+                        into a query parameter? Always use <code>encodeURIComponent()</code>.</p>
+
+                    <pre><code>// ❌ WRONG: encodeURI won't escape the & in the user's input
+const url = encodeURI(`https://api.com/search?q=${userInput}`);
+
+// ✅ RIGHT: encode just the value
+const url = `https://api.com/search?q=${encodeURIComponent(userInput)}`;</code></pre>
+
+                    <h2>4. Unicode and Internationalized URLs</h2>
+                    <p>ASCII only covers 128 characters. What happens when someone searches for "café" or "日本語"?</p>
+
+                    <p>The character is first converted to its <strong>UTF-8 byte sequence</strong>, and then each byte
+                        is percent-encoded individually:</p>
+
+                    <ul>
+                        <li>"é" → UTF-8 bytes: <code>C3 A9</code> → <code>%C3%A9</code></li>
+                        <li>"日" → UTF-8 bytes: <code>E6 97 A5</code> → <code>%E6%97%A5</code></li>
+                    </ul>
+
+                    <p>Modern browsers hide this complexity by displaying decoded Unicode in the address bar while
+                        sending the encoded version over the wire. But if you're logging URLs or building them manually,
+                        you need to be aware of this multi-byte encoding.</p>
+
+                    <h2>5. Common Pitfalls</h2>
+
+                    <h3>Double Encoding</h3>
+                    <p>If you encode a value that's already encoded, <code>%20</code> becomes <code>%2520</code> (the
+                        <code>%</code> itself gets encoded to <code>%25</code>). The server receives a literal
+                        <code>%20</code> string instead of a space. Always encode <em>raw</em> values, never pre-encoded
+                        strings.</p>
+
+                    <h3>Forgetting to Encode Path Segments</h3>
+                    <p>Most developers remember to encode query parameters but forget that path segments can contain
+                        special characters too. A file named <code>my report (final).pdf</code> needs encoding in the
+                        path:</p>
+                    <pre><code>/files/my%20report%20(final).pdf</code></pre>
+
+                    <h3>API Keys in URLs</h3>
+                    <p>If your API key contains <code>+</code> or <code>/</code> (common in Base64-encoded keys), they
+                        must be percent-encoded when placed in a URL. Otherwise the <code>/</code> creates a false path
+                        segment and the <code>+</code> becomes a space.</p>
+
+                    <h2>Conclusion</h2>
+                    <p>URL encoding is invisible when it works and catastrophic when it doesn't. The rules are simple:
+                        encode values with <code>encodeURIComponent()</code>, never double-encode, and test with special
+                        characters like <code>& = + # /</code> and Unicode.</p>
+
+                    <p>Need to debug a messy URL? Use our <a href="../url.html">URL Encoder</a> to encode, decode, and
+                        parse query strings instantly in your browser.</p>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <div class="widget-title">Table of Contents</div>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">1. URL Anatomy</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">2. Percent-Encoding</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">3. encodeURI vs Component</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">4. Unicode URLs</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">5. Common Pitfalls</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget tool-cta">
+                    <span class="tool-cta-icon">🔗</span>
+                    <div class="widget-title">Debug Your URLs</div>
+                    <p>Encode, decode, and parse query strings with component breakdown.</p>
+                    <a href="../url.html" class="btn-sidebar">Open URL Encoder</a>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="../json.html">JSON Formatter</a>
+                    <a href="../regex.html">RegEx Tester</a>
+                    <a href="../base64.html">Base64 Encoder</a>
+                    <a href="../colors.html">Color Palette Generator</a>
+                    <a href="../hash.html">Hash Generator</a>
+                    <a href="../url.html">URL Encoder</a>
+                    <a href="../lorem.html">Lorem Ipsum Generator</a>
+                    <a href="../timestamp.html">Timestamp Converter</a>
+                    <a href="../diff.html">Diff Checker</a>
+                    <a href="../prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="../support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

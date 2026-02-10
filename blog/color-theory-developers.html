@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Theory for Developers: HSL, Contrast, and Accessibility | ToolBit Blog</title>
+    <meta name="description"
+        content="Stop guessing hex codes. Learn HSL color spaces, WCAG contrast ratios, and how to build accessible palettes that actually look good.">
+    <link rel="canonical" href="https://toolbit.dev/blog/color-theory-developers.html">
+    <link rel="stylesheet" href="../styles-blog.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@600;800&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L3T8NYVCJ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-L3T8NYVCJ6');
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-bracket">{</span>
+                <span class="logo-text">ToolBit</span>
+                <span class="logo-bracket">}</span>
+            </a>
+            <nav class="main-nav">
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">Tools <span class="arrow">▼</span></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="../json.html" class="nav-link">JSON</a>
+                        <a href="../regex.html" class="nav-link">RegEx</a>
+                        <a href="../base64.html" class="nav-link">Base64</a>
+                        <a href="../colors.html" class="nav-link">Colors</a>
+                        <a href="../hash.html" class="nav-link">Hash</a>
+                        <a href="../url.html" class="nav-link">URL</a>
+                        <a href="../lorem.html" class="nav-link">Lorem</a>
+                        <a href="../timestamp.html" class="nav-link">Time</a>
+                        <a href="../diff.html" class="nav-link">Diff</a>
+                        <a href="../prompt.html" class="nav-link">Prompt</a>
+                    </div>
+                </div>
+                <a href="../blog.html" class="nav-link active">Blog</a>
+                <a href="../about.html" class="nav-link about-link">About</a>
+                <a href="../support.html" class="nav-link support-link">☕ Support</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <div class="mobile-nav-section">
+            <h4>Tools</h4>
+            <a href="../json.html" class="nav-link">JSON Formatter</a>
+            <a href="../regex.html" class="nav-link">RegEx Tester</a>
+            <a href="../base64.html" class="nav-link">Base64 Encoder</a>
+            <a href="../colors.html" class="nav-link">Color Palette</a>
+            <a href="../hash.html" class="nav-link">Hash Generator</a>
+            <a href="../url.html" class="nav-link">URL Encoder</a>
+            <a href="../lorem.html" class="nav-link">Lorem Ipsum</a>
+            <a href="../timestamp.html" class="nav-link">Timestamp</a>
+            <a href="../diff.html" class="nav-link">Diff Checker</a>
+            <a href="../prompt.html" class="nav-link">Prompt Optimizer</a>
+        </div>
+        <div class="mobile-nav-section">
+            <h4>More</h4>
+            <a href="../blog.html" class="nav-link active">Blog</a>
+            <a href="../about.html" class="nav-link about-link">About</a>
+            <a href="../support.html" class="nav-link support-link">☕ Support</a>
+        </div>
+    </nav>
+    <script>
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        function toggleMobileMenu() {
+            mobileMenuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+    </script>
+
+    <!-- Article Content -->
+    <main class="container">
+        <div class="article-layout">
+
+            <article class="article-content-wrapper">
+                <header class="article-header">
+                    <div class="article-meta">
+                        <a href="../blog.html" class="category-tag">Web Dev</a>
+                        • Published Feb 5, 2026
+                    </div>
+                    <h1 class="article-h1">Color Theory for Developers: Stop Guessing Hex Codes</h1>
+                    <p class="article-excerpt">Most developers pick colors by feel. Here's how to use HSL, WCAG contrast
+                        ratios, and color harmony rules to build palettes that are both beautiful and accessible.</p>
+                </header>
+
+                <div class="article-body">
+                    <p>You've been there. You need a button color. You open a color picker, click around until something
+                        "looks nice," copy the hex code, and move on. Two weeks later your designer asks why the call-to-action
+                        button is invisible to 8% of your male users.</p>
+
+                    <p>Color isn't decoration. It's a <strong>functional layer</strong> of your UI. Getting it wrong creates
+                        accessibility lawsuits, usability failures, and brand inconsistency. Getting it right is surprisingly
+                        systematic.</p>
+
+                    <h2>1. RGB is for Machines, HSL is for Humans</h2>
+                    <p>Hex codes like <code>#1a8f4e</code> are RGB values crammed into a compact notation. They tell the screen
+                        how much Red, Green, and Blue light to mix. But they tell <em>you</em> nothing. Can you look at
+                        <code>#1a8f4e</code> and predict whether it's dark or light? Warm or cool?</p>
+
+                    <p><strong>HSL (Hue, Saturation, Lightness)</strong> solves this by mapping color to how humans actually
+                        perceive it:</p>
+                    <ul>
+                        <li><strong>Hue (0-360):</strong> The color wheel position. 0 = red, 120 = green, 240 = blue.</li>
+                        <li><strong>Saturation (0-100%):</strong> How vivid vs. gray. 0% = grayscale, 100% = pure color.</li>
+                        <li><strong>Lightness (0-100%):</strong> How bright. 0% = black, 50% = pure color, 100% = white.</li>
+                    </ul>
+
+                    <p>With HSL, creating color variations is trivial. Need a hover state? Decrease lightness by 10%. Need a
+                        subtle background? Keep the same hue and saturation, bump lightness to 95%. Need a disabled state? Drop
+                        saturation to 20%. This is impossible to reason about in hex.</p>
+
+                    <h3>HSL in CSS</h3>
+                    <pre><code>:root {
+  --brand: hsl(160, 80%, 50%);
+  --brand-hover: hsl(160, 80%, 40%);
+  --brand-light: hsl(160, 80%, 95%);
+  --brand-muted: hsl(160, 20%, 50%);
+}</code></pre>
+
+                    <p>Notice how the hue stays at 160 across all variants. This guarantees they all "belong" to the same
+                        color family. Try doing that with hex codes.</p>
+
+                    <h2>2. WCAG Contrast: The Numbers That Matter</h2>
+                    <p>The Web Content Accessibility Guidelines (WCAG) define minimum contrast ratios between text and its
+                        background. These aren't suggestions; in many jurisdictions they're legal requirements.</p>
+
+                    <ul>
+                        <li><strong>AA Normal Text:</strong> 4.5:1 ratio minimum.</li>
+                        <li><strong>AA Large Text (18px+ bold or 24px+):</strong> 3:1 ratio minimum.</li>
+                        <li><strong>AAA (Enhanced):</strong> 7:1 for normal text, 4.5:1 for large text.</li>
+                    </ul>
+
+                    <p>The most common failure? <strong>Gray text on a white background.</strong> That elegant
+                        <code>#999</code> on <code>#fff</code> you're using for placeholder text? It has a contrast ratio of
+                        2.85:1. It fails every WCAG level. The fix is simple: darken it to at least <code>#767676</code>
+                        (4.54:1).</p>
+
+                    <h3>How Contrast Ratios Are Calculated</h3>
+                    <p>The formula uses <strong>relative luminance</strong>, which accounts for how the human eye perceives
+                        different wavelengths of light. Green light appears brighter than blue light at the same intensity.
+                        The ratio compares the luminance of the lighter color to the darker one:</p>
+
+                    <pre><code>contrast = (L1 + 0.05) / (L2 + 0.05)
+// L1 = lighter color luminance
+// L2 = darker color luminance
+// Result ranges from 1:1 (identical) to 21:1 (black on white)</code></pre>
+
+                    <p>You don't need to calculate this by hand. Use a tool that shows the ratio in real-time as you pick
+                        colors.</p>
+
+                    <h2>3. Color Harmony: Why Some Palettes "Work"</h2>
+                    <p>Professional color palettes aren't random. They follow mathematical relationships on the color
+                        wheel:</p>
+
+                    <ul>
+                        <li><strong>Complementary:</strong> Two colors opposite each other (180° apart). High contrast,
+                            high energy. Think blue and orange sports branding.</li>
+                        <li><strong>Analogous:</strong> Three colors adjacent on the wheel (within 30-60°). Harmonious and
+                            calming. Common in nature photography sites.</li>
+                        <li><strong>Triadic:</strong> Three colors evenly spaced (120° apart). Balanced and vibrant.
+                            Used when you need a primary, secondary, and accent color.</li>
+                        <li><strong>Split-Complementary:</strong> One base color plus two colors adjacent to its complement.
+                            Easier to work with than pure complementary while maintaining visual tension.</li>
+                    </ul>
+
+                    <p>When building a UI palette, start with your brand's primary hue. Then use a harmony rule to derive
+                        your secondary and accent colors. Add neutrals (desaturated versions of your primary hue) for
+                        backgrounds, borders, and text.</p>
+
+                    <h2>4. Colorblindness: Designing for 300 Million People</h2>
+                    <p>About 8% of men and 0.5% of women have some form of color vision deficiency. The most common type,
+                        deuteranopia (red-green colorblindness), makes your red error states and green success states look
+                        identical.</p>
+
+                    <p><strong>The fix isn't to avoid color</strong>—it's to never use color as the <em>only</em> way to
+                        convey information:</p>
+                    <ul>
+                        <li>Error fields: red border <em>plus</em> an icon <em>plus</em> error text.</li>
+                        <li>Status badges: color <em>plus</em> a label ("Active," "Paused," "Failed").</li>
+                        <li>Charts: color <em>plus</em> patterns (stripes, dots) or direct labels.</li>
+                    </ul>
+
+                    <p>Test your designs by simulating protanopia, deuteranopia, and tritanopia. If the UI is still usable
+                        in grayscale, you've done it right.</p>
+
+                    <h2>5. Dark Mode: More Than Inverting Colors</h2>
+                    <p>Dark mode isn't <code>filter: invert(1)</code>. Inverting creates harsh whites, wrecks images, and
+                        produces backgrounds that are too dark to read comfortably.</p>
+
+                    <p>Proper dark mode design follows different rules:</p>
+                    <ul>
+                        <li><strong>Background:</strong> Use dark grays (#121212 to #1e1e1e), not pure black (#000). Pure
+                            black causes "halation"—text appears to bleed and vibrate against the background, especially on
+                            OLED screens.</li>
+                        <li><strong>Elevation = Lightness:</strong> In Material Design, surfaces that are "closer" to the
+                            user get lighter backgrounds. A modal overlay is lighter than the page behind it.</li>
+                        <li><strong>Reduce saturation:</strong> Fully saturated colors on dark backgrounds cause eye
+                            strain. Reduce saturation by 10-20% for dark mode variants.</li>
+                        <li><strong>Contrast still matters:</strong> WCAG ratios apply in dark mode too. Light gray text on
+                            a dark gray background fails more often than you'd think.</li>
+                    </ul>
+
+                    <h2>Conclusion</h2>
+                    <p>Color in UI design is engineering, not art. Use HSL to reason about variations. Check WCAG ratios
+                        before shipping. Apply harmony rules instead of guessing. And always simulate colorblindness.</p>
+
+                    <p>Need to build an accessible palette? Use our <a href="../colors.html">Color Palette Generator</a>
+                        to create harmonious schemes with real-time WCAG contrast checking and colorblind simulation.</p>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <div class="widget-title">Table of Contents</div>
+                    <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">1. RGB vs HSL</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">2. WCAG Contrast</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">3. Color Harmony</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">4. Colorblindness</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">5. Dark Mode</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget tool-cta">
+                    <span class="tool-cta-icon">🎨</span>
+                    <div class="widget-title">Build a Palette</div>
+                    <p>Generate accessible color schemes with WCAG checking and colorblind simulation.</p>
+                    <a href="../colors.html" class="btn-sidebar">Open Color Palette</a>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ToolBit</h4>
+                    <p>Professional developer tools, zero bloat.</p>
+                    <p class="footer-tagline">Built by <a href="https://ndcswift.github.io" target="_blank"
+                            rel="noopener">Noah</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="../json.html">JSON Formatter</a>
+                    <a href="../regex.html">RegEx Tester</a>
+                    <a href="../base64.html">Base64 Encoder</a>
+                    <a href="../colors.html">Color Palette Generator</a>
+                    <a href="../hash.html">Hash Generator</a>
+                    <a href="../url.html">URL Encoder</a>
+                    <a href="../lorem.html">Lorem Ipsum Generator</a>
+                    <a href="../timestamp.html">Timestamp Converter</a>
+                    <a href="../diff.html">Diff Checker</a>
+                    <a href="../prompt.html">AI Prompt Optimizer</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@NoahDoesCoding97" target="_blank" rel="noopener">YouTube</a>
+                    <a href="https://github.com/NDCSwift" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://ndcswift.github.io" target="_blank" rel="noopener">Portfolio</a>
+                    <a href="../support.html">☕ Support ToolBit</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ToolBit. Built for developers, by developers. All tools run client-side.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -157,9 +157,24 @@
                     <p>This matches any line that is either completely empty or contains only whitespace (so spaces and
                         tabs don't trick you).</p>
 
+                    <h2>Bonus: Combining Patterns</h2>
+                    <p>Real-world validation often requires multiple checks. Instead of writing one monstrous regex that
+                        handles every edge case, chain simple patterns together:</p>
+                    <pre><code>// Instead of one mega-regex for "valid username":
+const isValidLength = /^.{3,20}$/.test(input);
+const hasValidChars = /^[a-zA-Z0-9_]+$/.test(input);
+const startsWithLetter = /^[a-zA-Z]/.test(input);
+
+const isValid = isValidLength && hasValidChars && startsWithLetter;</code></pre>
+                    <p>Each rule is readable, testable, and produces a specific error message. This is far better than a
+                        single pattern that either matches or doesn't, with no indication of <em>why</em> it failed.</p>
+
                     <h2>Testing is Key</h2>
                     <p>Never deploy a regex without testing it against edge cases (like empty strings or huge inputs).
                         Use a real-time tester to visualize exactly what your pattern is matching.</p>
+
+                    <p>Want to test these patterns live? Paste them into our <a href="../regex.html">RegEx Tester</a>
+                        and see matches highlighted in real-time with detailed explanations.</p>
                 </div>
             </article>
 
