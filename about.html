@@ -146,8 +146,8 @@
                     <h2>The Problem with Existing Tools</h2>
                     <p>Most developer tool sites suffer from three major issues:</p>
                     <ul>
-                        <li><strong>Ads. Everywhere.</strong> I mean flooded with them. You're trying to debug JSON and
-                            half the screen is banner ads.</li>
+                        <li><strong>Ad overload.</strong> So many ads that the actual tool is buried. You're trying to debug JSON and
+                            half the screen is pop-ups fighting for your attention.</li>
                         <li><strong>File size limits.</strong> "Sorry, your file is too large." Great, now I need to
                             find another tool.</li>
                         <li><strong>Privacy concerns.</strong> Uploading sensitive config files or API responses to
@@ -155,6 +155,8 @@
                     </ul>
                     <p>I wanted tools that worked <em>locally</em> in your browser. Your data stays on your device. No
                         uploads, no server processing, no privacy compromises. Just pure client-side execution.</p>
+                    <p>ToolBit does include a small number of non-intrusive ads to help cover hosting costs and fund
+                        ongoing development — but they'll never get in the way of the tools you came here to use.</p>
                 </section>
 
                 <section class="about-section">
@@ -401,6 +403,16 @@
 
         .about-section a:hover {
             border-bottom-color: var(--color-primary);
+        }
+
+        .about-section .btn-primary {
+            color: var(--color-bg);
+            border-bottom: none;
+        }
+
+        .about-section .btn-primary:hover {
+            color: var(--color-bg);
+            border-bottom: none;
         }
 
         .principles-grid {
