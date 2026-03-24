@@ -286,11 +286,13 @@ body {
     background: rgba(10, 14, 20, 0.9);
     z-index: 999;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
 .mobile-nav-overlay.active {
     opacity: 1;
+    pointer-events: auto;
 }
 
 /* Mobile Navigation Drawer */
@@ -760,9 +762,17 @@ body {
         display: flex;
     }
 
-    .mobile-nav,
+    .mobile-nav {
+        display: block;
+    }
+
     .mobile-nav-overlay {
         display: block;
+        pointer-events: none;
+    }
+
+    .mobile-nav-overlay.active {
+        pointer-events: auto;
     }
 
     .site-header .container {
