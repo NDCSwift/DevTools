@@ -249,6 +249,83 @@
                             a dark gray background fails more often than you'd think.</li>
                     </ul>
 
+
+                    <h2>6. Color Spaces Beyond RGB: HSL, oklch, and When to Use Each</h2>
+                    <p>RGB is the native language of screens — each pixel is a mix of red, green, and blue light
+                        emitted at varying intensity. It is the right model for the hardware layer. For design
+                        and programming, it is one of the worst models for human thought.</p>
+                    <p>Consider: how do you make a color "10% lighter" in RGB? There is no intuitive answer —
+                        you would need to adjust R, G, and B in a coordinated way that preserves the hue. In HSL
+                        (Hue, Saturation, Lightness), it is trivial: increase L by 10.</p>
+                    <ul>
+                        <li><strong>HSL (hsl()):</strong> Hue as a degree on the color wheel (0-360), Saturation
+                            as percentage, Lightness as percentage. Intuitive for generating tints and shades.
+                            Supported in all browsers since IE9.</li>
+                        <li><strong>oklch (oklch()):</strong> A perceptually uniform color space introduced in
+                            CSS Color Level 4. "Perceptually uniform" means that a 10% change in lightness looks
+                            like the same amount of change regardless of the hue. HSL is <em>not</em> perceptually
+                            uniform — yellow at 50% lightness looks much brighter than blue at 50% lightness.
+                            oklch fixes this.</li>
+                        <li><strong>P3 (color(display-p3 ...)):</strong> Accesses the wider P3 colour gamut
+                            available on Apple devices, newer Android screens, and most modern monitors. Colours
+                            outside the sRGB gamut — vivid greens, bright reds — are expressible here.</li>
+                    </ul>
+                    <pre><code>/* Same blue, three color spaces */
+.button {
+    /* Standard — sRGB, works everywhere */
+    background: hsl(220, 90%, 56%);
+
+    /* Modern — perceptually uniform, CSS Color 4 */
+    background: oklch(60% 0.2 250);
+
+    /* Wide gamut — richer on P3 displays, fallback to sRGB */
+    background: color(display-p3 0.1 0.4 0.9);
+}</code></pre>
+                    <p>For new design systems targeting modern browsers, oklch is the recommended approach —
+                        it produces more consistent palettes and makes programmatic color manipulation predictable.</p>
+
+                    <h2>7. Generating Palettes Programmatically</h2>
+                    <p>Design systems often need a full palette from a single brand colour: primary, hover state,
+                        disabled state, background tints, text on coloured surfaces. HSL makes this straightforward:</p>
+                    <pre><code>// Generate a 9-step tint/shade scale from a base HSL colour
+function generateScale(hue, saturation) {
+    const lightnesses = [95, 85, 75, 65, 55, 45, 35, 25, 15];
+    return lightnesses.map(l => `hsl(${hue}, ${saturation}%, ${l}%)`);
+}
+
+// Brand blue: hue 220, saturation 85%
+const blueScale = generateScale(220, 85);
+// ["hsl(220, 85%, 95%)", "hsl(220, 85%, 85%)", ... "hsl(220, 85%, 15%)"]
+// Use index 4 (55%) as the primary, 3 (65%) as hover, 0 (95%) as background tint
+
+// Complementary colour: rotate hue by 180 degrees
+const complementaryHue = (220 + 180) % 360; // 40 (warm orange)
+const orangeScale = generateScale(40, 75);</code></pre>
+                    <p>This approach produces consistent, accessible palettes because you are controlling a single
+                        variable (lightness) while holding hue and saturation constant. The same pattern works
+                        for analogous colours (rotate hue by 30-60°), triadic (120°), and split-complementary
+                        (150°) schemes.</p>
+
+                    <h2>Frequently Asked Questions</h2>
+
+                    <h3>What is the difference between HSL and HSB/HSV?</h3>
+                    <p>HSL (Hue, Saturation, Lightness) and HSB/HSV (Hue, Saturation, Brightness/Value) are both
+                        cylindrical representations of RGB, but they model the "brightness" axis differently. In
+                        HSL, 50% lightness is a "pure" colour (neither washed out nor dark). In HSB, 100% brightness
+                        with 100% saturation is also a pure colour, but reducing brightness moves toward black while
+                        reducing saturation moves toward white. CSS uses HSL. Many design tools (Figma, Photoshop,
+                        Sketch) use HSB/HSV. They are not interchangeable numerically — a 70% value in HSL is not
+                        the same as 70% in HSB.</p>
+
+                    <h3>How do I ensure accessible contrast automatically in a design system?</h3>
+                    <p>Use a contrast-checking function at build time or in your theme generator. The WCAG contrast
+                        ratio formula is documented and deterministic — you can calculate it from any two RGB values.
+                        Many design system tools (Radix Colours, Tailwind CSS 3+) pre-calculate their palettes so
+                        that specific combinations are guaranteed to pass WCAG AA. For oklch-based palettes, the
+                        perceptual uniformity makes it easier to predict which lightness values will pass contrast
+                        ratios — a text colour at L=25% will reliably read on a background at L=90% in oklch,
+                        whereas in HSL you need to verify per-hue due to the non-uniformity.</p>
+
                     <h2>Conclusion</h2>
                     <p>Color in UI design is engineering, not art. Use HSL to reason about variations. Check WCAG ratios
                         before shipping. Apply harmony rules instead of guessing. And always simulate colorblindness.</p>

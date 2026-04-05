@@ -131,68 +131,224 @@
                 </header>
 
                 <div class="article-body">
-                    <p>Regular Expressions (RegEx) are the dark magic of computer science. Extremely powerful, but
-                        arguably the least readable syntax ever invented. However, you don't need to be a wizard to use
-                        them. You just need a few solid spells in your book.</p>
+                    <p>Regular Expressions (RegEx) have a reputation problem. The quote "I have a problem. I'll use
+                        regex. Now I have two problems" — often attributed to Jamie Zawinski — has stuck around because
+                        it is funny and partially true. A carelessly written regex can be unreadable, incorrect, and in
+                        rare cases, cause a server to hang.</p>
 
-                    <p>Here are the 5 patterns that solve 90% of validation problems I encounter.</p>
+                    <p>But the alternative — writing procedural validation code with a dozen if-statements — is often
+                        worse. Regex excels at pattern matching, and with a clear understanding of the syntax, the
+                        patterns that cover 90% of real-world validation are surprisingly readable. This guide covers
+                        the essential patterns, how to read them, and how to avoid the traps.</p>
+
+                    <h2>Reading Regex: A Quick Primer</h2>
+                    <p>Before the patterns, a brief vocabulary of the pieces you will see repeatedly:</p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <thead>
+                            <tr style="background: rgba(255,255,255,0.05); text-align: left;">
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Token</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Meaning</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>^</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Start of string</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>^Hello</code> matches strings beginning with "Hello"</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>$</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">End of string</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>world$</code> matches strings ending with "world"</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>[abc]</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Character class — matches any one of a, b, or c</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>[aeiou]</code> matches any vowel</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>+</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">One or more of the preceding</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>[0-9]+</code> matches one or more digits</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>*</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Zero or more of the preceding</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>ab*c</code> matches "ac", "abc", "abbc"</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>{n,m}</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Between n and m repetitions</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>[a-z]{3,8}</code> matches 3 to 8 lowercase letters</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>(?=...)</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Positive lookahead — assert without consuming</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>(?=.*[A-Z])</code> asserts an uppercase exists somewhere</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>(?:...)</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Non-capturing group — group without storing</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>(?:http|https)</code> matches either without capturing</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <h2>1. The "Good Enough" Email Validator</h2>
-                    <p>Validating emails perfectly is actually impossible with regex (the RFC spec is pages long). But
-                        for a login form, you just need to catch typos.</p>
+                    <p>Validating emails <em>perfectly</em> with regex is impossible — the RFC 5322 specification
+                        permits constructs like <code>"John (middle) Doe"@example.com</code> that no sensible regex
+                        would handle. But for a login form, you need to catch typos and obvious non-emails, not
+                        handle every legal edge case.</p>
                     <pre><code>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$</code></pre>
-                    <p><strong>Breakdown:</strong></p>
+                    <p><strong>Breakdown, token by token:</strong></p>
                     <ul>
-                        <li> `^` : Start of line.</li>
-                        <li> `[a-zA-Z0-9._%+-]+` : One or more allowed characters for the username.</li>
-                        <li> `@` : The literal @ symbol.</li>
-                        <li> `[a-zA-Z0-9.-]+` : The domain name.</li>
-                        <li> `\.` : A literal dot.</li>
-                        <li> `[a-zA-Z]{2,}` : The extension (TLD) must be at least 2 letters (e.g., .com, .io).</li>
+                        <li><code>^</code> — Start of string (anchors the match)</li>
+                        <li><code>[a-zA-Z0-9._%+-]+</code> — One or more characters allowed in the username part
+                            (letters, digits, dots, underscores, percent, plus, hyphen)</li>
+                        <li><code>@</code> — Literal at-sign</li>
+                        <li><code>[a-zA-Z0-9.-]+</code> — The domain name (letters, digits, dots, hyphens)</li>
+                        <li><code>\.</code> — Literal dot (backslash escapes the dot, which otherwise means "any
+                            character")</li>
+                        <li><code>[a-zA-Z]{2,}</code> — TLD must be at least 2 letters (.com, .io, .museum)</li>
+                        <li><code>$</code> — End of string</li>
                     </ul>
+                    <p><strong>What it catches:</strong> Missing @, missing TLD, spaces in the address.</p>
+                    <p><strong>What it does not catch:</strong> Emails with valid but exotic local parts, IDN domains.
+                        That is acceptable — always confirm by sending a verification email anyway.</p>
 
                     <h2>2. ISO 8601 Dates (YYYY-MM-DD)</h2>
-                    <p>Essential for validating API date inputs.</p>
+                    <p>When accepting date inputs from an API or form, you want to ensure the format is correct before
+                        passing it to a date parser that might accept garbage silently.</p>
                     <pre><code>^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$</code></pre>
-                    <p><strong>Why it works:</strong> It's strict. It forces the month to be 01-12 and the day to be
-                        01-31. It prevents inputs like `2024-99-99`.</p>
+                    <p><strong>Breakdown:</strong></p>
+                    <ul>
+                        <li><code>\d{4}</code> — Exactly 4 digits (the year)</li>
+                        <li><code>-</code> — Literal hyphen separator</li>
+                        <li><code>(0[1-9]|1[0-2])</code> — Month: either 01-09 or 10-12. Rejects 00 and 13.</li>
+                        <li><code>-</code> — Literal hyphen</li>
+                        <li><code>(0[1-9]|[12]\d|3[01])</code> — Day: 01-09, 10-29, or 30-31. Rejects 00 and 32+.</li>
+                    </ul>
+                    <p>This does <em>not</em> validate calendar accuracy (e.g., it will accept February 30), but it
+                        correctly rejects format violations, which is the main goal. Feed the validated string to
+                        <code>new Date()</code> or a date library for logical validation.</p>
 
                     <h2>3. Simple Password Strength</h2>
-                    <p>Enforce: At least 8 chars, 1 uppercase, 1 lowercase, 1 number.</p>
-                    <pre><code>^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$</code></pre>
-                    <p><strong>The Magic of Lookaheads `(?=)`:</strong> These verify a condition without "consuming"
-                        characters. It checks for a lower, then upper, then digit, independently.</p>
+                    <p>A common requirement: at least 8 characters, with at least one uppercase letter, one lowercase
+                        letter, and one digit.</p>
+                    <pre><code>^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$</code></pre>
+                    <p><strong>The magic of lookaheads:</strong> The <code>(?=.*[a-z])</code> syntax is a
+                        <em>lookahead assertion</em>. It checks that a condition holds somewhere in the string
+                        without "consuming" any characters. The cursor stays at the start, so you can chain multiple
+                        independent assertions:</p>
+                    <ul>
+                        <li><code>(?=.*[a-z])</code> — At least one lowercase letter exists somewhere</li>
+                        <li><code>(?=.*[A-Z])</code> — At least one uppercase letter exists somewhere</li>
+                        <li><code>(?=.*\d)</code> — At least one digit exists somewhere</li>
+                        <li><code>[a-zA-Z\d@$!%*?&]{8,}</code> — The whole string is 8+ allowed characters</li>
+                    </ul>
+                    <p>For production, prefer validating each condition separately so you can give the user specific
+                        feedback: "needs an uppercase letter" is more helpful than "invalid password."</p>
+                    <pre><code>function validatePassword(pw) {
+    const errors = [];
+    if (pw.length < 8) errors.push("At least 8 characters required");
+    if (!/[a-z]/.test(pw)) errors.push("Add a lowercase letter");
+    if (!/[A-Z]/.test(pw)) errors.push("Add an uppercase letter");
+    if (!/[0-9]/.test(pw)) errors.push("Add a number");
+    return errors;
+}</code></pre>
 
                     <h2>4. Extracting Domain from URL</h2>
-                    <p>Useful for analytics or cleaning data lists.</p>
-                    <pre><code>(?:https?:\/\/)?(?:www\.)?([^:\/\n]+)</code></pre>
-                    <p>This ignores the protocol (`http://`) and `www.`, capturing just `google.com` or `toolbit.dev`.
-                    </p>
+                    <p>Useful for analytics dashboards, cleaning link lists, or grouping requests by origin.</p>
+                    <pre><code>^(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})(?:\/|$)</code></pre>
+                    <p>The key technique here is the non-capturing group <code>(?:...)</code> for the parts you want
+                        to ignore (protocol, www), and a capturing group <code>(...)</code> for the domain you want
+                        to extract.</p>
+                    <pre><code>const url = "https://www.toolbit.dev/json";
+const match = url.match(/^(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/);
+const domain = match ? match[1] : null;
+// "toolbit.dev"</code></pre>
 
-                    <h2>5. Matching Empty Lines</h2>
-                    <p>Great for cleaning up text files or code.</p>
+                    <h2>5. Semantic Versioning (semver)</h2>
+                    <p>If you process package versions, release tags, or build metadata, validating semver strings
+                        saves downstream parsing errors.</p>
+                    <pre><code>^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([\w.-]+))?(?:\+([\w.-]+))?$</code></pre>
+                    <p>This matches <code>1.0.0</code>, <code>2.14.3</code>, <code>1.0.0-alpha.1</code>, and
+                        <code>1.0.0+build.123</code>, while rejecting <code>1.0</code>, <code>01.0.0</code>
+                        (leading zeros), and arbitrary strings.</p>
+
+                    <h2>6. Matching Empty Lines</h2>
+                    <p>A simple but frequently needed pattern for cleaning up text files, normalising whitespace in
+                        user-submitted content, or preprocessing code.</p>
                     <pre><code>^\s*$</code></pre>
-                    <p>This matches any line that is either completely empty or contains only whitespace (so spaces and
-                        tabs don't trick you).</p>
+                    <p><code>\s</code> matches any whitespace character — spaces, tabs, carriage returns. Combined
+                        with <code>^</code> and <code>$</code> anchors, this matches any line that is empty or
+                        contains only whitespace. Use with the multiline flag <code>m</code> to match across lines
+                        in a multi-line string.</p>
+                    <pre><code>// Remove blank lines from a string
+const cleaned = text.replace(/^\s*$/gm, '').replace(/
+{2,}/g, '
+');</code></pre>
 
-                    <h2>Bonus: Combining Patterns</h2>
-                    <p>Real-world validation often requires multiple checks. Instead of writing one monstrous regex that
-                        handles every edge case, chain simple patterns together:</p>
-                    <pre><code>// Instead of one mega-regex for "valid username":
-const isValidLength = /^.{3,20}$/.test(input);
-const hasValidChars = /^[a-zA-Z0-9_]+$/.test(input);
-const startsWithLetter = /^[a-zA-Z]/.test(input);
+                    <h2>Combining Patterns: The Right Approach</h2>
+                    <p>Real-world validation often requires multiple checks. The instinct is to write one large regex
+                        that handles every edge case. Resist it. A single complex pattern is opaque, hard to test,
+                        and produces no useful error message when it fails.</p>
+                    <p>Instead, compose simple patterns:</p>
+                    <pre><code>// Validating a username: 3-20 chars, letters/numbers/underscores, starts with letter
+function validateUsername(input) {
+    if (!/^.{3,20}$/.test(input)) return "Must be 3-20 characters";
+    if (!/^[a-zA-Z0-9_]+$/.test(input)) return "Only letters, numbers, and underscores";
+    if (!/^[a-zA-Z]/.test(input)) return "Must start with a letter";
+    return null; // valid
+}</code></pre>
+                    <p>Each rule is readable, independently testable, and can produce a specific error message. This
+                        is almost always better than one mega-pattern.</p>
 
-const isValid = isValidLength && hasValidChars && startsWithLetter;</code></pre>
-                    <p>Each rule is readable, testable, and produces a specific error message. This is far better than a
-                        single pattern that either matches or doesn't, with no indication of <em>why</em> it failed.</p>
+                    <h2>The Performance Trap: Catastrophic Backtracking</h2>
+                    <p>Regex engines work by trying every possible path through a pattern. For most patterns this is
+                        fine, but certain constructions can cause the engine to explore an exponentially growing
+                        number of paths — a condition called catastrophic backtracking or ReDoS
+                        (Regular Expression Denial of Service).</p>
+                    <p>The classic trigger is <strong>nested quantifiers</strong> applied to overlapping patterns:</p>
+                    <pre><code>// DANGEROUS - catastrophic backtracking on long inputs
+/(a+)+$/
 
-                    <h2>Testing is Key</h2>
-                    <p>Never deploy a regex without testing it against edge cases (like empty strings or huge inputs).
-                        Use a real-time tester to visualize exactly what your pattern is matching.</p>
+// Safe equivalent
+/^a+$/</code></pre>
+                    <p>Real-world ReDoS vulnerabilities have taken down production servers — including a 2016 outage
+                        at Stack Overflow caused by a single regex applied to user-submitted HTML. The fix is to
+                        avoid nested quantifiers and use atomic groups or possessive quantifiers in engines that
+                        support them. Always test patterns with long, adversarial inputs before deploying.</p>
 
-                    <p>Want to test these patterns live? Paste them into our <a href="../regex.html">RegEx Tester</a>
-                        and see matches highlighted in real-time with detailed explanations.</p>
+                    <h2>Frequently Asked Questions</h2>
+
+                    <h3>What is the difference between <code>test()</code> and <code>match()</code>?</h3>
+                    <p><code>RegExp.test(str)</code> returns a boolean — it just tells you whether the pattern
+                        matches. Use it for validation. <code>String.match(regex)</code> returns the matched
+                        substrings (or <code>null</code> if no match) — use it when you need to extract captured
+                        groups. For finding all matches in a string, use <code>String.matchAll(regex)</code> with
+                        the global <code>g</code> flag, which returns an iterator of all match objects including
+                        capture groups.</p>
+
+                    <h3>Why doesn't <code>.</code> match newlines by default?</h3>
+                    <p>By design. The <code>.</code> metacharacter matches any character <em>except</em> newline
+                        (<code>
+</code>). This makes line-by-line matching the default, which is what you usually
+                        want. To make <code>.</code> match newlines as well, use the dotAll flag: <code>/pattern/s</code>
+                        in JavaScript (ES2018+). Alternatively, use <code>[\s\S]</code> to explicitly match any
+                        character including newlines.</p>
+
+                    <h3>When should I use a regex library vs. the built-in engine?</h3>
+                    <p>The built-in JavaScript regex engine handles the overwhelming majority of practical tasks.
+                        Consider a library like <a href="https://github.com/nicowillis/xregexp" target="_blank" rel="noopener">XRegExp</a>
+                        when you need Unicode category support (matching "any letter" across scripts), named captures
+                        with better syntax, or when you are porting patterns between environments and need consistent
+                        behaviour. For standard validation tasks, the built-in engine is always preferable.</p>
+
+                    <p>Want to test these patterns live against your own inputs? Paste them into our
+                        <a href="../regex.html">RegEx Tester</a> — it highlights matches in real-time and shows
+                        capture groups in a separate panel.</p>
                 </div>
             </article>
 

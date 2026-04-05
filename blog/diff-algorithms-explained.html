@@ -257,6 +257,102 @@
 
                     <p>While these tools are still maturing, they represent the future of code review.</p>
 
+
+                    <h2>7. Three-Way Merge: How Git Resolves Conflicts</h2>
+                    <p>A two-way diff compares two files — the old version and the new version. A three-way merge
+                        compares three: the common ancestor, your version, and their version. This is how git
+                        handles merging two branches that have diverged from a shared commit.</p>
+                    <pre><code>     Base (common ancestor)
+        |         |
+   Your changes  Their changes
+        |         |
+        v         v
+      Merged result (or conflict)</code></pre>
+                    <p>If both you and a colleague modified the same lines, git cannot automatically determine
+                        which version is correct — it marks the conflict and asks you to resolve it. If you
+                        modified different lines, git can merge both changes without conflict. If only one side
+                        modified a region, that change is applied automatically.</p>
+                    <p>The conflict markers git inserts look like this:</p>
+                    <pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+function greet(name) {
+    return `Hello, ${name}!`;
+=======
+function greet(name, greeting = "Hello") {
+    return `${greeting}, ${name}!`;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/customizable-greeting</code></pre>
+                    <p>The <code>HEAD</code> section is your version. The section after <code>=======</code> is
+                        their version. You resolve the conflict by editing the file to contain the desired final
+                        state and removing the markers, then staging the resolved file with <code>git add</code>.</p>
+
+                    <h2>8. Writing a Minimal Diff in JavaScript</h2>
+                    <p>Understanding a diff algorithm from first principles requires implementing one. Here is a
+                        minimal, readable implementation of a line-by-line diff using the Longest Common Subsequence
+                        approach — the conceptual core of all text diff algorithms:</p>
+                    <pre><code>function simpleDiff(oldLines, newLines) {
+    const m = oldLines.length, n = newLines.length;
+
+    // Build LCS table
+    const dp = Array.from({length: m + 1}, () => new Array(n + 1).fill(0));
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (oldLines[i-1] === newLines[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+
+    // Traceback to produce diff output
+    const result = [];
+    let i = m, j = n;
+    while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && oldLines[i-1] === newLines[j-1]) {
+            result.unshift({ type: 'equal', line: oldLines[i-1] });
+            i--; j--;
+        } else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) {
+            result.unshift({ type: 'insert', line: newLines[j-1] });
+            j--;
+        } else {
+            result.unshift({ type: 'delete', line: oldLines[i-1] });
+            i--;
+        }
+    }
+    return result;
+}
+
+const diff = simpleDiff(
+    ["Hello", "World"],
+    ["Hello", "JavaScript", "World"]
+);
+// [
+//   { type: "equal", line: "Hello" },
+//   { type: "insert", line: "JavaScript" },
+//   { type: "equal", line: "World" }
+// ]</code></pre>
+                    <p>This O(mn) implementation is clear but not fast enough for large files. Production diff
+                        algorithms (Myers, histogram) achieve better practical performance through smarter
+                        heuristics — but this captures the core logic: find the longest sequence of lines that
+                        are the same, then everything else is either an insertion or deletion.</p>
+
+                    <h2>Frequently Asked Questions</h2>
+
+                    <h3>Why does git sometimes show a change as a deletion + addition instead of a modification?</h3>
+                    <p>Text diff algorithms operate at the line level by default — they see whole lines as atomic
+                        units. If a line changed, the algorithm sees it as: the old line was deleted, and a new
+                        line was inserted. There is no "modified line" concept in the output. Some diff tools add
+                        a second pass that highlights the specific characters within a changed line (word-level or
+                        character-level diff), but the underlying diff operation is still delete + insert. Git's
+                        <code>--word-diff</code> flag enables word-level highlighting within changed lines.</p>
+
+                    <h3>How does git handle binary files in diffs?</h3>
+                    <p>Git does not attempt to diff binary files by default — it reports "Binary files X and Y
+                        differ" and shows the change as a single binary blob modification. For images, PDFs, and
+                        other binary formats, this is usually the right behaviour since line-based diffs are
+                        meaningless. You can configure git to use external diff drivers (e.g., ExifTool for images,
+                        or custom scripts for proprietary formats) via the <code>.gitattributes</code> file, which
+                        enables meaningful diffs for specific binary types.</p>
+
                     <h2>Conclusion</h2>
                     <p>Diff algorithms are a fascinating intersection of theoretical computer science and practical
                         developer tooling. Myers gives you minimal diffs, Patience gives you semantic diffs, and the

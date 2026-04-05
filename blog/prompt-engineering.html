@@ -131,62 +131,195 @@
                 </header>
 
                 <div class="article-body">
-                    <p>We've all done it. We open ChatGPT or Claude and type: <em>"Write a function to validate
-                            emails."</em></p>
+                    <p>We've all done it. We open ChatGPT or Claude and type something like: <em>"Write a function to validate emails."</em></p>
                     <p>And the AI gives us a decent function. But it's in Python, and you wanted JavaScript. It uses a
-                        regex that doesn't validate real domains. It doesn't handle errors.</p>
-                    <p>This is the "garbage in, garbage out" principle of AI. Prompt Engineering isn't about tricking
-                        the AI; it's about providing the <strong>context</strong> you already have in your head but
-                        forgot to type.</p>
+                        regex that doesn't validate real domains. It doesn't handle the case where input is null. It
+                        returns a boolean, but you needed an error message string.</p>
+                    <p>This is the "garbage in, garbage out" principle of AI. Prompt engineering is not about tricking
+                        the model or memorising magic words. It is about providing the <strong>context</strong> you
+                        already have in your head but forgot to type. LLMs cannot read your mind — every assumption
+                        you leave unstated is a coin flip they will get wrong half the time.</p>
+
+                    <p>This guide covers the five core techniques that consistently produce better, more predictable
+                        results — whether you are writing code, drafting emails, analysing data, or generating
+                        documentation.</p>
+
+                    <h2>The Anatomy of a Well-Structured Prompt</h2>
+                    <p>Before the techniques, it helps to see a high-quality prompt as a five-slot template:</p>
+                    <ul>
+                        <li><strong>Role</strong> — Who is answering? (the persona)</li>
+                        <li><strong>Task</strong> — What exactly needs to be done?</li>
+                        <li><strong>Context</strong> — What does the model need to know about your situation?</li>
+                        <li><strong>Constraints</strong> — What must it avoid, use, or stay within?</li>
+                        <li><strong>Format</strong> — How should the output be structured?</li>
+                    </ul>
+                    <p>Not every prompt needs all five, but the more slots you fill in, the less the model has to
+                        guess. Here is what that looks like applied to a real task:</p>
+                    <pre><code>// Weak prompt
+"Write a function to parse dates."
+
+// Strong prompt
+"Act as a Senior JavaScript developer. Write a TypeScript function that parses
+date strings in ISO 8601 format (YYYY-MM-DD) and returns a Date object.
+Handle invalid input by throwing a descriptive Error. Do not use any external
+libraries. Include JSDoc comments."</code></pre>
+                    <p>The second prompt takes 20 extra seconds to write and saves you 5 minutes editing the result.</p>
 
                     <h2>1. The Persona (Who)</h2>
-                    <p>LLMs are trained on the entire internet—Reddit threads, academic papers, and YouTube comments. If
-                        you don't steer them, they aim for the average.</p>
-                    <p>Assigning a persona narrows the search space to high-quality data.</p>
-                    <p><strong>Bad:</strong> "Explain how to center a div."</p>
-                    <p><strong>Good:</strong> "A<em>ct as a Senior CSS Developer.</em> Explain how to center a div using
-                        modern Grid and Flexbox techniques, avoiding legacy floats."</p>
+                    <p>LLMs are trained on the entire internet — Reddit threads, academic papers, YouTube transcripts,
+                        Stack Overflow answers, and comment sections. When you ask a generic question, the model aims
+                        for the statistical average of all those sources, which tends to produce competent but
+                        unremarkable output.</p>
+                    <p>Assigning a persona narrows the probability distribution toward high-quality, domain-specific
+                        responses. You are steering the model toward the subset of its training most relevant to your
+                        problem.</p>
 
-                    <h2>2. Context & Constraints (What & How)</h2>
-                    <p>Tell the model what you <em>don't</em> want. Constraints are often more powerful than
-                        instructions.</p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <thead>
+                            <tr style="background: rgba(255,255,255,0.05); text-align: left;">
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Without Persona</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">With Persona</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">"Explain how to center a div."</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">"Act as a Senior CSS Developer. Explain how to center a div using modern Grid and Flexbox, avoiding legacy float hacks."</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">"Review my code."</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">"Act as a security-focused code reviewer. Review this endpoint for SQL injection, IDOR, and missing input validation."</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">"Write an email to my client."</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">"Act as a professional consultant. Write a concise email to a non-technical client explaining a two-week delay due to scope creep, without assigning blame."</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>2. Context &amp; Constraints (What &amp; How)</h2>
+                    <p>Context tells the model about your situation. Constraints tell it what to avoid. Both are
+                        necessary — and constraints are often <em>more</em> powerful than positive instructions,
+                        because they eliminate the default behaviours that waste your time.</p>
+                    <p><strong>Context examples:</strong></p>
+                    <ul>
+                        <li>"This is a React 18 app using Zustand for state management."</li>
+                        <li>"The codebase uses ESLint with the Airbnb style guide."</li>
+                        <li>"My audience is non-technical marketing managers."</li>
+                    </ul>
+                    <p><strong>Constraint examples:</strong></p>
                     <ul>
                         <li>"Use TypeScript, not vanilla JS."</li>
-                        <li>"No external libraries."</li>
-                        <li>"Keep the response under 100 words."</li>
-                        <li>"Format the output as a JSON object."</li>
+                        <li>"No external libraries — only the Node.js standard library."</li>
+                        <li>"Keep the response under 200 words."</li>
+                        <li>"Do not explain what the code does — just write it."</li>
+                        <li>"Format the output as valid JSON, no prose."</li>
                     </ul>
+                    <p>Constraints save the most time on formatting. If you want a JSON response, say so explicitly.
+                        If you want bullet points instead of paragraphs, specify it. The model defaults to whichever
+                        format is statistically most common for that task type — which is often not what you need.</p>
 
                     <h2>3. Chain of Thought (The Reasoning)</h2>
-                    <p>For complex logic, LLMs often hallucinate because they try to predict the answer immediately.
-                        Asking them to "think step by step" forces them to generate intermediate reasoning tokens, which
-                        increases accuracy.</p>
-                    <p><strong>Prompt:</strong> "Critique this design. <em>Think step by step. First, validate the
-                            usability, then check color contrast, and finally give a score.</em>"</p>
+                    <p>For complex logic, LLMs often hallucinate because they try to predict the final answer in a
+                        single pass. The model sees the question, predicts a plausible-sounding answer, and skips the
+                        intermediate reasoning. Asking them to reason step-by-step forces the generation of
+                        intermediate "thinking" tokens, which measurably increases accuracy. This was demonstrated in
+                        Google's 2022 paper <em>"Chain-of-Thought Prompting Elicits Reasoning in Large Language
+                        Models."</em></p>
+                    <p>The trigger phrase is simple: <strong>"Think step by step"</strong> or <strong>"Work through
+                        this carefully before giving your final answer."</strong></p>
+                    <pre><code>// Without Chain of Thought
+"Is this SQL query safe from injection?"
 
-                    <h2>4. Few-Shot Prompting (examples)</h2>
-                    <p>The best way to get a specific format is to show, not tell. Give the AI 1 or 2 examples of what
-                        you want.</p>
-                    <pre><code>Task: Convert movie titles 
+// With Chain of Thought
+"Is this SQL query safe from SQL injection?
+SELECT * FROM users WHERE id = " + userId
+
+Think step by step. First, check whether user input is concatenated directly
+into the query string. Then determine if any sanitisation is applied. Finally,
+provide a concrete attack payload that would exploit the vulnerability.</code></pre>
+                    <p>Chain of Thought is most valuable for: security analysis, debugging, algorithm design,
+                        mathematical reasoning, and any task where a wrong intermediate step invalidates the final
+                        answer.</p>
+
+                    <h2>4. Few-Shot Prompting (Show, Don't Tell)</h2>
+                    <p>The best way to specify an output format is to demonstrate it. When you provide one or two
+                        examples of input paired with expected output, you communicate the pattern far more precisely
+                        than any written description. This is called "few-shot prompting."</p>
+                    <pre><code>Task: Convert movie titles to URL slugs.
+
 Example 1:
-Input: "Star Wars"
-Output: "star-wars"
+Input: "Star Wars: A New Hope"
+Output: "star-wars-a-new-hope"
 
 Example 2:
-Input: "The Matrix"
-Output: "the-matrix"
+Input: "The Matrix Reloaded"
+Output: "the-matrix-reloaded"
 
-Input: "Lord of the Rings"
+Now convert:
+Input: "Indiana Jones and the Temple of Doom"
 Output:</code></pre>
-                    <p>The AI will almost certainly output `"lord-of-the-rings"`.</p>
+                    <p>The model will output <code>"indiana-jones-and-the-temple-of-doom"</code> because you showed it
+                        the pattern rather than described it. This works especially well for data transformation,
+                        classification, formatting, and any task where "correct" means matching a specific structure.</p>
+
+                    <h2>5. Negative Prompting (What Not to Do)</h2>
+                    <p>Borrowed from image generation, negative prompting tells the model explicitly what to exclude.
+                        It is often more reliable than the positive version of the same constraint:</p>
+                    <ul>
+                        <li><strong>Instead of:</strong> "Be concise." &rarr; <strong>Try:</strong> "Do not include
+                            introductory paragraphs or closing summaries. No filler sentences."</li>
+                        <li><strong>Instead of:</strong> "Write modern JavaScript." &rarr; <strong>Try:</strong> "Do
+                            not use <code>var</code>, callbacks, or jQuery."</li>
+                        <li><strong>Instead of:</strong> "Keep it professional." &rarr; <strong>Try:</strong> "Do not
+                            use slang, bullet points, or passive voice."</li>
+                    </ul>
+                    <p>Combine negative and positive constraints in the same prompt for maximum precision.</p>
+
+                    <h2>Common Mistakes That Kill Output Quality</h2>
+                    <ul>
+                        <li><strong>Vague verbs:</strong> "Fix," "improve," and "make better" mean nothing. Be
+                            specific: "Reduce cyclomatic complexity," "Add null checks," "Rewrite for readability."</li>
+                        <li><strong>Missing language:</strong> The model defaults to Python for code tasks if you do
+                            not specify. Always state the language and version.</li>
+                        <li><strong>No output format:</strong> If you want JSON, say "respond only with valid JSON,
+                            no prose." The model will write paragraphs when you needed structured data.</li>
+                        <li><strong>Asking too many things at once:</strong> "Write tests, refactor, and document this
+                            function" in one prompt produces mediocre results for all three. Break complex tasks into
+                            sequential prompts.</li>
+                    </ul>
+
+                    <h2>Frequently Asked Questions</h2>
+
+                    <h3>Does prompt engineering work on all LLMs?</h3>
+                    <p>The core techniques — persona, context, constraints, chain of thought, few-shot — work across
+                        all major models (GPT-4, Claude, Gemini, Llama). The degree of impact varies. Smaller models
+                        benefit more from explicit structure because they have less capacity to infer intent from vague
+                        inputs. Larger models are more forgiving but still produce measurably better output with
+                        well-structured prompts. Chain of Thought in particular has been tested across model families
+                        with consistent improvements to reasoning accuracy.</p>
+
+                    <h3>How long should a prompt be?</h3>
+                    <p>As long as it needs to be — no longer. A well-structured 80-word prompt outperforms a rambling
+                        400-word one. A useful heuristic: if you can remove a sentence without losing information the
+                        model needs, remove it. If a sentence eliminates a decision the model would otherwise guess at,
+                        keep it.</p>
+
+                    <h3>Should I reuse prompts or write new ones each time?</h3>
+                    <p>Build a personal library of prompt templates for tasks you repeat — code reviews, email drafts,
+                        data transformations, commit message generation. Treat them like functions: keep the structure
+                        stable and parameterise the parts that change. This is exactly what system prompts in the
+                        OpenAI and Anthropic APIs are designed for.</p>
 
                     <h2>Automating the Perfect Prompt</h2>
-                    <p>Remembering all these rules (Persona, Context, Constraints, Format) is tedious every time you
-                        want to write an email or code snippet.</p>
+                    <p>Remembering all five techniques — Persona, Context, Constraints, Chain of Thought, Format —
+                        every time you need a quick answer is tedious. The overhead can feel like it outweighs the
+                        benefit for simple tasks.</p>
 
-                    <p>That's why we built the <a href="../prompt.html">Prompt Optimizer</a>. It's a local tool
-                        that takes your basic request and expands it into a structured, engineer-grade prompt using
-                        these exact principles—no account required, no data sent to a server.</p>
+                    <p>That is why we built the <a href="../prompt.html">Prompt Optimizer</a>. Paste your rough idea
+                        and it automatically expands it into a structured, engineer-grade prompt using these exact
+                        principles. No account required, no data sent to a server — it runs entirely in your
+                        browser.</p>
                 </div>
             </article>
 
@@ -195,11 +328,14 @@ Output:</code></pre>
                 <div class="sidebar-widget">
                     <div class="widget-title">Table of Contents</div>
                     <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">Prompt Anatomy</a></li>
                         <li><a href="#" style="text-decoration: none; color: inherit;">1. The Persona</a></li>
-                        <li><a href="#" style="text-decoration: none; color: inherit;">2. Context & Constraints</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">2. Context &amp; Constraints</a></li>
                         <li><a href="#" style="text-decoration: none; color: inherit;">3. Chain of Thought</a></li>
                         <li><a href="#" style="text-decoration: none; color: inherit;">4. Few-Shot Prompting</a></li>
-                        <li><a href="#" style="text-decoration: none; color: inherit;">Automate It</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">5. Negative Prompting</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">Common Mistakes</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">FAQ</a></li>
                     </ul>
                 </div>
 

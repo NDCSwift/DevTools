@@ -131,84 +131,179 @@
                 </header>
 
                 <div class="article-body">
-                    <p>If you were a developer in 2005, your life likely revolved around SOAP, WSDLs, and XML. You spent
-                        hours debugging schema validation errors and wrestling with verbose tags. Fast forward to today,
-                        and <strong>JSON (JavaScript Object Notation)</strong> is the undisputed king of data
-                        interchange.</p>
+                    <p>In the late 1990s and early 2000s, XML was the dominant data format for everything: APIs, config
+                        files, document storage, inter-service messaging, and build systems. Entire careers were built
+                        on XML expertise. Frameworks like SOAP, XSLT, and XPath thrived. Then JSON happened, and
+                        within a decade, XML's dominance in web APIs collapsed almost entirely.</p>
+                    <p>This was not accidental. JSON won the API format wars for specific, technical reasons — and
+                        understanding those reasons helps you make better decisions about when JSON is the right tool,
+                        and when XML still has a legitimate role.</p>
 
-                    <p>But how did we get here? Was it just a matter of preference, or is JSON objectively better
-                        technology?</p>
+                    <h2>A Brief History: How JSON Won</h2>
+                    <p>JSON (JavaScript Object Notation) was popularised by Douglas Crockford in the early 2000s as a
+                        lightweight alternative to XML for browser-server communication. Its key insight was that
+                        JavaScript already had a native syntax for objects and arrays — JSON was essentially that
+                        syntax written as a portable string. No schema required. No transformation step. Just
+                        <code>JSON.parse()</code> and you had a live JavaScript object.</p>
+                    <p>REST APIs, popularised by Roy Fielding's 2000 dissertation and then by companies like Twitter
+                        and Flickr offering JSON alongside SOAP in the mid-2000s, gave developers a choice. They
+                        chose JSON overwhelmingly. By 2010, new public APIs defaulted to JSON. By 2015, XML-only
+                        APIs were considered legacy.</p>
 
                     <h2>1. The Readability Factor</h2>
-                    <p>The most immediate difference between JSON and XML is how they look to a human. XML is verbose,
-                        requiring opening and closing tags for every single data point.</p>
-
-                    <h3>XML Example</h3>
-                    <pre><code>&lt;user&gt;
-    &lt;id&gt;101&lt;/id&gt;
+                    <p>The same data structure in both formats illustrates the readability gap immediately:</p>
+                    <pre><code>&lt;!-- XML --&gt;
+&lt;user&gt;
+    &lt;id&gt;42&lt;/id&gt;
     &lt;name&gt;Noah&lt;/name&gt;
     &lt;roles&gt;
-        &lt;role&gt;Admin&lt;/role&gt;
-        &lt;role&gt;Editor&lt;/role&gt;
+        &lt;role&gt;admin&lt;/role&gt;
+        &lt;role&gt;editor&lt;/role&gt;
     &lt;/roles&gt;
-&lt;/user&gt;</code></pre>
+    &lt;active&gt;true&lt;/active&gt;
+&lt;/user&gt;
 
-                    <h3>JSON Example</h3>
-                    <pre><code>{
-  "id": 101,
-  "name": "Noah",
-  "roles": ["Admin", "Editor"]
+// JSON
+{
+    "id": 42,
+    "name": "Noah",
+    "roles": ["admin", "editor"],
+    "active": true
 }</code></pre>
-
-                    <p>The JSON version is significantly cleaner. It strips away the redundancy of closing tags
-                        (`&lt;/role&gt;`), reducing visual noise. When you're debugging an API response at 2 AM, this
-                        readability matters.</p>
+                    <p>The JSON version is shorter and visually lighter. But readability is not just aesthetics —
+                        less noise means less cognitive load when debugging, less to scan in log files, and less to
+                        type when writing tests. XML's opening and closing tags for every element are essential for
+                        documents with complex mixed content (text with embedded markup), but for data-only payloads
+                        they are pure overhead.</p>
 
                     <h2>2. File Size and Bandwidth</h2>
-                    <p>Redundancy isn't just an aesthetic issue; it's a performance one. XML documents are notoriously
-                        large because every key is repeated twice (once in the opening tag, once in the closing tag).
-                    </p>
-                    <p>JSON improves this by using lightweight delimiters: curly braces `{}`, square brackets `[]`, and
-                        colons `:`. For massive datasets transferring over mobile networks, these byte savings add up to
-                        faster load times and lower bandwidth costs.</p>
+                    <p>The verbose tag syntax means XML payloads are consistently larger than their JSON equivalents.
+                        For the user example above, the XML is approximately 170 bytes versus JSON at 70 bytes — a
+                        2.4x difference. At scale (millions of API calls per day), this difference in bandwidth
+                        costs money and increases latency.</p>
+                    <p>HTTP compression (gzip, Brotli) significantly reduces this gap — both formats compress well
+                        since both are repetitive text. In practice, compressed XML and compressed JSON are much
+                        closer in size than their raw forms. But raw transfer size still matters for responses that
+                        do not warrant compression (small payloads), and for scenarios where CPU overhead for
+                        decompression is a concern.</p>
 
-                    <h2>3. Native JavaScript Parsing</h2>
-                    <p>This was the killer feature. JSON <em>is</em> valid JavaScript code. In the browser, parsing XML
-                        required a complex DOM parser. Parsing JSON? It used to be as simple as `eval()` (don't do that
-                        now!), and today we have the highly optimized `JSON.parse()`.</p>
+                    <h2>3. Native Parsing in JavaScript</h2>
+                    <p>This was JSON's decisive advantage in the browser era. JavaScript can parse JSON to a native
+                        object in a single function call:</p>
+                    <pre><code>// JSON — one step, returns a real JS object
+const data = JSON.parse(responseText);
+console.log(data.user.name); // "Noah"
 
-                    <p>This native compatibility meant that front-end frameworks like React, Vue, and Angular could
-                        consume APIs with zero friction. The data format matched the language of the browser perfectly.
-                    </p>
+// XML — requires DOM parsing, then traversal
+const parser = new DOMParser();
+const doc = parser.parseFromString(responseText, "text/xml");
+const name = doc.querySelector("user name").textContent; // "Noah"</code></pre>
+                    <p>The XML approach requires a DOM parser, creates an entirely different object model, and uses
+                        different traversal APIs than the rest of JavaScript. JSON simply becomes the object you
+                        wanted. For server-side JavaScript (Node.js), the same applies. For other languages, both
+                        require a parsing step, but JSON parsers tend to be faster because the grammar is simpler.</p>
 
-                    <h2>4. Data Types</h2>
-                    <p>XML treats everything as a tree of text nodes. If you want a number, you have to parse it. If you
-                        want an array, you have to loop through child nodes.</p>
-                    <p>JSON supports primitive types natively:</p>
+                    <h2>4. Data Types: JSON's Native Advantage</h2>
+                    <p>JSON has six native types: string, number, boolean, null, object, and array. When you parse
+                        <code>{"active": true, "count": 42}</code>, you get a real boolean and a real integer —
+                        not strings that need to be parsed again.</p>
+                    <p>XML has one native type: text. Everything is a string. <code>&lt;active&gt;true&lt;/active&gt;</code>
+                        gives you the string <code>"true"</code>, not the boolean <code>true</code>. You must handle
+                        type coercion yourself, or use XML Schema Definition (XSD) to define types — but then you
+                        need both the document and the schema, adding complexity.</p>
+                    <p>This matters for:</p>
                     <ul>
-                        <li><strong>Strings:</strong> `"hello"`</li>
-                        <li><strong>Numbers:</strong> `42` (no parsing needed)</li>
-                        <li><strong>Booleans:</strong> `true` / `false`</li>
-                        <li><strong>Arrays:</strong> `[1, 2, 3]`</li>
-                        <li><strong>Objects:</strong> `{"key": "value"}`</li>
-                        <li><strong>Null:</strong> `null`</li>
+                        <li>Integers that should sort numerically, not alphabetically</li>
+                        <li>Booleans used in conditional logic</li>
+                        <li>Null values vs. missing elements (XML conflates absent elements with explicitly
+                            null values)</li>
+                        <li>Floating-point numbers that must not be re-parsed from string representations</li>
                     </ul>
-                    <p>This strict typing within the format prevents an entire class of "string-to-number" conversion
-                        bugs.</p>
 
-                    <h2>When is XML Still Used?</h2>
-                    <p>XML isn't dead. It still shines in document-heavy environments where mixed content (text with
-                        markup) is common—think Microsoft Word files (`.docx`), SVGs, or complex enterprise
-                        configuration files. It also has mature tooling for schema validation (XSD) that JSON Schema is
-                        only just catching up to.</p>
+                    <h2>5. JSON5 and JSONC: The Unofficial Extensions</h2>
+                    <p>Standard JSON is deliberately minimal — no comments, no trailing commas, no single quotes.
+                        This makes it easy to parse but frustrating to write and maintain in configuration files
+                        where you want to explain why a value is set a certain way.</p>
+                    <p>Two informal supersets address this:</p>
+                    <ul>
+                        <li><strong>JSON5</strong> — adds comments, trailing commas, single-quoted strings, hex
+                            literals, and multiline strings. Used by some build tools and config systems.</li>
+                        <li><strong>JSONC</strong> (JSON with Comments) — adds only <code>//</code> and
+                            <code>/* */</code> comments. Used by VS Code's <code>settings.json</code>,
+                            <code>tsconfig.json</code>, and similar configuration files.</li>
+                    </ul>
+                    <p>Neither is valid standard JSON — you cannot use <code>JSON.parse()</code> on them. They
+                        require their own parsers (<code>json5</code> npm package, or VS Code's internal parser).
+                        Use them only in config files, never in API payloads.</p>
 
-                    <h2>Conclusion</h2>
-                    <p>JSON won because it was the right tool for the AJAX era: lightweight, native to the browser, and
-                        easy for humans to read. As we move into an era of serverless functions and edge computing,
-                        these efficiency gains are more important than ever.</p>
+                    <h2>6. Schema Validation: JSON Schema vs XSD</h2>
+                    <p>XML has had formal schema validation (XSD) since 1998. JSON Schema is a more recent
+                        specification (currently at Draft 2020-12) that provides equivalent capability:</p>
+                    <pre><code>// JSON Schema example
+{
+    "type": "object",
+    "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "active": { "type": "boolean" }
+    },
+    "required": ["id", "name"]
+}</code></pre>
+                    <p>Libraries like <a href="https://ajv.js.org/" target="_blank" rel="noopener">Ajv</a> (JavaScript)
+                        and <a href="https://python-jsonschema.readthedocs.io/" target="_blank" rel="noopener">jsonschema</a>
+                        (Python) validate JSON payloads against a schema at runtime. Many API frameworks (FastAPI,
+                        NestJS, Spring) generate JSON Schema from type annotations automatically.</p>
 
-                    <p>Working with messy JSON? Use our <a href="../json.html">JSON Formatter</a> to clean,
-                        validate, and minify your data instantly in the browser.</p>
+                    <h2>When XML Is Still the Right Choice</h2>
+                    <p>XML has genuine strengths that JSON does not replicate well:</p>
+                    <ul>
+                        <li><strong>Document markup:</strong> XML was designed for documents with mixed content —
+                            text with embedded elements. HTML is a form of XML. SVG is XML. If you need to mark up
+                            paragraphs where parts of sentences are bold, italic, or linked, XML handles this
+                            naturally. JSON does not have a clean answer for "rich text."</li>
+                        <li><strong>SOAP and enterprise integrations:</strong> Many legacy enterprise systems,
+                            government APIs, and banking interfaces use SOAP (XML over HTTP). If you are integrating
+                            with SAP, many EDI systems, or certain financial data providers, XML is mandatory.</li>
+                        <li><strong>XSLT transformations:</strong> XML has a mature transformation pipeline (XSLT,
+                            XPath, XQuery) for converting one XML structure to another. There is no JSON equivalent
+                            with the same standardisation and tooling depth.</li>
+                        <li><strong>Namespaces:</strong> XML namespaces allow multiple vocabularies to coexist in
+                            one document without collision — critical for standards like SAML (security assertions)
+                            and WSDL (service descriptions).</li>
+                        <li><strong>Comments in data:</strong> XML supports comments natively. This is useful in
+                            configuration files and documents where explaining a value inline matters.</li>
+                    </ul>
+
+                    <h2>Frequently Asked Questions</h2>
+
+                    <h3>Can JSON have comments?</h3>
+                    <p>Standard JSON cannot. Douglas Crockford intentionally removed comment support to prevent
+                        comments from being used as parsing directives (a problem he had encountered with config
+                        files). If you need comments in a JSON-like config file, use JSONC or JSON5 (with an
+                        appropriate parser), YAML, or TOML — all of which support comments natively.</p>
+
+                    <h3>What is the difference between <code>null</code> and <code>undefined</code> in JSON?</h3>
+                    <p>JSON has <code>null</code> as an explicit value. It does not have <code>undefined</code> —
+                        that is a JavaScript concept. When you call <code>JSON.stringify()</code> on an object with
+                        an <code>undefined</code> value, the key is omitted entirely from the output:
+                        <code>JSON.stringify({a: 1, b: undefined})</code> produces <code>'{"a":1}'</code>. When
+                        parsing, a missing key gives you <code>undefined</code> when you access it in JavaScript,
+                        while an explicit <code>null</code> key gives you <code>null</code>. These are semantically
+                        different: <code>null</code> means "this field exists and has no value";
+                        <code>undefined</code> means "this field does not exist in the document."</p>
+
+                    <h3>Should I use YAML or TOML instead of JSON for config files?</h3>
+                    <p>For configuration files (not API payloads), YAML and TOML are often better choices precisely
+                        because JSON lacks comments and has strict quoting requirements. YAML is more concise but
+                        has infamously surprising behaviour (the Norway problem: <code>country: NO</code> parses as
+                        boolean false). TOML is stricter and more explicit, making it safer for config. Many modern
+                        tools default to TOML (<code>Cargo.toml</code> in Rust, <code>pyproject.toml</code> in
+                        Python). For human-edited config, TOML or YAML; for machine-generated and machine-consumed
+                        data, JSON.</p>
+
+                    <p>Need to format, validate, or explore a JSON payload? The <a href="../json.html">JSON Formatter</a>
+                        formats, minifies, and visualises JSON as an interactive tree — paste any API response and
+                        explore it in seconds.</p>
                 </div>
             </article>
 

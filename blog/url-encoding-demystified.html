@@ -241,6 +241,100 @@ const url = `https://api.com/search?q=${encodeURIComponent(userInput)}`;</code><
                         must be percent-encoded when placed in a URL. Otherwise the <code>/</code> creates a false path
                         segment and the <code>+</code> becomes a space.</p>
 
+
+                    <h2>6. Building Query Strings Safely with URLSearchParams</h2>
+                    <p>Manually constructing query strings with string concatenation is error-prone — it is easy to
+                        forget to encode a value, double-encode an already-encoded one, or misplace an ampersand.
+                        The <code>URLSearchParams</code> API handles all of this correctly:</p>
+                    <pre><code>// Manual — fragile, easy to introduce bugs
+const url = `https://api.com/search?q=${userQuery}&lang=${lang}&page=${page}`;
+
+// URLSearchParams — handles encoding automatically
+const params = new URLSearchParams({
+    q: userQuery,   // automatically encodes spaces, &, =, etc.
+    lang: lang,
+    page: page
+});
+const url = `https://api.com/search?${params.toString()}`;
+
+// Also useful for reading query strings
+const input = "?q=Tom+%26+Jerry&lang=en";
+const parsed = new URLSearchParams(input);
+parsed.get('q');   // "Tom & Jerry" — decoded automatically
+parsed.get('lang'); // "en"</code></pre>
+                    <p><code>URLSearchParams</code> is available natively in all modern browsers and Node.js 10+.
+                        It correctly handles the <code>+</code> vs <code>%20</code> space convention in query
+                        strings, serialises arrays, and decodes percent-encoded values on read. For any new code
+                        that constructs or parses query strings, prefer <code>URLSearchParams</code> over manual
+                        string manipulation.</p>
+
+                    <h2>7. Query String Arrays: The Framework Problem</h2>
+                    <p>There is no RFC standard for encoding arrays in query strings. Different frameworks have
+                        adopted incompatible conventions, which causes silent bugs when sending multi-value
+                        parameters to an API that expects a different format.</p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <thead>
+                            <tr style="background: rgba(255,255,255,0.05); text-align: left;">
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Convention</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Format</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Used By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Repeated keys</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>ids=1&amp;ids=2&amp;ids=3</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">URLSearchParams, Java Servlet, Go</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Bracket notation</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>ids[]=1&amp;ids[]=2</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">PHP, Rails, jQuery.param()</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Comma-separated</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>ids=1,2,3</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Many REST APIs, OpenAPI</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Index notation</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;"><code>ids[0]=1&amp;ids[1]=2</code></td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">ASP.NET, some PHP frameworks</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>When integrating with a third-party API, always check its documentation for the expected
+                        array format. When building your own API, document which convention you use. The repeated
+                        keys format is most broadly supported by standard parsers and is what
+                        <code>URLSearchParams.append()</code> produces by default.</p>
+
+                    <h2>Frequently Asked Questions</h2>
+
+                    <h3>Why does <code>+</code> sometimes mean a space and sometimes not?</h3>
+                    <p>In query strings (the part after <code>?</code>), <code>+</code> means a space under the
+                        <code>application/x-www-form-urlencoded</code> convention — the encoding used by HTML
+                        form submissions. This is a legacy convention from early web forms. In URL path segments
+                        (before the <code>?</code>), <code>+</code> is a literal plus sign and must be written
+                        as <code>%2B</code> if you mean a plus in data. Outside query strings, always use
+                        <code>%20</code> for spaces. <code>URLSearchParams</code> handles this context correctly
+                        when you use <code>toString()</code>.</p>
+
+                    <h3>How do I detect double-encoding in a URL?</h3>
+                    <p>If you see <code>%25</code> in a URL where you expected <code>%</code>, the value has been
+                        double-encoded — the percent sign itself was encoded. You can also look for sequences like
+                        <code>%2520</code> (double-encoded space). The simplest fix is to ensure encoding happens
+                        exactly once, on the raw value before any concatenation. If you are receiving URLs from
+                        external sources, decode once with <code>decodeURIComponent()</code> and check whether
+                        the result still contains percent-encoded sequences.</p>
+
+                    <h3>Should API keys be placed in the URL?</h3>
+                    <p>Not if you can avoid it. URL parameters are logged in server access logs, browser history,
+                        proxy logs, and HTTP Referer headers — all places where secrets should not appear. Prefer
+                        sending API keys in the <code>Authorization</code> header or a custom header (both are
+                        excluded from most access logs and Referer leakage). If you must include a key in a URL
+                        (some APIs require it), ensure it is percent-encoded if it contains any Base64 characters
+                        like <code>+</code> or <code>/</code>.</p>
+
                     <h2>Conclusion</h2>
                     <p>URL encoding is invisible when it works and catastrophic when it doesn't. The rules are simple:
                         encode values with <code>encodeURIComponent()</code>, never double-encode, and test with special

@@ -135,57 +135,224 @@
                 </header>
 
                 <div class="article-body">
-                    <p>Modern web applications, especially Single Page Applications (SPAs), rely heavily on client-side
-                        storage. Whether it's caching API responses, saving a dark mode preference, or keeping a user
-                        logged in,
-                        you have three main choices: <strong>LocalStorage</strong>, <strong>Cookies</strong>, and
-                        <strong>IndexedDB</strong>.
+                    <p>Modern web applications — especially Single Page Applications (SPAs) and Progressive Web Apps —
+                        rely heavily on client-side storage. Whether it's caching API responses, saving a dark mode
+                        preference, or keeping a user logged in between sessions, you have three main choices:
+                        <strong>Cookies</strong>, <strong>LocalStorage</strong>, and <strong>IndexedDB</strong>.
                     </p>
 
-                    <p>Each has a specific purpose, and misuse can lead to security vulnerabilities or performance
-                        bottlenecks.</p>
+                    <p>Each mechanism exists for a different purpose. Using the wrong one can introduce subtle security
+                        vulnerabilities, performance bottlenecks, or data that vanishes at the worst possible time. This
+                        guide breaks down exactly how each one works, what it's designed for, and where developers
+                        commonly go wrong.</p>
 
                     <h2>1. Cookies: The Old Guard</h2>
-                    <p>Cookies are the oldest form of client storage. They are small (4KB max) text files sent with
-                        <strong>every single HTTP request</strong> to your domain.
-                    </p>
-                    <p><strong>Use Case: Authentication.</strong></p>
-                    <p>Because cookies are sent automatically to the server, they are perfect for session tokens (JWTs).
-                        By marking a cookie as `HttpOnly`, you prevent JavaScript from accessing it, making your app
-                        immune
-                        to Cross-Site Scripting (XSS) attacks that try to steal tokens.</p>
-                    <p><strong>Don't use for:</strong> Storing large amounts of data. It slows down every request.</p>
+                    <p>Cookies have been part of the web since 1994 — Netscape engineer Lou Montulli invented them to
+                        solve a stateless HTTP problem. They are small text files (4KB maximum) that the browser stores
+                        and automatically attaches to <strong>every HTTP request</strong> sent to your domain. That
+                        automatic sending is both their killer feature and their biggest liability.</p>
+
+                    <p><strong>Setting a cookie in JavaScript:</strong></p>
+                    <pre><code>// Basic cookie — expires when the browser closes
+document.cookie = "username=noah";
+
+// Persistent cookie with expiry date
+document.cookie = "theme=dark; expires=Fri, 31 Dec 2026 23:59:59 GMT; path=/";
+
+// Secure, HttpOnly cookie (must be set server-side)
+// Set-Cookie: sessionId=abc123; HttpOnly; Secure; SameSite=Strict</code></pre>
+
+                    <p>The <code>HttpOnly</code> flag is the most important security attribute for auth cookies. When
+                        set, JavaScript cannot read the cookie at all — <code>document.cookie</code> will not include
+                        it. This makes your session tokens immune to Cross-Site Scripting (XSS) attacks, because even
+                        if an attacker injects a malicious script, it cannot exfiltrate the token.</p>
+
+                    <p>The <code>SameSite</code> attribute protects against Cross-Site Request Forgery (CSRF) attacks
+                        by controlling when cookies are sent to cross-origin requests. Use <code>Strict</code> for
+                        maximum protection on authentication cookies, or <code>Lax</code> if your app needs cookies on
+                        top-level navigations from external links.</p>
+
+                    <p><strong>Best for:</strong> Session tokens, authentication state, CSRF tokens — anything that
+                        needs to be automatically sent to the server.</p>
+
+                    <p><strong>Avoid for:</strong> Storing large data. Every cookie is transmitted with every request,
+                        so a 4KB cookie adds 4KB of overhead to every image, API call, and page load to your domain.
+                        That compounds quickly.</p>
 
                     <h2>2. LocalStorage: Simple & Synchronous</h2>
-                    <p>LocalStorage is a key-value store that persists until the user clears their browser cache. It's
-                        easy
-                        to use (`localStorage.setItem('key', 'value')`) and offers about 5MB of space.</p>
-                    <p><strong>Use Case: User Preferences.</strong></p>
-                    <p>Perfect for things like theme settings (Light/Dark mode), sidebar collapsed state, or temporary
-                        form
-                        data (so users don't lose work if they refresh).</p>
-                    <p><strong>Warning:</strong> LocalStorage is <strong>synchronous</strong>. If you try to read a
-                        massive JSON
-                        object from it, you will freeze the main thread and the UI will stutter.</p>
+                    <p>LocalStorage arrived with HTML5 and solved a simple problem: developers needed a way to store
+                        modest amounts of data client-side without the per-request overhead of cookies. It is a
+                        synchronous key-value store, available as a global <code>localStorage</code> object, with a
+                        capacity of roughly 5–10MB depending on the browser.</p>
+
+                    <p><strong>The core API:</strong></p>
+                    <pre><code>// Write
+localStorage.setItem('theme', 'dark');
+localStorage.setItem('user', JSON.stringify({ id: 42, name: 'Noah' }));
+
+// Read
+const theme = localStorage.getItem('theme'); // "dark"
+const user = JSON.parse(localStorage.getItem('user')); // { id: 42, name: 'Noah' }
+
+// Delete one key
+localStorage.removeItem('theme');
+
+// Clear everything
+localStorage.clear();
+
+// Check how many keys are stored
+console.log(localStorage.length);</code></pre>
+
+                    <p>LocalStorage only stores strings. That is the most common source of bugs: if you store a number,
+                        it comes back as a string. Always use <code>JSON.stringify</code> and <code>JSON.parse</code>
+                        when storing objects or arrays, and wrap reads in a try/catch — <code>JSON.parse</code> throws
+                        if the stored value is malformed.</p>
+
+                    <pre><code>function getStoredUser() {
+    try {
+        const raw = localStorage.getItem('user');
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+        localStorage.removeItem('user'); // clean up corrupted data
+        return null;
+    }
+}</code></pre>
+
+                    <p><strong>The synchronous problem:</strong> Every call to <code>getItem</code> or
+                        <code>setItem</code> blocks the main thread. For small strings this is imperceptible, but if
+                        you store a large JSON object (tens of KB or more) and read it during page initialisation, you
+                        will stutter the UI. This is not theoretical — it is a documented source of
+                        <a href="https://developer.chrome.com/docs/devtools/performance/" target="_blank" rel="noopener">Interaction to Next Paint</a>
+                        regressions in production apps.
+                    </p>
+
+                    <p><strong>What about sessionStorage?</strong> It has an identical API to LocalStorage but data is
+                        scoped to a single browser tab and is cleared when the tab closes. Use it for temporary
+                        in-progress state — a multi-step form, a checkout flow — where you do not want data
+                        persisting across sessions or leaking between tabs.</p>
+
+                    <p><strong>Best for:</strong> UI preferences (theme, language, sidebar state), small configuration
+                        objects, remembering where a user left off in a workflow.</p>
+
+                    <p><strong>Avoid for:</strong> Sensitive data (no encryption, accessible to any script on the
+                        page), large objects, or anything that should sync across tabs in real time.</p>
 
                     <h2>3. IndexedDB: The Heavy Lifter</h2>
-                    <p>IndexedDB is a full-blown transactional database running inside the browser. It's asynchronous
-                        (won't
-                        block the UI), supports indexes for fast searching, and can store huge amounts of structured
-                        data
-                        (hundreds of MBs).</p>
-                    <p><strong>Use Case: Offline Apps & Complex Data.</strong></p>
-                    <p>If you're building a PWA (Progressive Web App) that works offline, IndexedDB is where you cache
-                        your
-                        API responses, images, and user-generated content.</p>
+                    <p>IndexedDB is a full transactional database built into the browser. Unlike LocalStorage, it is
+                        <strong>asynchronous</strong> — reads and writes do not block the main thread. It supports
+                        indexes for fast lookups, can store binary data (images, files, ArrayBuffers), and has a
+                        practical storage limit measured in hundreds of megabytes or more depending on available disk
+                        space.</p>
 
-                    <h2>Summary Table</h2>
+                    <p>The raw IndexedDB API is notoriously verbose. Here is the minimal code to open a database, write
+                        a record, and read it back:</p>
+
+                    <pre><code>// Open (or create) a database named "myApp" at version 1
+const request = indexedDB.open('myApp', 1);
+
+request.onupgradeneeded = (event) => {
+    const db = event.target.result;
+    // Create an object store (like a table) with an auto-incrementing key
+    db.createObjectStore('settings', { keyPath: 'key' });
+};
+
+request.onsuccess = (event) => {
+    const db = event.target.result;
+
+    // Write a record
+    const tx = db.transaction('settings', 'readwrite');
+    tx.objectStore('settings').put({ key: 'theme', value: 'dark' });
+
+    // Read a record
+    const readTx = db.transaction('settings', 'readonly');
+    const getReq = readTx.objectStore('settings').get('theme');
+    getReq.onsuccess = () => console.log(getReq.result); // { key: 'theme', value: 'dark' }
+};</code></pre>
+
+                    <p>Most production apps use a wrapper library like
+                        <a href="https://github.com/jakearchibald/idb" target="_blank" rel="noopener">idb</a>
+                        (by Jake Archibald) to get a Promise-based API on top of IndexedDB without a heavy dependency.
+                        It exposes the full power of IndexedDB with a fraction of the boilerplate.
+                    </p>
+
+                    <p><strong>Best for:</strong> Offline-capable PWAs, caching API responses for network-independent
+                        use, storing user-generated content (images, documents), large structured datasets that need
+                        querying.</p>
+
+                    <p><strong>Avoid for:</strong> Simple key-value preferences (overkill), or anything that needs to
+                        be synchronously available at script startup.</p>
+
+                    <h2>Storage Limits by Browser</h2>
+                    <p>Browsers do not guarantee a fixed storage amount — they use a quota system based on available
+                        disk space. Here are the approximate practical limits:</p>
+
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <thead>
+                            <tr style="background: rgba(255,255,255,0.05); text-align: left;">
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Browser</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">LocalStorage</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">IndexedDB</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Chrome / Edge</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">~5MB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Up to 60% of disk</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Uses Storage API quota</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Firefox</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">~5–10MB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Up to 50% of disk</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Prompts user above 50MB</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Safari</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">~5MB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">~1GB (desktop)</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">7-day ITP eviction on mobile</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Mobile browsers</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">~2.5–5MB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Varies widely</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Aggressively evicted under storage pressure</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>The Safari row deserves special attention. Safari's Intelligent Tracking Prevention (ITP) policy
+                        will delete all script-writable storage — including LocalStorage and IndexedDB — for a domain
+                        if the user has not visited it in 7 days. If your app is used occasionally on iPhone, do not
+                        rely on LocalStorage for anything that must survive between sessions.</p>
+
+                    <h2>Security: What You Should Never Store Client-Side</h2>
+                    <p>Both LocalStorage and IndexedDB are accessible to any JavaScript running on your page. A single
+                        XSS vulnerability — a malicious ad, a compromised npm package, an unsanitised user input — can
+                        exfiltrate everything stored there. For that reason, never store:</p>
+                    <ul>
+                        <li><strong>Authentication tokens</strong> (JWTs, OAuth tokens) — use <code>HttpOnly</code>
+                            cookies instead</li>
+                        <li><strong>Passwords or password hashes</strong> — never, under any circumstance</li>
+                        <li><strong>Credit card numbers or payment data</strong></li>
+                        <li><strong>Personally identifiable information</strong> (email addresses, phone numbers,
+                            government IDs) unless absolutely necessary and with full awareness of the risk</li>
+                    </ul>
+
+                    <p>The common counter-argument is "but I encrypt the data before storing it." The problem is that
+                        the encryption key also has to live somewhere in the browser, which means it is vulnerable to
+                        the same XSS attack. There is no safe way to store truly sensitive secrets in client-side
+                        storage.</p>
+
+                    <h2>Summary: Choosing the Right Tool</h2>
                     <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
                         <thead>
                             <tr style="background: rgba(255,255,255,0.05); text-align: left;">
                                 <th style="padding: 10px; border-bottom: 2px solid #333;">Storage</th>
                                 <th style="padding: 10px; border-bottom: 2px solid #333;">Capacity</th>
-                                <th style="padding: 10px; border-bottom: 2px solid #333;">Performance</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Blocking</th>
                                 <th style="padding: 10px; border-bottom: 2px solid #333;">Best For</th>
                             </tr>
                         </thead>
@@ -193,26 +360,62 @@
                             <tr>
                                 <td style="padding: 10px; border-bottom: 1px solid #333;">Cookies</td>
                                 <td style="padding: 10px; border-bottom: 1px solid #333;">4KB</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #333;">Slow (Network)</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #333;">Auth Tokens</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">No</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Auth tokens, server-read state</td>
                             </tr>
                             <tr>
                                 <td style="padding: 10px; border-bottom: 1px solid #333;">LocalStorage</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #333;">5MB</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #333;">Blocking (Sync)</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #333;">Simple Configs</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">~5MB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Yes (sync)</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">UI preferences, small config</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">sessionStorage</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">~5MB</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Yes (sync)</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Per-tab temporary state</td>
                             </tr>
                             <tr>
                                 <td style="padding: 10px; border-bottom: 1px solid #333;">IndexedDB</td>
                                 <td style="padding: 10px; border-bottom: 1px solid #333;">&gt;500MB</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #333;">Fast (Async)</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #333;">Complex Data</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">No (async)</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Offline data, binary files, large datasets</td>
                             </tr>
                         </tbody>
                     </table>
 
+                    <h2>Frequently Asked Questions</h2>
+
+                    <h3>Should I use localStorage or sessionStorage?</h3>
+                    <p>Use <code>sessionStorage</code> when the data only makes sense for the current visit — a
+                        partially filled form, a step in a wizard, a scroll position within a modal. Use
+                        <code>localStorage</code> when you want the data to persist across sessions, like a user's
+                        theme preference or their tool configuration. When in doubt, ask: "Would it be confusing or
+                        annoying if this data was still here next week?" If yes, use sessionStorage.
+                    </p>
+
+                    <h3>What happens when a user clears their browser cache?</h3>
+                    <p>Clearing cache in most browsers (via Settings → Clear browsing data) will wipe LocalStorage,
+                        sessionStorage, IndexedDB, and non-HttpOnly cookies simultaneously. Design your app to
+                        degrade gracefully — if the stored preference is gone, fall back to a sensible default. Never
+                        assume stored data exists; always check for <code>null</code> on reads.</p>
+
+                    <h3>Can I share data between tabs with LocalStorage?</h3>
+                    <p>Yes. LocalStorage is shared across all tabs and windows on the same origin. You can even listen
+                        for changes made in other tabs using the <code>storage</code> event:</p>
+                    <pre><code>window.addEventListener('storage', (event) => {
+    if (event.key === 'theme') {
+        applyTheme(event.newValue); // sync theme change from another tab
+    }
+});</code></pre>
+                    <p>This only fires in tabs that did <em>not</em> make the change, making it useful for
+                        cross-tab synchronisation. sessionStorage, by contrast, is completely isolated per tab —
+                        even if you duplicate a tab, changes in one do not propagate to the other.</p>
+
                     <p>At ToolBit, we use LocalStorage to remember your preferences (like staying in "Hex" mode on the
-                        color picker) because it's fast, simple, and privacy-friendly. No data ever leaves your device.
+                        color picker, or your last regex flags) because it's fast, simple, and privacy-friendly.
+                        No data ever leaves your device, and if you clear your cache, the tools simply reset to
+                        their defaults — nothing breaks.
                     </p>
                 </div>
             </article>
@@ -225,7 +428,9 @@
                         <li><a href="#" style="text-decoration: none; color: inherit;">1. Cookies</a></li>
                         <li><a href="#" style="text-decoration: none; color: inherit;">2. LocalStorage</a></li>
                         <li><a href="#" style="text-decoration: none; color: inherit;">3. IndexedDB</a></li>
-                        <li><a href="#" style="text-decoration: none; color: inherit;">Comparison</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">Storage Limits</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">Security</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">FAQ</a></li>
                     </ul>
                 </div>
 

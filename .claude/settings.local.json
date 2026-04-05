@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /c/Users/noah_/Desktop/DevTools/*.html)",
+      "Bash(wc -w /c/Users/noah_/Desktop/DevTools/blog/*.html)",
+      "Bash(grep -v '^[[:space:]]*$')",
+      "Bash(python3 /c/Users/noah_/Desktop/DevTools/_expand_prompt.py)",
+      "Bash(sed -n '/<div class=\"article-body\">/,/<\\\\/article>/p' /c/Users/noah_/Desktop/DevTools/blog/prompt-engineering.html)",
+      "Bash(python3 /c/Users/noah_/Desktop/DevTools/_expand_hashing.py)",
+      "Bash(sed -n '/<div class=\"article-body\">/,/<\\\\/article>/p' \"/c/Users/noah_/Desktop/DevTools/blog/hashing-explained.html\")",
+      "Bash(python3 /c/Users/noah_/Desktop/DevTools/_expand_regex.py)",
+      "Bash(sed -n '/<div class=\"article-body\">/,/<\\\\/article>/p' \"/c/Users/noah_/Desktop/DevTools/blog/regex-patterns.html\")",
+      "Bash(python3 /c/Users/noah_/Desktop/DevTools/_expand_timezone.py)",
+      "Bash(sed -n '/<div class=\"article-body\">/,/<\\\\/article>/p' \"/c/Users/noah_/Desktop/DevTools/blog/timezone-nightmare.html\")",
+      "Bash(python3 /c/Users/noah_/Desktop/DevTools/_expand_base64.py)",
+      "Bash(python3 /c/Users/noah_/Desktop/DevTools/_expand_jsonxml.py)",
+      "Bash(python3 /c/Users/noah_/Desktop/DevTools/_expand_url.py)",
+      "Bash(sed -n '/<div class=\"article-body\">/,/<\\\\/article>/p' \"/c/Users/noah_/Desktop/DevTools/blog/url-encoding-demystified.html\")",
+      "Bash(python3 /c/Users/noah_/Desktop/DevTools/_expand_color.py)",
+      "Bash(python3 /c/Users/noah_/Desktop/DevTools/_expand_diff.py)"
+    ]
+  }
+}

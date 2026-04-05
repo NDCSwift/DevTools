@@ -134,60 +134,164 @@
                 </header>
 
                 <div class="article-body">
-                    <p>There are two types of developers: those who fear timezones, and those who haven't worked with
-                        them
-                        yet. It starts innocently enough. You store a date in your database. A user in London creates an
-                        appointment for 9:00 AM. A user in New York sees it as… 9:00 AM? Wait, that's wrong.</p>
+                    <p>There are two types of developers: those who fear timezones, and those who have not worked with
+                        them yet. It starts innocently. A user in London creates a meeting for 9:00 AM. A user in
+                        New York sees it at... 9:00 AM? That is wrong. A cron job fires at midnight UTC but it is
+                        yesterday in California. A "date range" query misses the last day because the database stores
+                        UTC but the comparison uses local time.</p>
 
-                    <p>Time isn't just a number line; it's a political and geographical construct wrapped in messy code.
-                    </p>
+                    <p>Time handling is uniquely treacherous because the bugs are intermittent — they only appear on
+                        certain days of the year, in certain timezones, around midnight, or during Daylight Saving
+                        transitions. This guide covers the traps that catch real developers in production, and the
+                        concrete rules that prevent them.</p>
 
                     <h2>1. The "Add 24 Hours" Trap</h2>
-                    <p>New developers often think: "To get tomorrow's date, I'll just take today's timestamp and add
-                        86,400 seconds (24 hours * 60 minutes * 60 seconds)."</p>
-                    <p>This works most days. Until it doesn't.</p>
-                    <p><strong>Scenario:</strong> Daylight Saving Time (DST) begins. The clocks spring forward. That
-                        Sunday only has 23 hours. If you add 24 hours to midnight, you land at 1:00 AM on Monday,
-                        effectively
-                        skipping a day in your logic.</p>
-                    <p><strong>The Fix:</strong> Never do math on timestamps manually. Use a library like Luxon,
-                        Moment.js (legacy), or the native `Intl` API that understands calendar days vs. duration hours.
-                    </p>
+                    <p>New developers often think: "To get tomorrow's date, I will take today's Unix timestamp and add
+                        86,400 seconds (24 &times; 60 &times; 60)."</p>
+                    <p>This works on most days. It fails spectacularly twice a year.</p>
+                    <p>When Daylight Saving Time begins (clocks spring forward), that particular Sunday is only 23 hours
+                        long. If you add 86,400 seconds to a timestamp near midnight, you land at 1:00 AM the next day —
+                        effectively skipping a day's boundary in your logic. When DST ends (clocks fall back), the day
+                        is 25 hours long, causing the opposite problem.</p>
+                    <pre><code>// WRONG — breaks on DST transition days
+const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
 
-                    <h2>2. Server Time vs. User Time</h2>
-                    <p>If your server is in Virginia (AWS us-east-1) and your user is in Tokyo, `new Date()` means two
-                        very different things.</p>
-                    <p><strong>The Golden Rule:</strong> Always, always, <em>always</em> store time in UTC.</p>
-                    <p>UTC (Coordinated Universal Time) is the constant. It has no Daylight Saving Time. It never
-                        changes. Convert input to UTC immediately upon receiving it. Store it as UTC. Only convert it
-                        back
-                        to the user's local time at the very last second—in the UI layer.</p>
+// CORRECT — add one calendar day regardless of DST
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);</code></pre>
+                    <p>The <code>setDate()</code> approach works because JavaScript's Date object handles DST
+                        transitions when you manipulate calendar fields. The arithmetic approach does not — it operates
+                        on raw milliseconds and has no concept of calendar days.</p>
 
-                    <h2>3. ISO 8601 is Your Best Friend</h2>
-                    <p>Stop storing dates as strings like "01/02/2026". Is that January 2nd or February 1st? Americans
-                        and Europeans will fight to the death over this.</p>
-                    <p>ISO 8601 solves this ambiguity: `YYYY-MM-DDTHH:mm:ss.sssZ`.</p>
+                    <h2>2. DST: The Full Picture</h2>
+                    <p>Daylight Saving Time is observed differently in nearly every country that uses it. The US,
+                        Europe, and Australia change on different dates. Some regions within a country observe DST and
+                        others do not (parts of Indiana, Arizona, and various Australian territories). Brazil
+                        abolished DST in 2019. Russia abolished it in 2014. Turkey moved to permanent summer time.</p>
+                    <p>This means a "timezone offset" like <code>UTC+3</code> is not stable over time. Europe/Istanbul
+                        is UTC+3 year-round since 2016. Europe/Moscow is UTC+3 year-round since 2014. Europe/Helsinki
+                        alternates between UTC+2 and UTC+3. They produce the same offset in winter but different
+                        behaviour in summer.</p>
+                    <p><strong>The rule:</strong> Never store a timezone as a raw offset like <code>+05:30</code>.
+                        Store a named timezone identifier like <code>America/New_York</code> or
+                        <code>Asia/Kolkata</code>. The IANA timezone database (bundled in modern OS and browsers)
+                        knows the full history of DST rules for each named zone.</p>
+
+                    <h2>3. Server Time vs. User Time</h2>
+                    <p>If your server is in Virginia (AWS us-east-1) and your user is in Tokyo, <code>new Date()</code>
+                        on the server returns US Eastern time. <code>new Date()</code> in the user's browser returns
+                        Japan Standard Time. If you format a date on the server and send it as a string, the user sees
+                        the wrong time.</p>
+                    <p><strong>The golden rule: always store in UTC.</strong></p>
+                    <p>UTC (Coordinated Universal Time) is the invariant reference. It has no Daylight Saving Time. It
+                        never changes. Every timestamp in your database should be UTC. Every timestamp in your API
+                        responses should be UTC. Convert to local time at the final step — in the UI, using the user's
+                        timezone.</p>
+                    <pre><code>// Server: store as UTC ISO string
+const createdAt = new Date().toISOString();
+// "2026-04-04T14:32:00.000Z"  ← always UTC, the Z means UTC
+
+// Client: display in user's local timezone
+const localTime = new Date(createdAt).toLocaleString('en-US', {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    dateStyle: 'medium',
+    timeStyle: 'short'
+});</code></pre>
+                    <p>The <code>Intl.DateTimeFormat().resolvedOptions().timeZone</code> call reads the user's system
+                        timezone — it returns an IANA identifier like <code>"America/Chicago"</code>.</p>
+
+                    <h2>4. UTC vs. GMT: They Are Not the Same</h2>
+                    <p>UTC and GMT are commonly used interchangeably, and for most practical purposes the difference
+                        does not matter — they share the same current offset (both are at zero hours). But they are
+                        technically different:</p>
                     <ul>
-                        <li><strong>T</strong> separates date and time.</li>
-                        <li><strong>Z</strong> at the end indicates UTC ("Zulu" time).</li>
-                        <li>Sorting works alphabetically. `2026-02-01` comes after `2026-01-01`.</li>
+                        <li><strong>GMT (Greenwich Mean Time)</strong> is a timezone — specifically, the timezone of
+                            the Greenwich meridian in London. During British Summer Time, the UK moves to GMT+1.</li>
+                        <li><strong>UTC (Coordinated Universal Time)</strong> is an atomic time standard. It does not
+                            have DST adjustments. It never changes. It is the ground truth.</li>
+                    </ul>
+                    <p>Always use UTC in code. When documentation says "GMT," it usually means UTC, but if precision
+                        matters, clarify.</p>
+
+                    <h2>5. ISO 8601: The Only Correct Date String Format</h2>
+                    <p>Stop storing dates as strings like "01/02/2026". Is that January 2nd or February 1st? Americans
+                        and Europeans disagree, and neither format sorts correctly alphabetically.</p>
+                    <p>ISO 8601 solves both problems: <code>YYYY-MM-DDTHH:mm:ss.sssZ</code></p>
+                    <ul>
+                        <li><strong>T</strong> separates date from time</li>
+                        <li><strong>Z</strong> at the end means UTC ("Zulu" time)</li>
+                        <li>Alphabetical sort equals chronological sort — <code>"2026-12-01" > "2026-01-01"</code></li>
+                        <li>Unambiguous globally — no region interprets it differently</li>
+                    </ul>
+                    <pre><code>// Correct: ISO 8601 UTC string
+const timestamp = new Date().toISOString();
+// "2026-04-04T14:32:00.000Z"
+
+// Store this in your database, pass it in API responses
+// Never store "April 4, 2026" or "04/04/2026"</code></pre>
+
+                    <h2>6. Storing Timestamps in Databases</h2>
+                    <p>Most databases have a dedicated datetime type — use it. Do not store timestamps as plain
+                        integers (Unix epoch in seconds or milliseconds) unless you have a specific reason. Typed
+                        columns enable date-range queries, indexing, and timezone conversion at the database layer.</p>
+                    <ul>
+                        <li><strong>PostgreSQL:</strong> Use <code>TIMESTAMPTZ</code> (timestamp with timezone). It
+                            stores UTC internally and converts on read based on the session timezone. Avoid
+                            <code>TIMESTAMP</code> (without timezone) — it stores whatever string you give it,
+                            which is a footgun.</li>
+                        <li><strong>MySQL:</strong> <code>DATETIME</code> stores a literal value with no timezone
+                            conversion. <code>TIMESTAMP</code> stores in UTC and converts to the server timezone on
+                            read. Use <code>DATETIME</code> with UTC values for portability.</li>
+                        <li><strong>MongoDB:</strong> Store as ISODate objects, not strings.</li>
+                        <li><strong>SQLite:</strong> Has no native datetime type — store as ISO 8601 text strings
+                            in UTC.</li>
                     </ul>
 
-                    <h2>4. Leap Seconds</h2>
-                    <p>Did you know the Earth's rotation is slowing down? Occasionally, scientists decide to add a whole
-                        extra second (a leap second) to keep our clocks in sync with the sun.</p>
-                    <p>Unix timestamps don't account for this. They pretend every day is exactly 86,400 seconds. When a
-                        leap second happens, systems can crash, hang, or duplicate jobs if not patched correctly. Most
-                        modern OS kernels handle this by "smearing" the second over a longer period, but it's a
-                        reminder:
-                        Time is physical, not just digital.</p>
+                    <h2>7. Leap Seconds (and Why They Do Not Affect You Directly)</h2>
+                    <p>The Earth's rotation is gradually slowing due to tidal forces. Occasionally, scientists add a
+                        "leap second" to UTC to keep atomic time aligned with astronomical time. Since 1972, 27 leap
+                        seconds have been added.</p>
+                    <p>Unix timestamps do not account for leap seconds — they pretend every day is exactly 86,400
+                        seconds. When a leap second occurs (always at 23:59:60 UTC), Unix time stands still for one
+                        second. Systems that are not prepared can crash, hang, or fire duplicate scheduled jobs.
+                        Notable incidents include a 2012 Linux kernel bug triggered by a leap second that caused
+                        widespread CPU spinning in Java applications.</p>
+                    <p>Most modern operating systems and cloud environments handle leap seconds via "smearing" —
+                        distributing the extra second over a longer window so clocks never jump. You do not need to
+                        handle this manually, but it is why time is ultimately a physical, not purely digital, concept.</p>
 
-                    <h2>Conclusion</h2>
-                    <p>Time is hard. Don't reinvent the wheel. Use standard libraries, store in UTC, and test your code
-                        around DST boundaries.</p>
-                    <p>Need to debug a timestamp? Use our <a href="../timestamp.html">Timestamp Converter</a> to see
-                        exactly
-                        what that number means in every timezone.</p>
+                    <h2>Frequently Asked Questions</h2>
+
+                    <h3>What timezone should I store in my database?</h3>
+                    <p>Always UTC. Store the user's timezone identifier (<code>America/Chicago</code>) separately as
+                        a user preference field if you need to display events in their local time. Never store a
+                        raw offset like <code>-06:00</code> as a timezone — offsets change with DST, but IANA
+                        identifiers do not.</p>
+
+                    <h3>How do I show a UTC timestamp in the user's local time?</h3>
+                    <p>Use the <code>Intl.DateTimeFormat</code> API, which is built into all modern browsers:</p>
+                    <pre><code>function formatForUser(utcISOString, userTimezone) {
+    return new Intl.DateTimeFormat('en-US', {
+        timeZone: userTimezone, // e.g. "Europe/London"
+        dateStyle: 'long',
+        timeStyle: 'short'
+    }).format(new Date(utcISOString));
+}
+
+formatForUser("2026-04-04T14:00:00Z", "America/New_York");
+// "April 4, 2026 at 10:00 AM"</code></pre>
+
+                    <h3>Should I use a date library or the native Date API?</h3>
+                    <p>The native <code>Date</code> API and <code>Intl</code> have improved significantly and cover
+                        most use cases. For straightforward timestamp conversion and formatting, they are sufficient.
+                        Use a library like <a href="https://moment.github.io/luxon/" target="_blank" rel="noopener">Luxon</a>
+                        or <a href="https://date-fns.org/" target="_blank" rel="noopener">date-fns</a> when you
+                        need: calendar arithmetic across DST boundaries, complex duration calculations, relative
+                        time formatting ("3 hours ago"), or wide compatibility with older browsers. Avoid the original
+                        Moment.js for new projects — it is in maintenance mode and mutable by design.</p>
+
+                    <p>Need to debug a timestamp right now? Use the <a href="../timestamp.html">Timestamp Converter</a>
+                        to convert any Unix timestamp or ISO string to a readable date across any timezone.</p>
                 </div>
             </article>
 

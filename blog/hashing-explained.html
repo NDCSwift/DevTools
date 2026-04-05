@@ -136,60 +136,222 @@
                 </header>
 
                 <div class="article-body">
-                    <p>Hashing is the process of taking an input (like a password or a file) and turning it into a
-                        fixed-size
-                        string of characters. It's a one-way street: you can turn a steak into ground beef, but you
-                        can't
-                        turn ground beef back into a steak.</p>
-                    <p>Cryptography relies on this "one-way" property. If I give you the hash, you shouldn't be able to
-                        guess the original password.</p>
+                    <p>Hashing is the process of taking an arbitrary input — a password, a file, an entire disk image —
+                        and transforming it into a fixed-length string of characters called a digest. It's a one-way
+                        function: you can turn a steak into ground beef, but you cannot turn ground beef back into a
+                        steak. That irreversibility is the foundation of modern cryptography.</p>
+                    <p>But not all hash functions are equal, and the difference between a good choice and a bad one is
+                        the difference between a secure system and a data breach waiting to happen. This guide covers
+                        what every developer needs to know about MD5, SHA-1, SHA-256, and password hashing.</p>
+
+                    <h2>What Makes a Hash Function Cryptographically Secure?</h2>
+                    <p>Before looking at specific algorithms, it helps to understand what properties a cryptographic
+                        hash function must have:</p>
+                    <ul>
+                        <li><strong>Deterministic:</strong> The same input always produces the same output. SHA-256("hello")
+                            will always be <code>2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824</code>.</li>
+                        <li><strong>One-way (pre-image resistance):</strong> Given a hash output, it should be
+                            computationally infeasible to find the original input.</li>
+                        <li><strong>Avalanche effect:</strong> A single-bit change in the input should completely change
+                            the output. SHA-256("hello") and SHA-256("hellO") look nothing alike.</li>
+                        <li><strong>Collision resistance:</strong> It should be computationally infeasible to find two
+                            different inputs that produce the same hash output.</li>
+                        <li><strong>Fixed output size:</strong> Regardless of whether the input is 1 byte or 10 gigabytes,
+                            the output is always the same length.</li>
+                    </ul>
+                    <p>When researchers say an algorithm is "broken," they almost always mean collision resistance has
+                        failed — they have found a method to produce collisions faster than brute force. Pre-image
+                        resistance may still hold, but collision vulnerabilities are severe enough to retire an algorithm
+                        from security use.</p>
 
                     <h2>1. The Fallen Hero: MD5</h2>
-                    <p>Message Digest algorithm 5 (MD5) was once the standard. It's fast—too fast.</p>
-                    <p><strong>The problem: Collisions.</strong></p>
-                    <p>A collision occurs when two different inputs produce the exact same hash. Researchers have found
-                        ways to
-                        generate two completely different PDF files that have the same MD5 hash. This means an attacker
-                        could trick your system into accepting a malicious file by making it look like a safe one.</p>
-                    <p><strong>Verdict:</strong> Never use MD5 for security. Use it only for non-critical checksums
-                        (like
-                        verifying a file download wasn't corrupted).</p>
+                    <p>Message Digest algorithm 5 (MD5) was designed in 1991 by Ron Rivest and was, for a decade, the
+                        standard for checksums and digital signatures. It produces a 128-bit (32-character hex) digest
+                        and runs extremely fast — which turned out to be its fatal flaw.</p>
+                    <p><strong>The collision problem:</strong> In 2004, Xiaoyun Wang demonstrated the first practical MD5
+                        collision. By 2008, researchers had created a rogue SSL certificate using an MD5 collision,
+                        effectively allowing them to impersonate any website. In 2012, the Flame malware used an MD5
+                        collision to forge a Microsoft code-signing certificate and spread as a legitimate Windows update.
+                        This was not a theoretical attack — it was used in production malware targeting critical
+                        infrastructure.</p>
+                    <p>A collision occurs when two different inputs produce the exact same hash output. If an attacker
+                        can craft a malicious file with the same MD5 hash as a trusted file, your integrity check
+                        becomes worthless — it will accept the malicious version as legitimate.</p>
+                    <p><strong>Verdict:</strong> Never use MD5 for anything security-related — signatures, integrity
+                        verification of untrusted files, certificate fingerprints, or password storage. It is
+                        acceptable for non-security checksums (e.g., deduplicating cached files in a private system
+                        where attackers cannot influence the input), but there is little reason not to use SHA-256
+                        instead.</p>
 
                     <h2>2. The Retired Veteran: SHA-1</h2>
-                    <p>SHA-1 (Secure Hash Algorithm 1) replaced MD5. But, like its predecessor, it fell victim to
-                        increased computing
-                        power. In 2017, Google announced the first practical collision attack against SHA-1.</p>
-                    <p><strong>Verdict:</strong> Do not use for new applications. Browsers have stopped accepting SHA-1
-                        SSL certificates years ago.</p>
+                    <p>SHA-1 (Secure Hash Algorithm 1) was designed by the NSA and published in 1995 as the successor to
+                        MD5. It produces a 160-bit digest and was the backbone of SSL certificates, Git commit
+                        identifiers, and code signing for over 15 years.</p>
+                    <p>In 2005, theoretical weaknesses were identified. In 2017, Google's Project Zero team published
+                        <em>SHAttered</em> — the first practical SHA-1 collision attack. They produced two different
+                        PDF files with identical SHA-1 hashes, requiring approximately 9.2 quintillion SHA-1 computations
+                        (about the equivalent of 6,500 years of single-CPU computation, but achievable in practice
+                        using GPU clusters at a cost of around $110,000 in 2017).</p>
+                    <p>By 2020, the cost had dropped dramatically, and SHA-1 collision attacks became practical for
+                        well-funded attackers. All major browsers had already dropped support for SHA-1 SSL certificates
+                        by 2017.</p>
+                    <p><strong>Verdict:</strong> Do not use SHA-1 for new applications. Git still uses SHA-1 for commit
+                        hashes (though it is in the process of migrating to SHA-256), which is acceptable because the
+                        threat model for version control differs from security certificates — but for any new security
+                        use case, use SHA-256 or SHA-3.</p>
 
                     <h2>3. The Current Standard: SHA-256</h2>
-                    <p>SHA-256 (part of the SHA-2 family) is the current gold standard. It produces a 256-bit hash that
-                        is exponentially harder to crack than MD5 or SHA-1.</p>
-                    <p>It is used by:</p>
+                    <p>SHA-256 is part of the SHA-2 family, designed by the NSA and published in 2001. It produces a
+                        256-bit (64-character hex) digest. As of 2026, no practical collision or pre-image attacks
+                        against SHA-256 are known. It is the current gold standard for general-purpose cryptographic
+                        hashing.</p>
+                    <p>It is used in:</p>
                     <ul>
-                        <li><strong>Bitcoin:</strong> For mining and transaction verification.</li>
-                        <li><strong>SSL/TLS:</strong> securing HTTPS connections.</li>
-                        <li><strong>Digital Signatures:</strong> verifying software updates.</li>
+                        <li><strong>Bitcoin and most blockchains:</strong> Mining and transaction verification use
+                            SHA-256 throughout.</li>
+                        <li><strong>TLS/SSL certificates:</strong> All modern HTTPS certificates use SHA-256 signatures.</li>
+                        <li><strong>Digital signatures:</strong> Code signing, software update verification, and
+                            document authentication.</li>
+                        <li><strong>File integrity:</strong> Verifying downloaded files, comparing file states in
+                            build pipelines.</li>
+                        <li><strong>HMAC:</strong> Message authentication codes for API request signing (AWS, GitHub
+                            webhooks).</li>
                     </ul>
 
-                    <h2>4. Passwords are Special</h2>
-                    <p>Even a strong hash like SHA-256 is <strong>fast</strong>. A modern GPU can calculate billions of
-                        SHA-256 hashes per second. This is bad for passwords.</p>
-                    <p>If an attacker steals your database of hashed passwords, they can use a "Rainbow Table" to guess
-                        millions of passwords instantly.</p>
-                    <p><strong>The Fix: Salt + Slow Hashing.</strong></p>
-                    <p>For passwords, use algorithms designed to be slow, like <strong>Argon2, bcrypt, or
-                            PBKDF2</strong>.
-                        These force the computer to do extra work (thousands of iterations) for each guess, making
-                        brute-force
-                        attacks impractical.</p>
+                    <p><strong>Using SHA-256 in JavaScript:</strong></p>
+                    <pre><code>// Using the Web Crypto API (built into modern browsers and Node.js)
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+const hash = await sha256('Hello, World!');
+// "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986d"</code></pre>
+
+                    <p>The Web Crypto API is available in all modern browsers and Node.js 15+, so there is no need for
+                        external cryptography libraries for basic hashing tasks.</p>
+
+                    <h2>4. SHA-3: The Alternative Standard</h2>
+                    <p>SHA-3 was standardised by NIST in 2015, not as a replacement for SHA-2 but as an alternative
+                        with a completely different internal construction (Keccak sponge function vs. Merkle-Damgaard).
+                        The rationale was hedging: if a fundamental weakness were found in SHA-2's construction, SHA-3
+                        would be unaffected because it works differently at the mathematical level.</p>
+                    <p>SHA-3 is not faster than SHA-256 on most hardware, and SHA-256 has shown no signs of weakness,
+                        so SHA-3 adoption has been limited. You will mostly encounter it in government and defence
+                        contexts, or in specific protocols that mandate it. For everyday use, SHA-256 remains the
+                        practical choice.</p>
+
+                    <h2>5. Passwords Are a Special Case</h2>
+                    <p>Even SHA-256 is the wrong choice for password storage. The reason is speed — SHA-256 is
+                        deliberately fast. A modern GPU can compute billions of SHA-256 hashes per second. That is
+                        exactly what an attacker needs for a brute-force attack against a stolen password database.</p>
+                    <p>The attack works like this: an attacker steals a database of hashed passwords, then runs a
+                        dictionary of common passwords (plus variations) through SHA-256, comparing results against
+                        the stolen hashes. At billions of attempts per second, even complex passwords fall quickly.
+                        This is called a rainbow table or dictionary attack.</p>
+                    <p><strong>The fix: slow hashing algorithms + salts.</strong></p>
+                    <p>Password-specific algorithms are designed to be slow and memory-intensive:</p>
+                    <ul>
+                        <li><strong>bcrypt:</strong> Designed in 1999 specifically for passwords. Has a "cost factor"
+                            that controls how slow it runs — you increase it as hardware gets faster. Widely supported
+                            across languages and frameworks. Limits passwords to 72 bytes, which is a minor downside.</li>
+                        <li><strong>scrypt:</strong> Adds a memory-hardness requirement on top of bcrypt's slowness.
+                            An attacker needs both CPU time <em>and</em> significant RAM to brute-force it, which
+                            makes GPU attacks more expensive.</li>
+                        <li><strong>Argon2:</strong> Winner of the 2015 Password Hashing Competition. Has three
+                            variants (Argon2i, Argon2d, Argon2id) for different threat models. Argon2id is the
+                            current recommendation for most use cases — it is both memory-hard and resistant to
+                            side-channel attacks.</li>
+                    </ul>
+                    <p>A <strong>salt</strong> is a random value generated per-password and prepended to the input
+                        before hashing. It ensures that two users with the same password get different hashes, which
+                        defeats pre-computed rainbow tables entirely. Modern password hashing libraries (bcrypt,
+                        Argon2) handle salting automatically — you do not implement it manually.</p>
+                    <pre><code>// Node.js example using bcrypt
+const bcrypt = require('bcrypt');
+const SALT_ROUNDS = 12; // higher = slower = more secure
+
+// Storing a new password
+const hash = await bcrypt.hash(plaintextPassword, SALT_ROUNDS);
+// Store 'hash' in the database — never store the plain password
+
+// Verifying a login attempt
+const isMatch = await bcrypt.compare(inputPassword, storedHash);
+// Returns true or false</code></pre>
+
+                    <h2>Quick Reference: When to Use What</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <thead>
+                            <tr style="background: rgba(255,255,255,0.05); text-align: left;">
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Use Case</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Algorithm</th>
+                                <th style="padding: 10px; border-bottom: 2px solid #333;">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">File integrity / checksums</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">SHA-256</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Fast, secure, widely supported</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Password storage</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Argon2id or bcrypt</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Never use SHA-256 for passwords</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">HMAC / API signatures</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">HMAC-SHA256</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Standard for webhook verification</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Digital certificates</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">SHA-256</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">SHA-1 certs are rejected by browsers</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">Non-security deduplication</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">MD5 or SHA-256</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #333;">MD5 only when adversarial input is impossible</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>Frequently Asked Questions</h2>
+
+                    <h3>Can you reverse a hash?</h3>
+                    <p>Not directly — that is the definition of a one-way function. However, "reversing" a hash is
+                        possible through brute force: an attacker can hash millions of candidate inputs and compare
+                        them against a known hash. For short or common passwords with fast algorithms like MD5 or
+                        SHA-256, this is practical. For long, random passwords or values hashed with Argon2/bcrypt,
+                        it is computationally infeasible. The answer is: technically no, practically yes for weak
+                        inputs with weak algorithms.</p>
+
+                    <h3>Why is MD5 still used for checksums if it's "broken"?</h3>
+                    <p>The collision vulnerability in MD5 requires an attacker to <em>craft</em> a specific input that
+                        collides — they cannot choose the collision target arbitrarily. For a simple download checksum
+                        on a file you control (like verifying a Linux ISO you published yourself), an MD5 collision
+                        attack is not in the threat model. The attacker would need to compromise your server to replace
+                        the file, at which point they could replace the checksum too. MD5 checksums catch accidental
+                        corruption, not adversarial tampering. That said, SHA-256 checksums are trivially easy to
+                        generate and there is no reason to use MD5 for new work.</p>
+
+                    <h3>What is the difference between hashing and encryption?</h3>
+                    <p>Encryption is reversible: a ciphertext can be decrypted back to plaintext using the correct key.
+                        Hashing is one-way: a digest cannot (practically) be reversed to the original input. Use
+                        encryption when you need to recover the original data later (e.g., storing API keys you need
+                        to use). Use hashing when you only need to verify that data matches (e.g., passwords — you
+                        never need to know the original password, only whether the user's input matches the stored
+                        hash).</p>
 
                     <h2>Conclusion</h2>
-                    <p>If you're verifying a file, use SHA-256. If you're storing a password, use bcrypt. If you're
-                        using
-                        MD5... please stop.</p>
-                    <p>Want to see what these hashes look like? Try our <a href="../hash.html">Hash Generator</a> tool.
-                    </p>
+                    <p>The rule of thumb is simple: SHA-256 for integrity checking, Argon2id for passwords, and
+                        HMAC-SHA256 for authentication codes. MD5 and SHA-1 are legacy algorithms that should not
+                        appear in new code.</p>
+                    <p>Want to see these hashes in action? Try the <a href="../hash.html">Hash Generator</a> — it
+                        computes MD5, SHA-1, SHA-256, and SHA-512 in your browser, with no data sent to a server.</p>
                 </div>
             </article>
 
@@ -198,10 +360,14 @@
                 <div class="sidebar-widget">
                     <div class="widget-title">Table of Contents</div>
                     <ul style="list-style: none; padding: 0; line-height: 2;">
+                        <li><a href="#" style="text-decoration: none; color: inherit;">What Makes a Hash Secure?</a></li>
                         <li><a href="#" style="text-decoration: none; color: inherit;">1. MD5 (Broken)</a></li>
                         <li><a href="#" style="text-decoration: none; color: inherit;">2. SHA-1 (Retired)</a></li>
                         <li><a href="#" style="text-decoration: none; color: inherit;">3. SHA-256 (Standard)</a></li>
-                        <li><a href="#" style="text-decoration: none; color: inherit;">4. Password Hashing</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">4. SHA-3</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">5. Password Hashing</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">Quick Reference</a></li>
+                        <li><a href="#" style="text-decoration: none; color: inherit;">FAQ</a></li>
                     </ul>
                 </div>
 
